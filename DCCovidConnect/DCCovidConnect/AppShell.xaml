@@ -4,17 +4,32 @@
        xmlns:views="clr-namespace:DCCovidConnect.Views"
        x:Class="DCCovidConnect.AppShell"
        Shell.NavBarIsVisible="False">
+    <Shell.Resources>
+        <ResourceDictionary>
+            <Style x:Key="BaseStyle" TargetType="Element">
+                <Setter Property="Shell.BackgroundColor" Value="{StaticResource Primary}" />
+                <Setter Property="Shell.ForegroundColor" Value="White" />
+                <Setter Property="Shell.TitleColor" Value="White" />
+                <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
+                <Setter Property="Shell.UnselectedColor" Value="#95FFFFFF" />
+                <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource White}" />
+                <Setter Property="Shell.TabBarForegroundColor" Value="{StaticResource Secondary}"/>
+                <Setter Property="Shell.TabBarUnselectedColor" Value="{StaticResource Secondary}"/>
+                <Setter Property="Shell.TabBarTitleColor" Value="{StaticResource Secondary}"/>
+            </Style>
+            <Style TargetType="TabBar" BasedOn="{StaticResource BaseStyle}" />
+            <Style TargetType="FlyoutItem" BasedOn="{StaticResource BaseStyle}" />
+        </ResourceDictionary>
+    </Shell.Resources>
     <TabBar>
         <Tab Title="Home">
-            <views:HomePage/>
+            <ShellContent ContentTemplate="{DataTemplate views:HomePage}"/>
         </Tab>
         <Tab Title="Map">
-            <views:HomePage/>
-
+            <ShellContent ContentTemplate="{DataTemplate views:HomePage}"/>
         </Tab>
         <Tab Title="Info">
-            <views:HomePage/>
-
+            <ShellContent ContentTemplate="{DataTemplate views:InfoMenuPage}"/>
         </Tab>
     </TabBar>
 </Shell>

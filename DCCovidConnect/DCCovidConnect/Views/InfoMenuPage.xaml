@@ -2,8 +2,15 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="DCCovidConnect.Views.InfoMenuPage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Button">
+                <Setter Property="CornerRadius" Value="20"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <StackLayout x:Name="PageLayout" Margin="10,10,10,10" HorizontalOptions="Center">
-        <Label Text="Info" FontSize="60" FontAttributes="Bold"/>
+        <Label Text="Info" FontSize="Header" FontAttributes="Bold"/>
         <Grid x:Name="InfoMenu" HorizontalOptions="Center" VerticalOptions="FillAndExpand">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -13,10 +20,10 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="20*"/>
                 <RowDefinition Height="20*"/>
-                <RowDefinition Height="40*"/>
+                <RowDefinition x:Name="ThirdRow"  Height="40*"/>
                 <RowDefinition Height="20*"/>
             </Grid.RowDefinitions>
-            <Button Text="1" Grid.ColumnSpan="3"/>
+            <Button x:Name="Test" Text="1" Grid.ColumnSpan="3"/>
             <Button Text="2" Grid.Row="1" Grid.ColumnSpan="2"/>
             <Button Text="3" Grid.Row="1" Grid.Column="2"/>
             <Button Text="4" Grid.Row="2" />

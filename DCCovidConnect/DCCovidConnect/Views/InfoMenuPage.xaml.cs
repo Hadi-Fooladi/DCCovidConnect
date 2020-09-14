@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Xamarin.Essentials;
 
 namespace DCCovidConnect.Views
 {
@@ -20,8 +21,15 @@ namespace DCCovidConnect.Views
         protected override void OnSizeAllocated(double width, double height)
         {
             base.OnSizeAllocated(width, height);
-
-            PageLayout.WidthRequest = 3.0 / 5 * InfoMenu.Height;
+            if (DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Height <= 0.5625)
+            {
+                ThirdRow.Height = new GridLength(20, GridUnitType.Star);
+                PageLayout.WidthRequest = 3.0 / 4 * InfoMenu.Height;
+            }
+            else
+            {
+                PageLayout.WidthRequest = 3.0 / 5 * InfoMenu.Height;
+            }
         }
     }
 }

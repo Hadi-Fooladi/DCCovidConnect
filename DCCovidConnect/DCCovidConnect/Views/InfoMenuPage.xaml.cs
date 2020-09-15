@@ -23,7 +23,7 @@ namespace DCCovidConnect.Views
             base.OnSizeAllocated(width, height);
             if (DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Height <= 0.5625)
             {
-                ThirdRow.Height = new GridLength(20, GridUnitType.Star);
+                ThirdRow.Height = new GridLength(1, GridUnitType.Star);
                 PageLayout.WidthRequest = 3.0 / 4 * InfoMenu.Height;
             }
             else

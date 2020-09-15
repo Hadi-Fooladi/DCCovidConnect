@@ -18,10 +18,10 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="20*"/>
-                <RowDefinition Height="20*"/>
-                <RowDefinition x:Name="ThirdRow"  Height="40*"/>
-                <RowDefinition Height="20*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition x:Name="ThirdRow"  Height="2*"/>
+                <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
             <Button x:Name="Test" Text="1" Grid.ColumnSpan="3"/>
             <Button Text="2" Grid.Row="1" Grid.ColumnSpan="2"/>

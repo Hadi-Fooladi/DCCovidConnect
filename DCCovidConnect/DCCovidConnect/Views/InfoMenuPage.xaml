@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:DCCovidConnect.Views"
              x:Class="DCCovidConnect.Views.InfoMenuPage">
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -9,9 +10,9 @@
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
-    <StackLayout x:Name="PageLayout" Margin="10,10,10,10" HorizontalOptions="Center">
+    <StackLayout x:Name="pageLayout" Margin="10,10,10,10" HorizontalOptions="Center">
         <Label Text="Info" FontSize="Header" FontAttributes="Bold"/>
-        <Grid x:Name="InfoMenu" HorizontalOptions="Center" VerticalOptions="FillAndExpand">
+        <Grid x:Name="infoMenu" HorizontalOptions="Center" VerticalOptions="FillAndExpand">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -20,17 +21,38 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
-                <RowDefinition x:Name="ThirdRow"  Height="2*"/>
+                <RowDefinition x:Name="thirdRow"  Height="2*"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
-            <Button x:Name="Test" Text="1" Grid.ColumnSpan="3"/>
-            <Button Text="2" Grid.Row="1" Grid.ColumnSpan="2"/>
-            <Button Text="3" Grid.Row="1" Grid.Column="2"/>
-            <Button Text="4" Grid.Row="2" />
-            <Button Text="5" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"/>
-            <Button Text="6" Grid.Row="3"/>
-            <Button Text="7" Grid.Row="3" Grid.Column="1"/>
-            <Button Text="8" Grid.Row="3" Grid.Column="2"/>
+            <Button Text="News" 
+                    CommandParameter="News"/>
+            <Button Text="Employment" 
+                    Grid.Column="1" 
+                    CommandParameter="Employment"/>
+            <Button Text="Children &amp; Adolescents" 
+                    Grid.Column="2" 
+                    CommandParameter="ChildrenAndAdolescents"/>
+            <Button Text="Communities" 
+                    Grid.Row="1" Grid.ColumnSpan="2" 
+                    CommandParameter="Communities"/>
+            <Button Text="Research" 
+                    Grid.Row="1" Grid.Column="2" 
+                    CommandParameter="Research"/>
+            <Button Text="General Information" 
+                    Grid.Row="2"  
+                    CommandParameter="GeneralInformation"/>
+            <Button Text="Self Care &amp; Wellness"
+                    Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" 
+                    CommandParameter="SelfCareAndWellness"/>
+            <Button Text="Services" 
+                    Grid.Row="3" 
+                    CommandParameter="Services"/>
+            <Button Text="Reopening Guidelines"
+                    Grid.Row="3" Grid.Column="1" 
+                    CommandParameter="ReopeningGuidelines"/>
+            <Button Text="FAQ"
+                    Grid.Row="3" Grid.Column="2" 
+                    CommandParameter="FAQ"/>
         </Grid>
     </StackLayout>
 </ContentPage>

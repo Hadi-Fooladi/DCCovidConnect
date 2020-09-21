@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DCCovidConnect.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -13,6 +14,10 @@ namespace DCCovidConnect.Views
         public HomePage()
         {
             InitializeComponent();
+            BindingContext = new HomeViewModel();
+
+            var color = baseLayout.BackgroundColor;
+            baseLayout.BackgroundColor = color.WithLuminosity(color.Luminosity * 1.3);
         }
     }
 }

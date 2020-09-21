@@ -3,22 +3,47 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="DCCovidConnect.Views.HomePage">
 
-    <StackLayout>
-        <Frame BackgroundColor="#2196F3" Padding="24" CornerRadius="0">
-            <Label Text="Welcome to Xamarin.Forms!" HorizontalTextAlignment="Center" TextColor="White" FontSize="36"/>
-        </Frame>
-        <Label Text="Start developing now" FontSize="Title" Padding="30,10,30,10"/>
-        <Label Text="Make changes to your XAML file and save to see your UI update in the running app with XAML Hot Reload. Give it a try!" FontSize="16" Padding="30,0,30,0"/>
-        <Label FontSize="16" Padding="30,24,30,0">
-            <Label.FormattedText>
-                <FormattedString>
-                    <FormattedString.Spans>
-                        <Span Text="Learn more at "/>
-                        <Span Text="https://aka.ms/xamarin-quickstart" FontAttributes="Bold"/>
-                    </FormattedString.Spans>
-                </FormattedString>
-            </Label.FormattedText>
-        </Label>
+    <StackLayout x:Name="baseLayout" Padding="40,0" BackgroundColor="{StaticResource Primary}">
+        <StackLayout Padding="0,20">
+            <Label Text="{Binding Region}"
+                   TextColor="{StaticResource Black}" 
+                   TextTransform="Uppercase"
+                   FontAttributes="Bold"
+                   HorizontalTextAlignment="Left" 
+                   FontSize="56"/>
+            <Label
+                FontSize="24">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <FormattedString.Spans>
+                            <Span Text="{Binding RegionCases, StringFormat='{0:N0}'}" 
+                                  TextColor="{StaticResource Secondary}"
+                                  FontAttributes="Bold"
+                                  FontSize="24"/>
+                            <Span Text=" cases"/>
+                        </FormattedString.Spans>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Label Text="{Binding Local}" TextColor="{StaticResource Primary}" TextTransform="Uppercase"/>
+            <Label
+                FontSize="18">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <FormattedString.Spans>
+                            <Span Text="{Binding LocalCases, StringFormat='{0:N0}'}" 
+                                  TextColor="{StaticResource Black}"
+                                  FontAttributes="Bold"
+                                  FontSize="18"/>
+                            <Span Text=" cases"/>
+                        </FormattedString.Spans>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+        </StackLayout>
+        <StackLayout>
+            <Label Text="Reopening" TextTransform="Uppercase" FontSize="20" FontAttributes="Bold" Margin="0,0,0,-18"/>
+            <Label Text="{Binding Phase, StringFormat='Phase {0:N0}'}" TextTransform="Uppercase"  FontAttributes="Bold" FontSize="40"/>
+        </StackLayout>
     </StackLayout>
-
 </ContentPage>

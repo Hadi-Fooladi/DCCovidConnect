@@ -2,7 +2,8 @@
 <Shell xmlns="http://xamarin.com/schemas/2014/forms"
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
        xmlns:views="clr-namespace:DCCovidConnect.Views"
-       x:Class="DCCovidConnect.AppShell">
+       x:Class="DCCovidConnect.AppShell"
+       FlyoutHeaderBehavior="CollapseOnScroll">
     <Shell.Resources>
         <ResourceDictionary>
             <Style x:Key="BaseStyle" TargetType="Element">
@@ -21,7 +22,9 @@
             <Style TargetType="FlyoutItem" BasedOn="{StaticResource BaseStyle}" />
         </ResourceDictionary>
     </Shell.Resources>
-    <TabBar>
+
+
+    <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
         <Tab Title="Home">
             <ShellContent ContentTemplate="{DataTemplate views:HomePage}"/>
         </Tab>
@@ -31,5 +34,14 @@
         <Tab Title="Info">
             <ShellContent ContentTemplate="{DataTemplate views:InfoMenuPage}"/>
         </Tab>
-    </TabBar>
+    </FlyoutItem>
+
+    <MenuItem Text="Settings"
+              Command="{Binding GoToSettings}"/>
+
+    <Shell.FlyoutHeaderTemplate>
+        <DataTemplate>
+            <Label Text="Menu" FontSize="40" Margin="30,0,0,0"/>
+        </DataTemplate>
+    </Shell.FlyoutHeaderTemplate>
 </Shell>

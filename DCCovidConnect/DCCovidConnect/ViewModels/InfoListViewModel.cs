@@ -1,18 +1,15 @@
-﻿using System;
+﻿using DCCovidConnect.Models;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using Xamarin.Forms;
 
 namespace DCCovidConnect.ViewModels
 {
-    [QueryProperty("Section", "section")]
     class InfoListViewModel : BaseViewModel
     {
-        string section;
-        public string Section
-        {
-            get => section;
-            set => SetProperty(ref section, Uri.UnescapeDataString(value));
-        }
+
+
     }
 }

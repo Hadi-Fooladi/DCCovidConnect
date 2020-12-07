@@ -11,7 +11,7 @@ namespace DCCovidConnect
         public App()
         {
             InitializeComponent();
-
+            Device.SetFlags(new string[] { "Expander_Experimental" });
             MainPage = new AppShell();
         }
 
@@ -29,11 +29,6 @@ namespace DCCovidConnect
 
         protected override async void OnStart()
         {
-            await Database.SaveInfoListAsync(new Models.InfoList
-            {
-                Title = "News",
-                ItemsString = "[\"test1\",\"test2\",\"test3\"]",
-            });
         }
 
         protected override void OnSleep()

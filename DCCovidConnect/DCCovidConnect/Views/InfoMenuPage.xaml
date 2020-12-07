@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:DCCovidConnect.Views"
+             xmlns:models="clr-namespace:DCCovidConnect.Models"
              x:Class="DCCovidConnect.Views.InfoMenuPage">
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -25,34 +26,34 @@
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
             <Button Text="News" 
-                    CommandParameter="News"/>
-            <Button Text="Employment" 
+                    CommandParameter="{x:Static models:InfoItem+InfoType.NEWS}"/>
+            <Button Text="Getting Involved" 
                     Grid.Column="1" 
-                    CommandParameter="Employment"/>
-            <Button Text="Children &amp; Adolescents" 
+                    CommandParameter="{x:Static models:InfoItem+InfoType.GETTING_INVOLVED}"/>
+            <Button Text="Age Specific" 
                     Grid.Column="2" 
-                    CommandParameter="ChildrenAndAdolescents"/>
+                    CommandParameter="{x:Static models:InfoItem+InfoType.AGE_SPECIFIC}"/>
             <Button Text="Communities" 
                     Grid.Row="1" Grid.ColumnSpan="2" 
-                    CommandParameter="Communities"/>
+                    CommandParameter="{x:Static models:InfoItem+InfoType.COMMUNITY}"/>
             <Button Text="Research" 
                     Grid.Row="1" Grid.Column="2" 
-                    CommandParameter="Research"/>
+                    CommandParameter="{x:Static models:InfoItem+InfoType.RESEARCH}"/>
             <Button Text="General Information" 
                     Grid.Row="2"  
-                    CommandParameter="GeneralInformation"/>
+                    CommandParameter="{x:Static models:InfoItem+InfoType.GENERAL_INFORMATION}"/>
             <Button Text="Self Care &amp; Wellness"
                     Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" 
-                    CommandParameter="SelfCareAndWellness"/>
+                    CommandParameter="{x:Static models:InfoItem+InfoType.SELF_CARE}"/>
             <Button Text="Services" 
                     Grid.Row="3" 
-                    CommandParameter="Services"/>
-            <Button Text="Reopening Guidelines"
+                    CommandParameter="{x:Static models:InfoItem+InfoType.SERVICES}"/>
+            <Button Text="Pregnancy"
                     Grid.Row="3" Grid.Column="1" 
-                    CommandParameter="ReopeningGuidelines"/>
+                    CommandParameter="{x:Static models:InfoItem+InfoType.PREGNANCY}"/>
             <Button Text="FAQ"
                     Grid.Row="3" Grid.Column="2" 
-                    CommandParameter="FAQ"/>
+                    CommandParameter="{x:Static models:InfoItem+InfoType.FAQ}"/>
         </Grid>
     </StackLayout>
 </ContentPage>

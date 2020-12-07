@@ -17,41 +17,43 @@ namespace DCCovidConnect.Views
     [QueryProperty("Section", "section")]
     public partial class InfoListPage : ContentPage
     {
-        string section;
+        InfoItem.InfoType section;
         ObservableCollection<string> items;
         public string Section
         {
-            get => section;
+            get => section.ToString();
             set
             {
-                section = Uri.UnescapeDataString(value);
+                section = (InfoItem.InfoType)Enum.Parse(typeof(InfoItem.InfoType), Uri.UnescapeDataString(value), true);
                 OnPropertyChanged();
             }
         }
         public ObservableCollection<string> Items
         {
-            get => items; 
+            get => items;
             set
             {
                 items = value;
                 OnPropertyChanged();
             }
         }
-
+        async void GoToDetailPage(object sender, EventArgs args)
+        {
+            await Shell.Current.GoToAsync($"{nameof(InfoDetailPage)}?title={(args as TappedEventArgs).Parameter}");
+        }
         public InfoListPage()
         {
             InitializeComponent();
             BindingContext = this;
         }
-
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            InfoList infoList = await App.Database.GetInfoListAsync(section);
-            if (infoList == null)
-                Items = new ObservableCollection<string>(new string[] { section, "hello" });
+            List<InfoItem> infoItems = await App.Database.GetInfoItemsAsync(section);
+            if (infoItems == null)
+                Items = new ObservableCollection<string>(new string[] { section.ToString(), "hello" });
             else
-                Items = JsonConvert.DeserializeObject<ObservableCollection<string>>(infoList.ItemsString);
+                Items = new ObservableCollection<string>(infoItems.Select(i => i.Title));
         }
     }
 }

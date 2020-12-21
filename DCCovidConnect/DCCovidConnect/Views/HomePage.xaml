@@ -3,54 +3,63 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:skia="clr-namespace:SkiaSharp;assembly=SkiaSharp"
              xmlns:skiaforms="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
+             xmlns:controls="clr-namespace:DCCovidConnect.Controls"
              x:Class="DCCovidConnect.Views.HomePage">
-
-    <Grid x:Name="baseLayout" BackgroundColor="{StaticResource Primary}">
-        <skiaforms:SKCanvasView x:Name="canvasView"
+    <ScrollView>
+        <Grid x:Name="baseLayout" BackgroundColor="{StaticResource Primary}">
+            <skiaforms:SKCanvasView x:Name="canvasView"
                                 PaintSurface="OnCanvasViewPaintSurface"/>
-        <StackLayout Padding="40,0" >
-            <StackLayout Padding="0,20">
-                <Label Text="{Binding Region}"
+            <StackLayout Padding="40,0" >
+                <StackLayout Padding="0,20">
+                    <Label Text="{Binding Region}"
                    TextColor="{StaticResource Black}" 
                    TextTransform="Uppercase"
                    FontAttributes="Bold"
                    HorizontalTextAlignment="Left"
                    FontSize="56"/>
-                <Label
+                    <Label
                 FontSize="24">
-                    <Label.FormattedText>
-                        <FormattedString>
-                            <FormattedString.Spans>
-                                <Span Text="{Binding RegionCases, StringFormat='{0:N0}'}"
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <FormattedString.Spans>
+                                    <Span Text="{Binding RegionCases, StringFormat='{0:N0}'}"
                                   TextColor="{StaticResource Secondary}"
                                   FontAttributes="Bold"
                                   FontSize="24"/>
-                                <Span Text=" cases"/>
-                            </FormattedString.Spans>
-                        </FormattedString>
-                    </Label.FormattedText>
-                </Label>
-                <Label Text="{Binding Local}" TextColor="{StaticResource Primary}" TextTransform="Uppercase"/>
-                <Label
+                                    <Span Text=" cases"/>
+                                </FormattedString.Spans>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Label Text="{Binding Local}" TextColor="{StaticResource Primary}" TextTransform="Uppercase"/>
+                    <Label
                 FontSize="18">
-                    <Label.FormattedText>
-                        <FormattedString>
-                            <FormattedString.Spans>
-                                <Span Text="{Binding LocalCases, StringFormat='{0:N0}'}" 
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <FormattedString.Spans>
+                                    <Span Text="{Binding LocalCases, StringFormat='{0:N0}'}" 
                                   TextColor="{StaticResource Black}"
                                   FontAttributes="Bold"
                                   FontSize="18"/>
-                                <Span Text=" cases"/>
-                            </FormattedString.Spans>
-                        </FormattedString>
-                    </Label.FormattedText>
-                </Label>
-            </StackLayout>
+                                    <Span Text=" cases"/>
+                                </FormattedString.Spans>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                </StackLayout>
 
-            <StackLayout>
-                <Label Text="Reopening" TextTransform="Uppercase" FontSize="20" FontAttributes="Bold" Margin="0,0,0,-18"/>
-                <Label Text="{Binding Phase, StringFormat='Phase {0:N0}'}" TextTransform="Uppercase"  FontAttributes="Bold" FontSize="40"/>
+                <StackLayout>
+                    <Label Text="Reopening" TextTransform="Uppercase" FontSize="20" FontAttributes="Bold" Margin="0,0,0,-18"/>
+                    <Label Text="{Binding Phase, StringFormat='Phase {0:N0}'}" TextTransform="Uppercase"  FontAttributes="Bold" FontSize="40"/>
+                </StackLayout>
+                <StackLayout BindableLayout.ItemsSource="{Binding Posts}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <controls:InstagramCardView InstagramItemSource="{Binding .}"/>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </StackLayout>
             </StackLayout>
-        </StackLayout>
-    </Grid>
+        </Grid>
+    </ScrollView>
 </ContentPage>

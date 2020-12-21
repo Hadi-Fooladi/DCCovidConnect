@@ -30,13 +30,6 @@ namespace DCCovidConnect.Views
         }
 
         public ICommand NavigateCommand { get; private set; }
-
-        bool isLoaded;
-        protected async override void OnAppearing()
-        {
-            base.OnAppearing();
-            await App.Database.UpdateDatabase();
-        }
         protected override void OnSizeAllocated(double width, double height)
         {
             base.OnSizeAllocated(width, height);

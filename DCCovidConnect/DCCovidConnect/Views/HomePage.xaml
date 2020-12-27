@@ -52,13 +52,13 @@
                     <Label Text="Reopening" TextTransform="Uppercase" FontSize="20" FontAttributes="Bold" Margin="0,0,0,-18"/>
                     <Label Text="{Binding Phase, StringFormat='Phase {0:N0}'}" TextTransform="Uppercase"  FontAttributes="Bold" FontSize="40"/>
                 </StackLayout>
-                <StackLayout BindableLayout.ItemsSource="{Binding Posts}">
+                <!--<StackLayout BindableLayout.ItemsSource="{Binding Posts}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
                             <controls:InstagramCardView InstagramItemSource="{Binding .}"/>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
-                </StackLayout>
+                </StackLayout>-->
             </StackLayout>
         </Grid>
     </ScrollView>

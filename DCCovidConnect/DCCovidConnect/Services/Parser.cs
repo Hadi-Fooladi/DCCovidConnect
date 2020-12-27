@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace DCCovidConnect.Services
 {
-    class Parser
-    {private StringBuilder output = new StringBuilder();
+    public class Parser
+    {
+        private StringBuilder output = new StringBuilder();
         private StringBuilder parsedTag = new StringBuilder();
         private StringBuilder parsedTagContents = new StringBuilder();
         private StringBuilder parsedText = new StringBuilder();
-        private Stack<Boolean> tagStack = new Stack<Boolean>();
+        private Stack<Type> tagStack = new Stack<Type>();
         enum Property
         {
             NONE, TYPE, HREF, TEXT, CHILDREN, SRC
@@ -18,11 +20,12 @@ namespace DCCovidConnect.Services
         {
             NONE, TITLE, ITEM, A, P, BOLD, UL, OL, LI, TEXT, COLOR, IMG, BR, H1, H2, H3, H4, H5, H6, SPAN, FIGURE, S, SUP, TABLE, TBODY, TD, TR, IFRAME
         }
+        private Type[] textTags = new[] { Type.A, Type.P, Type.H1, Type.H2, Type.H3, Type.H4, Type.H5, Type.H6, Type.SPAN, Type.LI, Type.BOLD, Type.COLOR, Type.TITLE };
         private string source = "";
         private int index = 0;
         public string Output
         {
-            get => output.ToString();
+            get => output.ToString().Replace("&nbsp;", "");
         }
         public Parser(string source)
         {
@@ -74,7 +77,7 @@ namespace DCCovidConnect.Services
             {
                 index++;
             }
-            if (tagStack.Pop())
+            if (tagStack.Pop() != Type.NONE)
             {
                 output.Append("]}");
             }
@@ -94,7 +97,7 @@ namespace DCCovidConnect.Services
                 case "path":
                 case "style":
                 case "section":
-                    tagStack.Push(false);
+                    tagStack.Push(Type.NONE);
                     return;
                 case "div":
                     if (parsedTagContents.ToString().ToLower().Contains("item"))
@@ -104,7 +107,7 @@ namespace DCCovidConnect.Services
                     }
                     else
                     {
-                        tagStack.Push(false);
+                        tagStack.Push(Type.NONE);
                         return;
                     }
                 case "strong":
@@ -130,7 +133,7 @@ namespace DCCovidConnect.Services
                 catch
                 {
                     Console.WriteLine("Tag: {0} is not recognized. Contents: {1}", parsedTag, parsedTagContents);
-                    tagStack.Push(false);
+                    tagStack.Push(Type.NONE);
                     return;
                 }
             }
@@ -152,7 +155,7 @@ namespace DCCovidConnect.Services
             else
             {
                 output.Append($",\"{Property.CHILDREN}\":[");
-                tagStack.Push(true);
+                tagStack.Push(tag);
             }
         }
 
@@ -178,7 +181,7 @@ namespace DCCovidConnect.Services
             output.Append($"{{\"{Property.TYPE}\":\"{Type.TEXT}\",");
             output.Append($"\"{Property.TEXT}\":");
             output.Append('"');
-            output.Append(parsedText.TrimEnd());
+            output.Append(parsedText);
             output.Append("\"}");
         }
         public void Parse()
@@ -186,59 +189,40 @@ namespace DCCovidConnect.Services
             output.Append('[');
             while (!EOF())
             {
-                switch (source[index])
+                if (source[index] == '<')
                 {
-                    case '<':
-                        switch (source[index + 1])
-                        {
-                            case '!':
-                                ParseComment();
-                                break;
-                            case '/':
-                                ParseClosingTag();
-                                break;
-                            default:
-                                ParseTag();
-                                ProcessTag();
-                                break;
-                        }
-                        index++;
-                        break;
-                    case ' ':
-                    case '\n':
-                    case '\t':
-                    case '\r':
-                        index++;
-                        break;
-                    default:
+                    switch (source[index + 1])
+                    {
+                        case '!':
+                            ParseComment();
+                            break;
+                        case '/':
+                            ParseClosingTag();
+                            break;
+                        default:
+                            ParseTag();
+                            ProcessTag();
+                            break;
+                    }
+                    index++;
+                }
+                else
+                {
+                    if (tagStack.Count != 0 && textTags.Contains(tagStack.Peek()))
+                    {
+
                         ParseText();
                         ProcessText();
-                        break;
+                    }
+                    else index++;
                 }
             }
             output.Append(']');
-
         }
+
         private bool EOF()
         {
             return index >= source.Length;
-        }
-    }
-    static class Extenstions
-    {
-        public static StringBuilder TrimEnd(this StringBuilder sb)
-        {
-            if (sb == null || sb.Length == 0) return sb;
-
-            int i = sb.Length - 1;
-            for (; i >= 0; i--)
-                if (!char.IsWhiteSpace(sb[i]))
-                    break;
-
-            if (i < sb.Length - 1)
-                sb.Length = i + 1;
-
-            return sb;
         }
     }
 }

@@ -51,8 +51,8 @@ namespace DCCovidConnect.ViewModels
 
         public HomeViewModel()
         {
-            Posts = new List<InstagramItem>();
-            GetInstagramPosts();
+            //Posts = new List<InstagramItem>();
+            //GetInstagramPosts();
         }
 
         public void GetInstagramPosts()

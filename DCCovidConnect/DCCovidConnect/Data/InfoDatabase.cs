@@ -22,6 +22,7 @@ namespace DCCovidConnect.Data
         static SQLiteAsyncConnection Database => lazyInitializer.Value;
         static bool initialized = false;
 
+        public static Dictionary<string, Task> DataTasks = new Dictionary<string, Task>();
         public InfoDatabase()
         {
             InitializeAsync().SafeFireAndForget(false);
@@ -81,17 +82,16 @@ namespace DCCovidConnect.Data
             {
                 MySqlConnectionStringBuilder builder = new MySqlConnectionStringBuilder();
 
-                builder.Server = "10.0.2.2";
-                builder.Port = 3306;
-                builder.Database = "dccovidconnect";
-                builder.UserID = "root";
-                builder.Password = "password";
+                builder.Server = "MYSQL5044.site4now.net";
+                builder.Database = "db_a65a18_covid";
+                builder.UserID = "a65a18_covid";
+                builder.Password = "NLGB6e337kSC2zA";
                 using (MySqlConnection connection = new MySqlConnection(builder.ToString()))
                 {
                     connection.Open();
                     string query = @"SELECT post_title, MAX(post_date_gmt) AS post_date, post_content
-                                        FROM covidco_wp_posts
-                                        WHERE NULLIF(post_content, '') IS NOT NULL AND NULLIF(post_title, '') IS NOT NULL
+                                        FROM db_a65a18_covid.covidco_wp_posts
+                                        WHERE NULLIF(post_content, '') IS NOT NULL AND NULLIF(post_title, '') IS NOT NULL AND post_title LIKE '%-%'
                                         GROUP BY post_title
                                         ORDER BY post_title ASC";
                     using (MySqlCommand command = new MySqlCommand(query, connection))
@@ -101,27 +101,31 @@ namespace DCCovidConnect.Data
                             while (reader.Read())
                             {
                                 string title = reader.GetString(0);
-                                // Console.WriteLine(parser.Debug);
-                                // Console.WriteLine(parser.Output);
-                                InfoType Type = InfoType.NONE;
+                                InfoType type = InfoType.NONE;
 
                                 foreach (InfoType t in Enum.GetValues(typeof(InfoType)))
                                 {
                                     if (title.Contains(t.ToString().Replace('_', ' '), StringComparison.InvariantCultureIgnoreCase))
                                     {
-                                        Type = t;
+                                        type = t;
                                         break;
                                     }
                                 }
 
-                                if (Type != InfoType.NONE)
+                                if (type != InfoType.NONE)
                                 {
-                                    Parser parser = new Parser(reader.GetString(2));
-                                    parser.Parse();
-                                    InfoItem saved = await GetInfoItemAsync(reader.GetString(0));
-                                    (saved ??= new InfoItem { Title = reader.GetString(0) }).Date = reader.GetDateTime(1).ToString();
-                                    saved.Content = parser.Output;
-                                    saved.Type = Type;
+
+                                    string date = reader.GetDateTime(1).ToString();
+                                    string content = reader.GetString(2);
+
+                                    InfoItem saved = await GetInfoItemAsync(title);
+                                    (saved ??= new InfoItem { Title = title }).Date = date;
+                                    saved.Type = type;
+                                    DataTasks.Add(title, Task.Run(() =>
+                                    {
+                                        UpdateItem(saved, content, type);
+                                    }));
+
                                     await SaveInfoItemAsync(saved);
                                 }
                             }
@@ -133,6 +137,13 @@ namespace DCCovidConnect.Data
             {
                 Console.Error.WriteLine(e.ToString());
             }
+        }
+        private async void UpdateItem(InfoItem saved, string content, InfoType type)
+        {
+            Parser parser = new Parser(content);
+            parser.Parse();
+            saved.Content = parser.Output;
+            await SaveInfoItemAsync(saved);
         }
     }
 }

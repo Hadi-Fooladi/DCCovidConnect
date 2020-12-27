@@ -46,24 +46,16 @@ namespace DCCovidConnect.Views
             };
         }
 
-        protected override async void OnAppearing()
+        protected override void OnAppearing()
         {
             base.OnAppearing();
-            await InfoDatabase.DataTasks[Title];
-     
-                string Test = (await App.Database.GetInfoItemAsync(title)).Content;
-                Console.WriteLine(Test);
-                JArray objects = JArray.Parse(Test);
-                objects.Children<JObject>().ToList().ForEach(async t => await Parse(t, parentView));
-            //string Test = @"[{ ""TYPE"": ""UL"", ""CHILDREN"": [ { ""TYPE"": ""LI"", ""CHILDREN"": [ { ""TYPE"": ""TEXT"", ""TEXT"": ""A person can be infected with the virus"" }, { ""TYPE"": ""COLOR"", ""CHILDREN"": [ { ""TYPE"": ""BOLD"", ""CHILDREN"": [{ ""TYPE"": ""TEXT"", ""TEXT"": ""1-14 days"" }] } ] }, { ""TYPE"": ""TEXT"", ""TEXT"": ""before showing symptoms."" } ] } ] }, { ""TYPE"": ""UL"", ""CHILDREN"": [ { ""TYPE"": ""LI"", ""CHILDREN"": [ { ""TYPE"": ""TEXT"", ""TEXT"": ""The most common initial symptoms are"" }, { ""TYPE"": ""BOLD"", ""CHILDREN"": [ { ""TYPE"": ""COLOR"", ""CHILDREN"": [ { ""TYPE"": ""TEXT"", ""TEXT"": ""fever, fatigue, and dry cough"" } ] } ] }, { ""TYPE"": ""TEXT"", ""TEXT"": "". However, anorexia (decreased appetite), nasal congestion, runny nose, diarrhea (present in children more than adults), myalgias (muscle aches), dyspnea (shortness of breath), sputum production, and anosmia (decreased or inability to smell one or more smells) can also be present.&nbsp;"" } ] } ] }, { ""TYPE"": ""UL"", ""CHILDREN"": [ { ""TYPE"": ""LI"", ""CHILDREN"": [ { ""TYPE"": ""TEXT"", ""TEXT"": ""Symptoms start out mild and worsen gradually. Symptoms can progress from mild to requiring hospital admission in a span of 5-10 days.&nbsp;"" } ] } ] }, { ""TYPE"": ""UL"", ""CHILDREN"": [ { ""TYPE"": ""LI"", ""CHILDREN"": [ { ""TYPE"": ""TEXT"", ""TEXT"": ""Young individuals can be infected with the virus, but remain asymptomatic or have mild symptoms, making them a vector that can spread the infection to those around them.&nbsp;"" } ] } ] }, { ""TYPE"": ""UL"", ""CHILDREN"": [ { ""TYPE"": ""LI"", ""CHILDREN"": [ { ""TYPE"": ""COLOR"", ""CHILDREN"": [ { ""TYPE"": ""BOLD"", ""CHILDREN"": [{ ""TYPE"": ""TEXT"", ""TEXT"": ""1 in 6"" }] } ] }, { ""TYPE"": ""TEXT"", ""TEXT"": ""people who have COVID-19 develop severe symptoms and require hospitalization."" } ] } ] }, { ""TYPE"": ""UL"", ""CHILDREN"": [ { ""TYPE"": ""LI"", ""CHILDREN"": [ { ""TYPE"": ""TEXT"", ""TEXT"": ""The populations that are most vulnerable are"" }, { ""TYPE"": ""BOLD"", ""CHILDREN"": [ { ""TYPE"": ""COLOR"", ""CHILDREN"": [ { ""TYPE"": ""TEXT"", ""TEXT"": ""middle-age and older adults, immunocompromised"" } ] } ] }, { ""TYPE"": ""TEXT"", ""TEXT"": ""individuals, and those with pre-existing medical conditions including, but not limited to"" }, { ""TYPE"": ""BOLD"", ""CHILDREN"": [ { ""TYPE"": ""COLOR"", ""CHILDREN"": [ { ""TYPE"": ""TEXT"", ""TEXT"": ""chronic lung disease, hypertension, diabetes, heart disease, and cancer"" } ] } ] }, { ""TYPE"": ""TEXT"", ""TEXT"": "". These populations are also at the highest risk of presenting with more advanced symptoms and progressing to more severe disease."" } ] } ] }, { ""TYPE"": ""UL"", ""CHILDREN"": [ { ""TYPE"": ""LI"", ""CHILDREN"": [ { ""TYPE"": ""TEXT"", ""TEXT"": ""According to the WHO, recovery time appears to be around"" }, { ""TYPE"": ""COLOR"", ""CHILDREN"": [ { ""TYPE"": ""BOLD"", ""CHILDREN"": [ { ""TYPE"": ""TEXT"", ""TEXT"": ""two weeks for mild infections"" } ] } ] }, { ""TYPE"": ""TEXT"", ""TEXT"": ""and"" }, { ""TYPE"": ""COLOR"", ""CHILDREN"": [ { ""TYPE"": ""BOLD"", ""CHILDREN"": [ { ""TYPE"": ""TEXT"", ""TEXT"": ""three to six weeks for severe disease"" } ] } ] } ] } ] }]";
-
+            InfoDatabase.DataTasks[Title].Wait();
+            string Test = App.Database.GetInfoItemAsync(title).Result.Content;
+            Console.WriteLine(Test);
+            JArray objects = JArray.Parse(Test);
+            objects.Children<JObject>().ToList().ForEach(t => Task.Run(() => Parse(t, parentView, null, null, 10, null)));
         }
-
-        FormattedString currentText;
-        Span currentSpan;
-        int currentFontSize = 10;
-        Expander currentExpander;
-        private async Task Parse(JObject token, Layout<View> parent)
+        private void Parse(JObject token, Layout<View> parent, FormattedString currentText, Span currentSpan, int currentFontSize, Expander currentExpander)
         {
             Type type = (Type)Enum.Parse(typeof(Type), token[Property.TYPE.ToString()].Value<string>(), true);
             JArray children = token[Property.CHILDREN.ToString()]?.Value<JArray>();
@@ -169,7 +161,7 @@ namespace DCCovidConnect.Views
                 case Type.COLOR:
                     if (currentSpan == null)
                         currentSpan = new Span();
-                    currentSpan.TextColor = (Color) Application.Current.Resources["Secondary"];
+                    currentSpan.TextColor = (Color)Application.Current.Resources["Secondary"];
                     break;
                 case Type.FIGURE:
                     break;
@@ -182,7 +174,7 @@ namespace DCCovidConnect.Views
                 case Type.NONE:
                     break;
             }
-            children?.Children<JObject>().ToList().ForEach(t => Parse(t, currentLayout));
+            children?.Children<JObject>().ToList().ForEach(t => Parse(t, currentLayout, currentText, currentSpan, currentFontSize, currentExpander));
         }
     }
 }

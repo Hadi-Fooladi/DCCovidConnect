@@ -1,5 +1,6 @@
 ﻿using DCCovidConnect.Data;
 using System;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -12,6 +13,7 @@ namespace DCCovidConnect
         {
             InitializeComponent();
             Device.SetFlags(new string[] { "Expander_Experimental" });
+
             MainPage = new AppShell();
         }
 
@@ -27,8 +29,9 @@ namespace DCCovidConnect
             }
         }
 
-        protected override async void OnStart()
+        protected async override void OnStart()
         {
+            await Task.Run(async () => await App.Database.UpdateDatabase());
         }
 
         protected override void OnSleep()

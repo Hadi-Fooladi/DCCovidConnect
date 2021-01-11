@@ -22,7 +22,7 @@ namespace DCCovidConnect.Data
         static SQLiteAsyncConnection Database => lazyInitializer.Value;
         static bool initialized = false;
 
-        public static Dictionary<string, Task> DataTasks = new Dictionary<string, Task>();
+        public static Dictionary<int, Task?> DataTasks = new Dictionary<int, Task>();
         public InfoDatabase()
         {
             InitializeAsync().SafeFireAndForget(false);
@@ -59,9 +59,20 @@ namespace DCCovidConnect.Data
             return Database.Table<InfoItem>().Where(x => x.Title.ToLower().Contains(title.ToLower())).FirstOrDefaultAsync();
         }
 
+        public Task<InfoItem> GetInfoItemAsync(InfoItem item) => this.GetInfoItemAsync(item.Title);
         public Task<int> SaveInfoItemAsync(InfoItem item)
         {
-            if (item.ID != 0)
+#if DEBUG
+            if (GetInfoItemAsync(item.ID).Result != null)
+            {
+                Console.WriteLine($"============UPDATING {item.ID}");
+            }
+            else
+            {
+                Console.WriteLine($"============INSERTING {item.ID}");
+            }
+#endif
+            if (GetInfoItemAsync(item.ID).Result != null)
             {
                 return Database.UpdateAsync(item);
             }
@@ -89,9 +100,9 @@ namespace DCCovidConnect.Data
                 using (MySqlConnection connection = new MySqlConnection(builder.ToString()))
                 {
                     connection.Open();
-                    string query = @"SELECT post_title, MAX(post_date_gmt) AS post_date, post_content
+                    string query = @"SELECT ID, post_title, MAX(post_date_gmt) AS post_date, post_content
                                         FROM db_a65a18_covid.covidco_wp_posts
-                                        WHERE NULLIF(post_content, '') IS NOT NULL AND NULLIF(post_title, '') IS NOT NULL AND post_title LIKE '%-%'
+                                        WHERE NULLIF(post_content, '') IS NOT NULL AND NULLIF(post_title, '') IS NOT NULL AND (post_title LIKE '%-%' OR post_title = 'FAQs')
                                         GROUP BY post_title
                                         ORDER BY post_title ASC";
                     using (MySqlCommand command = new MySqlCommand(query, connection))
@@ -100,7 +111,7 @@ namespace DCCovidConnect.Data
                         {
                             while (reader.Read())
                             {
-                                string title = reader.GetString(0);
+                                string title = reader.GetString(1);
                                 InfoType type = InfoType.NONE;
 
                                 foreach (InfoType t in Enum.GetValues(typeof(InfoType)))
@@ -114,19 +125,25 @@ namespace DCCovidConnect.Data
 
                                 if (type != InfoType.NONE)
                                 {
-
-                                    string date = reader.GetDateTime(1).ToString();
-                                    string content = reader.GetString(2);
-
-                                    InfoItem saved = await GetInfoItemAsync(title);
-                                    (saved ??= new InfoItem { Title = title }).Date = date;
+                                    int id = reader.GetInt32(0);
+                                    DateTime date = reader.GetDateTime(2);
+                                    if ((await GetInfoItemAsync(id))?.Date == date)
+                                    {
+#if DEBUG
+                                        Console.WriteLine($"Item ID: {id} already up to date!");
+#endif
+                                        DataTasks.Add(id, null);
+                                        continue;
+                                    }
+                                    string content = reader.GetString(3);
+                                    InfoItem saved = await GetInfoItemAsync(id);
+                                    (saved ??= new InfoItem { ID = id, Title = title }).Date = date;
                                     saved.Type = type;
-                                    DataTasks.Add(title, Task.Run(() =>
+                                    await SaveInfoItemAsync(saved);
+                                    DataTasks.Add(id, Task.Run(() =>
                                     {
                                         UpdateItem(saved, content, type);
                                     }));
-
-                                    await SaveInfoItemAsync(saved);
                                 }
                             }
                         }
@@ -136,6 +153,14 @@ namespace DCCovidConnect.Data
             catch (MySqlException e)
             {
                 Console.Error.WriteLine(e.ToString());
+            }
+            // Delete Items that aren't present in the main database anymore.
+            foreach (InfoItem item in await this.GetInfoItemsAsync())
+            {
+                if (!DataTasks.ContainsKey(item.ID))
+                {
+                    await this.DeleteInfoItemAsync(item);
+                }
             }
         }
         private async void UpdateItem(InfoItem saved, string content, InfoType type)

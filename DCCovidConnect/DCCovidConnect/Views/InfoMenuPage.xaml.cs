@@ -19,7 +19,15 @@ namespace DCCovidConnect.Views
             InitializeComponent();
             NavigateCommand = new Command<InfoItem.InfoType>(async (section) =>
             {
+                foreach (Button elem in infoMenu.Children.OfType<Button>())
+                {
+                    elem.IsEnabled = false;
+                }
                 await Shell.Current.GoToAsync($"{nameof(InfoListPage)}?section={section}");
+                foreach (Button elem in infoMenu.Children.OfType<Button>())
+                {
+                    elem.IsEnabled = true;
+                }
             });
 
             BindingContext = this;
@@ -27,6 +35,9 @@ namespace DCCovidConnect.Views
             {
                 elem.Command = NavigateCommand;
             }
+#if DEBUG
+            pageLayout.Children.Add(new Label { Text = Constants.DatabasePath });
+#endif
         }
 
         public ICommand NavigateCommand { get; private set; }

@@ -18,7 +18,7 @@ namespace DCCovidConnect.Views
     public partial class InfoListPage : ContentPage
     {
         InfoItem.InfoType section;
-        ObservableCollection<string> items;
+        ObservableCollection<InfoItem> items;
         public string Section
         {
             get => section.ToString();
@@ -28,7 +28,7 @@ namespace DCCovidConnect.Views
                 OnPropertyChanged();
             }
         }
-        public ObservableCollection<string> Items
+        public ObservableCollection<InfoItem> Items
         {
             get => items;
             set
@@ -37,9 +37,15 @@ namespace DCCovidConnect.Views
                 OnPropertyChanged();
             }
         }
+
+        private bool _userTapped;
         async void GoToDetailPage(object sender, EventArgs args)
         {
-            await Shell.Current.GoToAsync($"{nameof(InfoDetailPage)}?title={(args as TappedEventArgs).Parameter}");
+            if (_userTapped) 
+                return;
+            _userTapped = true;
+            await Shell.Current.GoToAsync($"{nameof(InfoDetailPage)}?id={(args as TappedEventArgs).Parameter}");
+            _userTapped = false;
         }
         public InfoListPage()
         {
@@ -50,10 +56,7 @@ namespace DCCovidConnect.Views
         {
             base.OnAppearing();
             List<InfoItem> infoItems = await App.Database.GetInfoItemsAsync(section);
-            if (infoItems == null)
-                Items = new ObservableCollection<string>(new string[] { section.ToString(), "hello" });
-            else
-                Items = new ObservableCollection<string>(infoItems.Select(i => i.Title));
+            Items = new ObservableCollection<InfoItem>(infoItems);
         }
     }
 }

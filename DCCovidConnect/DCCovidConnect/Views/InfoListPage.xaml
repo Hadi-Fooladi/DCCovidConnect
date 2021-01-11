@@ -28,14 +28,15 @@
                 VerticalOptions="Start" 
                 HorizontalOptions="CenterAndExpand" />
                 <StackLayout 
-                Margin="20,0"
-                BindableLayout.ItemsSource="{Binding Items}">
+                    x:Name="ItemList"
+                    Margin="20,0"
+                    BindableLayout.ItemsSource="{Binding Items}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
                             <Frame Style="{StaticResource ListItemStyle}">
-                                <Label Style="{StaticResource ListItemLabel}" Text="{Binding .}"/>
+                                <Label Style="{StaticResource ListItemLabel}" Text="{Binding Title}"/>
                                 <Frame.GestureRecognizers>
-                                    <TapGestureRecognizer Tapped="GoToDetailPage" CommandParameter="{Binding .}"/>
+                                    <TapGestureRecognizer Tapped="GoToDetailPage" CommandParameter="{Binding ID}"/>
                                 </Frame.GestureRecognizers>
                             </Frame>
                         </DataTemplate>

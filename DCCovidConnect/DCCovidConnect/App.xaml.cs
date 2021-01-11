@@ -1,6 +1,7 @@
 ﻿using DCCovidConnect.Data;
 using System;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -31,7 +32,10 @@ namespace DCCovidConnect
 
         protected async override void OnStart()
         {
-            await Task.Run(async () => await App.Database.UpdateDatabase());
+            await Task.Run(() => MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                await App.Database.UpdateDatabase();
+            }));
         }
 
         protected override void OnSleep()

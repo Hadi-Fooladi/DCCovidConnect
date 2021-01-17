@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DCCovidConnect.Controls.InstagramCardView">
+    <ContentView.Resources>
+        <ResourceDictionary>
+            <Style x:Key="Header" TargetType="Element">
+                <Setter Property="Frame.WidthRequest" Value="30"/>
+                <Setter Property="Frame.HeightRequest" Value="30"/>
+                <Setter Property="Frame.CornerRadius" Value="15"/>
+            </Style>
+            <Style x:Key="ImageCarousel" TargetType="Element">
+                <Setter Property="CarouselView.HeightRequest" Value="300"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentView.Resources>
+    <ContentView.Content>
+        <Frame Padding="10" BackgroundColor="{StaticResource White}" CornerRadius="10">
+            <StackLayout>
+                <StackLayout Style="{StaticResource Header}"
+                             Orientation="Horizontal">
+                    <Frame IsClippedToBounds="True" Padding="0">
+                        <Image x:Name="ProfileImage"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"
+                               Source="https://scontent-iad3-1.cdninstagram.com/v/t51.2885-19/s150x150/101467703_939382399846694_7588397196861998815_n.jpg?_nc_ht=scontent-iad3-1.cdninstagram.com&amp;_nc_ohc=LkhOt46eUsYAX_0rDbd&amp;tp=1&amp;oh=1b1bb3f6ee5381950e6183d3ab151dd4&amp;oe=5FF7A2EE"/>
+                    </Frame>
+                    <Label x:Name="FullName" TextColor="{StaticResource Black}" Text="dccovidconnect"/>
+                </StackLayout>
+                <CarouselView x:Name="Images" Style="{StaticResource ImageCarousel}">
+                    <CarouselView.ItemTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding .}"/>
+                        </DataTemplate>
+                    </CarouselView.ItemTemplate>
+                </CarouselView>
+                <StackLayout
+                             Orientation="Horizontal">
+                    <Label TextColor="{StaticResource Black}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Likes: "/>
+                                <Span x:Name="LikesCount" Text="12312"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Label TextColor="{StaticResource Black}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Comments: "/>
+                                <Span x:Name="CommentsCount" Text="12"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                </StackLayout>
+                <Label TextColor="{StaticResource Black}" x:Name="Text" Text="Reposting @mayor_bowser from the November 18th situational update! Other important announcements- \u2028\n1. Beginning Monday, Nov. 23, DC is making several updates to the District's testing sites.\n\n2.  DC is expanding the hours of our citywide testing sites.\n\n3. Nationals Park will serve as a public testing site.\n\n4. Residents will be asked to provide insurance information when registering for a COVID-19 test. No one will be turned away for lack of insurance or charged a copay for testing.\n\n5. If you believe you were exposed to COVID-19, we advise residents to get tested 3 to 5 days AFTER a possible exposure to reduce the likelihood of getting a false negative. Register here: Coronavirus.dc.gov/register.\n\n6. We continue to be concerned about the household spread of COVID-19. Protect you and your family by requiring all guests in your home to wear a mask and continue to practice good hygiene.\n\n7. The Mayor\u2019s office has created signs for you to download and print for your home. You can find them here: bit.ly/dcsignage"/>
+            </StackLayout>
+        </Frame>
+    </ContentView.Content>
+</ContentView>

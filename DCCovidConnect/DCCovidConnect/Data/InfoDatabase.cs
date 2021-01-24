@@ -9,6 +9,9 @@ using System.Text;
 using System.Threading.Tasks;
 using DCCovidConnect.Services;
 using static DCCovidConnect.Models.InfoItem;
+using System.Net.Http;
+using Newtonsoft.Json.Linq;
+using System.Globalization;
 
 namespace DCCovidConnect.Data
 {
@@ -22,7 +25,7 @@ namespace DCCovidConnect.Data
         static SQLiteAsyncConnection Database => lazyInitializer.Value;
         static bool initialized = false;
 
-        public static Dictionary<int, Task?> DataTasks = new Dictionary<int, Task>();
+        public static Dictionary<int, Task> DataTasks = new Dictionary<int, Task>();
         public InfoDatabase()
         {
             InitializeAsync().SafeFireAndForget(false);
@@ -35,6 +38,22 @@ namespace DCCovidConnect.Data
                 if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(InfoItem).Name))
                 {
                     await Database.CreateTablesAsync(CreateFlags.None, typeof(InfoItem)).ConfigureAwait(false);
+                }
+                //if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(USCasesModel).Name))
+                //{
+                //    await Database.CreateTablesAsync(CreateFlags.None, typeof(USCasesModel)).ConfigureAwait(false);
+                //}
+                //if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(StateCasesModel).Name))
+                //{
+                //    await Database.CreateTablesAsync(CreateFlags.None, typeof(StateCasesModel)).ConfigureAwait(false);
+                //}
+                //if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(CountyCasesModel).Name))
+                //{
+                //    await Database.CreateTablesAsync(CreateFlags.None, typeof(CountyCasesModel)).ConfigureAwait(false);
+                //}
+                if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(VersionInfo).Name))
+                {
+                    await Database.CreateTablesAsync(CreateFlags.None, typeof(VersionInfo)).ConfigureAwait(false);
                 }
                 initialized = true;
             }
@@ -87,7 +106,128 @@ namespace DCCovidConnect.Data
             return Database.DeleteAsync(item);
         }
 
+        public Task<List<USCasesModel>> GetUSCasesItemsAsync() => Database.Table<USCasesModel>().ToListAsync();
+        public Task<List<StateCasesModel>> GetStateCasesItemsAsync() => Database.Table<StateCasesModel>().ToListAsync();
+
+        public Task<List<StateCasesModel>> GetStateCasesItemsAsync(String state) => Database.Table<StateCasesModel>().Where(i => i.State.Equals(state, StringComparison.InvariantCultureIgnoreCase)).ToListAsync();
+
+        public Task<List<CountyCasesModel>> GetCountyCasesItemsAsync() => Database.Table<CountyCasesModel>().ToListAsync();
+        public Task<List<CountyCasesModel>> GetCountyCasesItemsAsync(String state) => Database.Table<CountyCasesModel>().Where(i => i.State.Equals(state, StringComparison.InvariantCultureIgnoreCase)).ToListAsync();
+        public Task<List<CountyCasesModel>> GetCountyCasesItemsByCountyAsync(String county) => Database.Table<CountyCasesModel>().Where(i => i.County.Equals(county, StringComparison.InvariantCultureIgnoreCase)).ToListAsync();
+        public Task<VersionInfo> GetVersionItemAsync() => Database.Table<VersionInfo>().FirstOrDefaultAsync();
+        public Task<int> SaveVersionItemAsync(VersionInfo item)
+        {
+            if (Database.Table<VersionInfo>().Where(i => i.ID == 0).FirstOrDefaultAsync().Result != null)
+            {
+                return Database.UpdateAsync(item);
+            }
+            else
+            {
+                return Database.InsertAsync(item);
+            }
+        }
         public async Task UpdateDatabase()
+        {
+            JObject us_cases, state_cases, county_cases;
+            us_cases = JObject.Parse(await GetCallAPI("https://api.github.com/repos/nytimes/covid-19-data/contents/live/us.csv"));
+            state_cases = JObject.Parse(await GetCallAPI("https://api.github.com/repos/nytimes/covid-19-data/contents/live/us-states.csv"));
+            county_cases = JObject.Parse(await GetCallAPI("https://api.github.com/repos/nytimes/covid-19-data/contents/live/us-counties.csv"));
+            VersionInfo version = await GetVersionItemAsync() ?? new VersionInfo { ID = 0 };
+            string date_format = "yyyy-MM-dd";
+
+            if (!String.Equals(version.US_CASES_SHA, us_cases["sha"].ToString()))
+            {
+                version.US_CASES_SHA = us_cases["sha"].ToString();
+                await Database.DropTableAsync<USCasesModel>();
+                await Database.CreateTablesAsync(CreateFlags.None, typeof(USCasesModel)).ConfigureAwait(false);
+                byte[] data = Convert.FromBase64String(us_cases["content"].ToString());
+                string[] content = Encoding.UTF8.GetString(data).Split('\n');
+                for (int i = 1; i < content.Length; i++)
+                {
+                    string[] values = content[i].Split(',');
+                    await Database.InsertAsync(new USCasesModel
+                    {
+                        Date = DateTime.ParseExact(values[0], date_format, CultureInfo.InvariantCulture),
+                        Cases = String.IsNullOrWhiteSpace(values[1]) ? -1 : Int32.Parse(values[1]),
+                        Deaths = String.IsNullOrWhiteSpace(values[2]) ? -1 : Int32.Parse(values[2]),
+                        ConfirmedCases = String.IsNullOrWhiteSpace(values[3]) ? -1 : Int32.Parse(values[3]),
+                        ConfirmedDeaths = String.IsNullOrWhiteSpace(values[4]) ? -1 : Int32.Parse(values[4]),
+                        ProbableCases = String.IsNullOrWhiteSpace(values[5]) ? -1 : Int32.Parse(values[5]),
+                        ProbableDeaths = String.IsNullOrWhiteSpace(values[6]) ? -1 : Int32.Parse(values[6])
+                    });
+                }
+            }
+
+            if (!String.Equals(version.STATE_CASES_SHA, state_cases["sha"].ToString()))
+            {
+                version.STATE_CASES_SHA = state_cases["sha"].ToString();
+                await Database.DropTableAsync<StateCasesModel>();
+                await Database.CreateTablesAsync(CreateFlags.None, typeof(StateCasesModel)).ConfigureAwait(false);
+                byte[] data = Convert.FromBase64String(state_cases["content"].ToString());
+                string[] content = Encoding.UTF8.GetString(data).Split('\n');
+                for (int i = 1; i < content.Length; i++)
+                {
+                    string[] values = content[i].Split(',');
+                    await Database.InsertAsync(new StateCasesModel
+                    {
+                        Date = DateTime.ParseExact(values[0], date_format, CultureInfo.InvariantCulture),
+                        State = values[1],
+                        FIPS = String.IsNullOrWhiteSpace(values[2]) ? -1 : Int32.Parse(values[2]),
+                        Cases = String.IsNullOrWhiteSpace(values[3]) ? -1 : Int32.Parse(values[3]),
+                        Deaths = String.IsNullOrWhiteSpace(values[4]) ? -1 : Int32.Parse(values[4]),
+                        ConfirmedCases = String.IsNullOrWhiteSpace(values[5]) ? -1 : Int32.Parse(values[5]),
+                        ConfirmedDeaths = String.IsNullOrWhiteSpace(values[6]) ? -1 : Int32.Parse(values[6]),
+                        ProbableCases = String.IsNullOrWhiteSpace(values[7]) ? -1 : Int32.Parse(values[7]),
+                        ProbableDeaths = String.IsNullOrWhiteSpace(values[8]) ? -1 : Int32.Parse(values[8])
+                    });
+                }
+            }
+
+            if (!String.Equals(version.COUNTY_CASES_SHA, county_cases["sha"].ToString()))
+            {
+                version.COUNTY_CASES_SHA = county_cases["sha"].ToString();
+                await Database.DropTableAsync<CountyCasesModel>();
+                await Database.CreateTablesAsync(CreateFlags.None, typeof(CountyCasesModel)).ConfigureAwait(false);
+                byte[] data = Convert.FromBase64String(county_cases["content"].ToString());
+                string[] content = Encoding.UTF8.GetString(data).Split('\n');
+                for (int i = 1; i < content.Length; i++)
+                {
+                    string[] values = content[i].Split(',');
+                    await Database.InsertAsync(new CountyCasesModel
+                    {
+                        Date = DateTime.ParseExact(values[0], date_format, CultureInfo.InvariantCulture),
+                        County = values[1],
+                        State = values[2],
+                        FIPS = String.IsNullOrWhiteSpace(values[3]) ? -1 : Int32.Parse(values[3]),
+                        Cases = String.IsNullOrWhiteSpace(values[4]) ? -1 : Int32.Parse(values[4]),
+                        Deaths = String.IsNullOrWhiteSpace(values[5]) ? -1 : Int32.Parse(values[5]),
+                        ConfirmedCases = String.IsNullOrWhiteSpace(values[6]) ? -1 : Int32.Parse(values[6]),
+                        ConfirmedDeaths = String.IsNullOrWhiteSpace(values[7]) ? -1 : Int32.Parse(values[7]),
+                        ProbableCases = String.IsNullOrWhiteSpace(values[8]) ? -1 : Int32.Parse(values[8]),
+                        ProbableDeaths = String.IsNullOrWhiteSpace(values[9]) ? -1 : Int32.Parse(values[9])
+                    });
+                }
+            }
+            await SaveVersionItemAsync(version);
+            await UpdateInfo();
+        }
+
+        public async Task<string> GetCallAPI(string url)
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    return await client.GetStringAsync(url);
+                }
+            } 
+            catch (Exception e)
+            {
+                Console.Error.WriteLine(e);
+            }
+            return null;
+        }
+        public async Task UpdateInfo()
         {
             try
             {

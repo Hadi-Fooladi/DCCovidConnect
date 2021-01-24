@@ -7,7 +7,7 @@ namespace DCCovidConnect
 {
     public static class Constants
     {
-        public static readonly string DatabaseFilename = "InfoSQLite.db3";
+        public static readonly string DatabaseFilename = "DataSQLite.db3";
 
         public static readonly SQLite.SQLiteOpenFlags Flags =
             SQLite.SQLiteOpenFlags.ReadWrite |

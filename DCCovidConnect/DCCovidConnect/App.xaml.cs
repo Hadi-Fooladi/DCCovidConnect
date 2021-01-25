@@ -13,7 +13,6 @@ namespace DCCovidConnect
         public App()
         {
             InitializeComponent();
-            Device.SetFlags(new string[] { "Expander_Experimental" });
 
             MainPage = new AppShell();
         }

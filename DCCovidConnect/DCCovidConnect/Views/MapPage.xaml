@@ -6,8 +6,10 @@
              x:Class="DCCovidConnect.Views.MapPage">
     <ContentPage.Content>
         <StackLayout>
-            <skiaforms:SKCanvasView x:Name="canvasView"
-                                PaintSurface="OnCanvasViewPaintSurface"/>
+            <skiaforms:SKCanvasView x:Name="_canvasView"
+                                PaintSurface="OnCanvasViewPaintSurface"
+                                    VerticalOptions="FillAndExpand"
+                                    HorizontalOptions="Fill"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

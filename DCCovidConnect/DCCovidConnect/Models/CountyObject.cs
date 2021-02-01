@@ -12,5 +12,7 @@ namespace DCCovidConnect.Models
         public string County { get; set; }
         public int FIPS { get; set; }
         public SKPath Path { get; set; }
+        public CountyCasesItem CasesItem { get; set; }
+
     }
 }

@@ -10,5 +10,6 @@ namespace DCCovidConnect.Models
         public string State { get; set; }
         public string StateAbbrev { get; set; }
         public SKPath Path { get; set; }
+        public StateCasesItem CasesItem { get; set; }
     }
 }

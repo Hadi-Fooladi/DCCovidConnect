@@ -7,7 +7,7 @@
     <ContentPage.Content>
         <StackLayout>
             <skiaforms:SKCanvasView x:Name="_canvasView"
-                                PaintSurface="OnCanvasViewPaintSurface"
+                                    PaintSurface="OnCanvasViewPaintSurface"
                                     VerticalOptions="FillAndExpand"
                                     HorizontalOptions="Fill"/>
         </StackLayout>

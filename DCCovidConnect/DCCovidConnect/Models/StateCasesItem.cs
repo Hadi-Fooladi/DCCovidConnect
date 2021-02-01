@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DCCovidConnect.Models
 {
-    public class StateCasesModel
+    public class StateCasesItem
     {
         public DateTime Date { get; set; }
         public String State { get; set; }

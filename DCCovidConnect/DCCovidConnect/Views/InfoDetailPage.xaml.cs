@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.CommunityToolkit.UI.Views;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -244,7 +245,7 @@ namespace DCCovidConnect.Views
                 case Type.BOLD:
                     foreach (Span span in ret)
                     {
-                        span.FontSize = 20;
+                        //span.FontSize = 20;
                         span.FontAttributes = FontAttributes.Bold;
                     }
                     break;

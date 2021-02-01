@@ -107,13 +107,13 @@ namespace DCCovidConnect.Data
         }
 
         public Task<List<USCasesModel>> GetUSCasesItemsAsync() => Database.Table<USCasesModel>().ToListAsync();
-        public Task<List<StateCasesModel>> GetStateCasesItemsAsync() => Database.Table<StateCasesModel>().ToListAsync();
+        public Task<List<StateCasesItem>> GetStateCasesItemsAsync() => Database.Table<StateCasesItem>().ToListAsync();
 
-        public Task<List<StateCasesModel>> GetStateCasesItemsAsync(String state) => Database.Table<StateCasesModel>().Where(i => i.State.Equals(state, StringComparison.InvariantCultureIgnoreCase)).ToListAsync();
+        public Task<StateCasesItem> GetStateCasesItemAsync(String state) => Database.Table<StateCasesItem>().Where(i => i.State == state).FirstOrDefaultAsync();
 
-        public Task<List<CountyCasesModel>> GetCountyCasesItemsAsync() => Database.Table<CountyCasesModel>().ToListAsync();
-        public Task<List<CountyCasesModel>> GetCountyCasesItemsAsync(String state) => Database.Table<CountyCasesModel>().Where(i => i.State.Equals(state, StringComparison.InvariantCultureIgnoreCase)).ToListAsync();
-        public Task<List<CountyCasesModel>> GetCountyCasesItemsByCountyAsync(String county) => Database.Table<CountyCasesModel>().Where(i => i.County.Equals(county, StringComparison.InvariantCultureIgnoreCase)).ToListAsync();
+        public Task<List<CountyCasesItem>> GetCountyCasesItemsAsync() => Database.Table<CountyCasesItem>().ToListAsync();
+        public Task<List<CountyCasesItem>> GetCountyCasesItemAsync(String state) => Database.Table<CountyCasesItem>().Where(i => i.State.ToLower() == state.ToLower()).ToListAsync();
+        public Task<List<CountyCasesItem>> GetCountyCasesItemByCountyAsync(String county) => Database.Table<CountyCasesItem>().Where(i => i.County.ToLower() == county.ToLower()).ToListAsync();
         public Task<VersionInfo> GetVersionItemAsync() => Database.Table<VersionInfo>().FirstOrDefaultAsync();
         public Task<int> SaveVersionItemAsync(VersionInfo item)
         {
@@ -132,7 +132,7 @@ namespace DCCovidConnect.Data
             us_cases = JObject.Parse(await GetCallAPI("https://api.github.com/repos/nytimes/covid-19-data/contents/live/us.csv"));
             state_cases = JObject.Parse(await GetCallAPI("https://api.github.com/repos/nytimes/covid-19-data/contents/live/us-states.csv"));
             county_cases = JObject.Parse(await GetCallAPI("https://api.github.com/repos/nytimes/covid-19-data/contents/live/us-counties.csv"));
-            VersionInfo version = await GetVersionItemAsync() ?? new VersionInfo { ID = 0 };
+            VersionInfo version = new VersionInfo { ID = 0 };
             string date_format = "yyyy-MM-dd";
 
             if (!String.Equals(version.US_CASES_SHA, us_cases["sha"].ToString()))
@@ -161,14 +161,14 @@ namespace DCCovidConnect.Data
             if (!String.Equals(version.STATE_CASES_SHA, state_cases["sha"].ToString()))
             {
                 version.STATE_CASES_SHA = state_cases["sha"].ToString();
-                await Database.DropTableAsync<StateCasesModel>();
-                await Database.CreateTablesAsync(CreateFlags.None, typeof(StateCasesModel)).ConfigureAwait(false);
+                await Database.DropTableAsync<StateCasesItem>();
+                await Database.CreateTablesAsync(CreateFlags.None, typeof(StateCasesItem)).ConfigureAwait(false);
                 byte[] data = Convert.FromBase64String(state_cases["content"].ToString());
                 string[] content = Encoding.UTF8.GetString(data).Split('\n');
                 for (int i = 1; i < content.Length; i++)
                 {
                     string[] values = content[i].Split(',');
-                    await Database.InsertAsync(new StateCasesModel
+                    await Database.InsertAsync(new StateCasesItem
                     {
                         Date = DateTime.ParseExact(values[0], date_format, CultureInfo.InvariantCulture),
                         State = values[1],
@@ -186,14 +186,14 @@ namespace DCCovidConnect.Data
             if (!String.Equals(version.COUNTY_CASES_SHA, county_cases["sha"].ToString()))
             {
                 version.COUNTY_CASES_SHA = county_cases["sha"].ToString();
-                await Database.DropTableAsync<CountyCasesModel>();
-                await Database.CreateTablesAsync(CreateFlags.None, typeof(CountyCasesModel)).ConfigureAwait(false);
+                await Database.DropTableAsync<CountyCasesItem>();
+                await Database.CreateTablesAsync(CreateFlags.None, typeof(CountyCasesItem)).ConfigureAwait(false);
                 byte[] data = Convert.FromBase64String(county_cases["content"].ToString());
                 string[] content = Encoding.UTF8.GetString(data).Split('\n');
                 for (int i = 1; i < content.Length; i++)
                 {
                     string[] values = content[i].Split(',');
-                    await Database.InsertAsync(new CountyCasesModel
+                    await Database.InsertAsync(new CountyCasesItem
                     {
                         Date = DateTime.ParseExact(values[0], date_format, CultureInfo.InvariantCulture),
                         County = values[1],

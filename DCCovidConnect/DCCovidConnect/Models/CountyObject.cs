@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DCCovidConnect.Models
 {
-    class CountyObject
+    public class CountyObject
     {
         public string State { get; set; }
         public string StateAbbrev { get; set; }

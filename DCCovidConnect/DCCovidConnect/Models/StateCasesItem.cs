@@ -7,7 +7,7 @@ namespace DCCovidConnect.Models
     public class StateCasesItem
     {
         public DateTime Date { get; set; }
-        public String State { get; set; }
+        public string State { get; set; }
         public int FIPS { get; set; }
         public int Cases { get; set; }
         public int Deaths { get; set; }

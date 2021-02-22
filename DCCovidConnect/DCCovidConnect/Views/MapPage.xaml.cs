@@ -30,9 +30,10 @@ namespace DCCovidConnect.Views
         private float _yGestureStart;
 
         private int _minStateCases = int.MaxValue;
-        private int _maxStateCases = int.MinValue;
+        private int _maxStateCases = 0;
 
         private StateObject _selectedState;
+        private StateObject _highlightedState;
         private CountyObject _selectedCounty;
         private bool _isZoomed;
 
@@ -48,6 +49,14 @@ namespace DCCovidConnect.Views
         {
             InitializeComponent();
             InitializeGestures();
+            
+        }
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            if (_isLoaded) return;
+            _isLoaded = true;
             using (var stream = FileSystem.OpenAppPackageFileAsync("states.json").Result)
             {
                 using (var reader = new StreamReader(stream))
@@ -94,13 +103,15 @@ namespace DCCovidConnect.Views
                 }
             }
             ZoomState("Virginia");
-        }
 
-        protected override async void OnAppearing()
-        {
-            base.OnAppearing();
-            if (_isLoaded) return;
-            _isLoaded = true;
+
+            if (!App.Database.UpdateCovidStatsTask.IsCompleted)
+            {
+                _loadingIndicator.IsVisible = true;
+                await App.Database.UpdateCovidStatsTask;
+                _loadingIndicator.IsVisible = false;
+            }
+            _canvasView.IsEnabled = true;
 
             foreach (StateCasesItem stateCasesItem in App.Database.GetStateCasesItemsAsync().Result)
             {
@@ -114,7 +125,6 @@ namespace DCCovidConnect.Views
             {
                 if (!_states.ContainsKey(countyCasesItem.State)) continue;
                 StateObject state = _states[countyCasesItem.State];
-                Console.WriteLine(state.State + " " + countyCasesItem.County + " " + countyCasesItem.FIPS + " " + state.Counties.ContainsKey(countyCasesItem.FIPS));
                 if (!state.Counties.ContainsKey(countyCasesItem.FIPS)) continue;
                 state.Counties[countyCasesItem.FIPS].CasesItem = countyCasesItem;
                 state.MinCountyCases = Math.Min(state.MinCountyCases, countyCasesItem.Cases);
@@ -163,7 +173,10 @@ namespace DCCovidConnect.Views
             switch (e.StatusType)
             {
                 case GestureStatus.Started:
-                    _selectedState = null;
+                    if (!_isZoomed)
+                    {
+                        _selectedState = null;
+                    }
                     _xGestureStart = _x;
                     _yGestureStart = _y;
                     break;
@@ -202,10 +215,15 @@ namespace DCCovidConnect.Views
                         if (!_selectedState.Path.Contains(localX, localY))
                         {
                             if (_selectedCounty != null)
+                            {
                                 _selectedCounty = null;
+                                _infoPopup.IsVisible = false;
+                            }
                             else
                             {
                                 _selectedState = null;
+                                _highlightedState = null;
+                                _infoPopup.IsVisible = false;
                                 _isZoomed = false;
                             }
                         }
@@ -235,8 +253,10 @@ namespace DCCovidConnect.Views
                         }
                         if (selected == null)
                         {
-                            _selectedState = null;
                             _isZoomed = false;
+                            _selectedState = null;
+                            _highlightedState = null;
+                            _infoPopup.IsVisible = false;
                         }
                         else if (selected == _selectedState)
                         {
@@ -255,6 +275,7 @@ namespace DCCovidConnect.Views
                                 return false;
                             });
                             _selectedState = selected;
+                            _highlightedState = selected;
                             updatePopUpInfo();
                         }
                     }
@@ -297,7 +318,8 @@ namespace DCCovidConnect.Views
             {
                 Style = SKPaintStyle.Stroke,
                 Color = SKColors.Black,
-                StrokeWidth = 4
+                StrokeWidth = 1,
+                StrokeCap = SKStrokeCap.Round
             };
 
             if (_isZoomed)
@@ -329,9 +351,9 @@ namespace DCCovidConnect.Views
                     canvas.DrawPath(state.Path, fillPaint);
                     canvas.DrawPath(state.Path, stateStrokePaint);
                 }
-                if (_selectedCounty != null)
+                if (_highlightedState != null)
                 {
-                    canvas.DrawPath(_selectedState.Path, selectedPaint);
+                    canvas.DrawPath(_highlightedState.Path, selectedPaint);
                 }
             }
             
@@ -424,12 +446,6 @@ namespace DCCovidConnect.Views
 
         private void updatePopUpInfo()
         {
-            if (_selectedState == null)
-            {
-                _infoPopup.IsVisible = false;
-                return;
-            }
-
             _infoPopup.IsVisible = true;
             if (_selectedCounty != null)
             {

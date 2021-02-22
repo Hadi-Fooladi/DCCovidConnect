@@ -4,6 +4,7 @@
              xmlns:skia="clr-namespace:SkiaSharp;assembly=SkiaSharp"
              xmlns:skiaforms="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
              xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
+             xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
              x:Class="DCCovidConnect.Views.MapPage">
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -34,6 +35,7 @@
                                     HorizontalOptions="Fill"
                                     Grid.Row="0"
                                     Grid.Column="0"
+                                    IsEnabled="False"
                                     />
             <Frame x:Name="_infoPopup" 
                    HorizontalOptions="Start"
@@ -42,6 +44,7 @@
                    Padding="15,20"
                    BackgroundColor="{x:StaticResource White}"
                    android:VisualElement.Elevation="10"
+                   ios:VisualElement.IsShadowEnabled="True"
                    Margin="20"
                    CornerRadius="10"
                    Grid.Row="0"
@@ -77,6 +80,31 @@
                             </FormattedString>
                         </Label.FormattedText>
                     </Label>
+                </StackLayout>
+            </Frame>
+            <Frame x:Name="_loadingIndicator" 
+                   Grid.Row="0" 
+                   Grid.Column="0" 
+                   IsVisible="False" 
+                   VerticalOptions="Center" 
+                   HorizontalOptions="Center"
+                   Padding="40,30"
+                   CornerRadius="20"
+                   android:VisualElement.Elevation="10"
+                   ios:VisualElement.IsShadowEnabled="True"
+                   >
+                <StackLayout 
+                    Spacing="20">
+                    <Label 
+                        TextColor="{StaticResource Black}"
+                        FontSize="Large"
+                        HorizontalTextAlignment="Center"
+                        Text="Database is&#10;updating..."
+                        />
+                    <ActivityIndicator 
+                        IsRunning="True"
+                        Color="{StaticResource Primary}"
+                        />
                 </StackLayout>
             </Frame>
         </Grid>

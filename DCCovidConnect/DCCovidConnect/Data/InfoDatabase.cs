@@ -112,8 +112,8 @@ namespace DCCovidConnect.Data
         public Task<StateCasesItem> GetStateCasesItemAsync(String state) => Database.Table<StateCasesItem>().Where(i => i.State == state).FirstOrDefaultAsync();
 
         public Task<List<CountyCasesItem>> GetCountyCasesItemsAsync() => Database.Table<CountyCasesItem>().ToListAsync();
-        public Task<List<CountyCasesItem>> GetCountyCasesItemAsync(String state) => Database.Table<CountyCasesItem>().Where(i => i.State.ToLower() == state.ToLower()).ToListAsync();
-        public Task<List<CountyCasesItem>> GetCountyCasesItemByCountyAsync(String county) => Database.Table<CountyCasesItem>().Where(i => i.County.ToLower() == county.ToLower()).ToListAsync();
+        public Task<List<CountyCasesItem>> GetCountyCasesItemByStateAsync(String state) => Database.Table<CountyCasesItem>().Where(i => i.State.ToLower() == state.ToLower()).ToListAsync();
+        public Task<List<CountyCasesItem>> GetCountyCasesItemAsync(String county) => Database.Table<CountyCasesItem>().Where(i => i.County.ToLower() == county.ToLower()).ToListAsync();
         public Task<VersionInfo> GetVersionItemAsync() => Database.Table<VersionInfo>().FirstOrDefaultAsync();
         public Task<int> SaveVersionItemAsync(VersionInfo item)
         {
@@ -126,13 +126,36 @@ namespace DCCovidConnect.Data
                 return Database.InsertAsync(item);
             }
         }
+
+        private Task _updateCovidStatsTask;
+        private Task _updateInfoTask;
+        public Task UpdateCovidStatsTask
+        {
+            get => _updateCovidStatsTask;
+        }
+        public Task UpdateInfoTask
+        {
+            get => _updateInfoTask;
+        }
         public async Task UpdateDatabase()
+        {
+            _updateCovidStatsTask = UpdateCovidStats();
+            _updateInfoTask = UpdateInfo();
+
+            await _updateCovidStatsTask;
+            await _updateInfoTask;
+            Console.WriteLine("Database Updated!");
+        }
+
+        private async Task UpdateCovidStats()
         {
             JObject us_cases, state_cases, county_cases;
             us_cases = JObject.Parse(await GetCallAPI("https://api.github.com/repos/nytimes/covid-19-data/contents/live/us.csv"));
             state_cases = JObject.Parse(await GetCallAPI("https://api.github.com/repos/nytimes/covid-19-data/contents/live/us-states.csv"));
             county_cases = JObject.Parse(await GetCallAPI("https://api.github.com/repos/nytimes/covid-19-data/contents/live/us-counties.csv"));
-            VersionInfo version = new VersionInfo { ID = 0 };
+            // VersionInfo version = new VersionInfo { ID = 0 };
+            VersionInfo version = await GetVersionItemAsync();
+
             string date_format = "yyyy-MM-dd";
 
             if (!String.Equals(version.US_CASES_SHA, us_cases["sha"].ToString()))
@@ -209,10 +232,9 @@ namespace DCCovidConnect.Data
                 }
             }
             await SaveVersionItemAsync(version);
-            await UpdateInfo();
         }
 
-        public async Task<string> GetCallAPI(string url)
+        private async Task<string> GetCallAPI(string url)
         {
             try
             {
@@ -227,7 +249,7 @@ namespace DCCovidConnect.Data
             }
             return null;
         }
-        public async Task UpdateInfo()
+        private async Task UpdateInfo()
         {
             try
             {

@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,9 +20,10 @@ namespace DCCovidConnect.Views
     {
         InfoItem.InfoType section;
         ObservableCollection<InfoItem> items;
+        static TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
         public string Section
         {
-            get => section.ToString();
+            get => textInfo.ToTitleCase(section.ToString().Replace('_', ' ').ToLower());
             set
             {
                 section = (InfoItem.InfoType)Enum.Parse(typeof(InfoItem.InfoType), Uri.UnescapeDataString(value), true);
@@ -56,6 +58,10 @@ namespace DCCovidConnect.Views
         {
             base.OnAppearing();
             List<InfoItem> infoItems = await App.Database.GetInfoItemsAsync(section);
+            foreach (InfoItem item in infoItems)
+            {
+                item.Title = item.Title.Substring(item.Title.IndexOf('-') + 1).Trim();
+            }
             Items = new ObservableCollection<InfoItem>(infoItems);
         }
     }

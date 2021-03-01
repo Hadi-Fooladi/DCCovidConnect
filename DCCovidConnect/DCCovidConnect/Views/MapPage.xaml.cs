@@ -17,15 +17,21 @@ using Xamarin.Forms.Xaml;
 namespace DCCovidConnect.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
+    /// <summary>
+    /// This page contains the map that displays data based on COVID19 cases in the United States
+    /// </summary>
     public partial class MapPage : ContentPage
     {
         private bool _isLoaded = false;
 
         private Dictionary<string, StateObject> _states = new Dictionary<string, StateObject>();
+
+        // Values for the canvas camera
         private float _x;
         private float _y;
         private float _scale = 4f;
 
+        // Used for panning gesture
         private float _xGestureStart;
         private float _yGestureStart;
 
@@ -57,6 +63,8 @@ namespace DCCovidConnect.Views
             base.OnAppearing();
             if (_isLoaded) return;
             _isLoaded = true;
+
+            // loads in all the data from the path json files
             using (var stream = FileSystem.OpenAppPackageFileAsync("states.json").Result)
             {
                 using (var reader = new StreamReader(stream))
@@ -113,6 +121,7 @@ namespace DCCovidConnect.Views
             }
             _canvasView.IsEnabled = true;
 
+            // loads in all the data from the database into the dictionary
             foreach (StateCasesItem stateCasesItem in App.Database.GetStateCasesItemsAsync().Result)
             {
                 if (!_states.ContainsKey(stateCasesItem.State)) continue;
@@ -146,6 +155,7 @@ namespace DCCovidConnect.Views
             _canvasView.EnableTouchEvents = true;
             _canvasView.Touch += OnTouch;
         }
+
         private void ZoomCanvas(object sender, PinchGestureUpdatedEventArgs e)
         {
             switch (e.Status)
@@ -186,6 +196,12 @@ namespace DCCovidConnect.Views
             }
         }
 
+        /// <summary>
+        /// This method updates canvas properties and invalidates the paint surface.
+        /// </summary>
+        /// <param name="x">New x value.</param>
+        /// <param name="y">New y value.</param>
+        /// <param name="scale">New scale ratio.</param>
         private void UpdateCanvasProperties(float x, float y, float? scale = null)
         {
             _x = x;
@@ -210,6 +226,8 @@ namespace DCCovidConnect.Views
                     _debugTouchY = e.Location.Y / _scale + _y;
                     _canvasView.InvalidateSurface();
 #endif
+                    // If zoomed, check if touch intercepts any counties in the selected state
+                    // else look at the states
                     if (_isZoomed)
                     {
                         if (!_selectedState.Path.Contains(localX, localY))
@@ -260,6 +278,7 @@ namespace DCCovidConnect.Views
                         }
                         else if (selected == _selectedState)
                         {
+                            // Select the state and cancel the timer to clear the selected state.
                             Interlocked.Exchange(ref _cancellation, new CancellationTokenSource()).Cancel();
                             _isZoomed = true;
                             ZoomState(_selectedState.State);
@@ -267,6 +286,7 @@ namespace DCCovidConnect.Views
                         else
                         {
                             CancellationTokenSource cts = _cancellation;
+                            // Clears the selected state after a certain about of time.
                             Device.StartTimer(TimeSpan.FromSeconds(0.5), () =>
                             {
                                 if (cts.IsCancellationRequested) return false;
@@ -322,6 +342,7 @@ namespace DCCovidConnect.Views
                 StrokeCap = SKStrokeCap.Round
             };
 
+            // Paint the counties if zoomed, else states
             if (_isZoomed)
             {
                 foreach (CountyObject county in _selectedState.Counties.Values)
@@ -357,10 +378,11 @@ namespace DCCovidConnect.Views
                 }
             }
             
-
+            // Undo transformations to paint absolute items
             canvas.Translate(-transformedX, -transformedY);
             canvas.Scale(1 / _scale * _uiScale);
 
+            // Code to draw the cases legend
             int maxCases = _isZoomed ? _selectedState.MaxCountyCases : _maxStateCases;
             int height = 400;
             int width = 10;
@@ -395,6 +417,7 @@ namespace DCCovidConnect.Views
 
 
 #if DEBUG
+            // Draws all of the variables on the canvas
             SKPaint debugPaint = new SKPaint
             {
                 Style = SKPaintStyle.Fill,
@@ -418,11 +441,23 @@ namespace DCCovidConnect.Views
 #endif
         }
 
+        /// <summary>
+        /// This method gets the color based on the max cases in the states.
+        /// </summary>
+        /// <param name="value">Number of cases</param>
+        /// <returns>Returns the color.</returns>
         SKColor getColorFromValue(int value)
         {
             return getColorFromValue(value, _maxStateCases);
         }
 
+        /// <summary>
+        /// This method gets the color based on the value.
+        /// </summary>
+        /// <param name="value">Current value</param>
+        /// <param name="max">Max value</param>
+        /// <param name="minLum">Minimum luminosity of the color</param>
+        /// <returns>Returns the color.</returns>
         SKColor getColorFromValue(int value, int max, float minLum = 0.2f)
         {
             Color ret = (Color)Application.Current.Resources["Primary"];
@@ -430,13 +465,20 @@ namespace DCCovidConnect.Views
             return ret.ToSKColor();
         }
 
+        /// <summary>
+        /// This method zooms and centers on the inputted state.
+        /// </summary>
+        /// <param name="state">State to focus on.</param>
+        /// <returns>Returns whenever it is successfully able to fit the state.</returns>
         private bool ZoomState(string state)
         {
             SKRect targetState;
             SKPath path = _states?[state].Path;
             if (path == null || !path.GetBounds(out targetState))
                 return false;
+            // finds the scale to fit the state to the screen
             _scale = (float)DeviceDisplay.MainDisplayInfo.Width / (Math.Max(targetState.Width, targetState.Height) * 1.1f);
+            // a maximum scale for the smaller states
             _scale = Math.Min(_scale, 7.0f);
             _x = -targetState.MidX * _scale;
             _y = -targetState.MidY * _scale;
@@ -444,6 +486,9 @@ namespace DCCovidConnect.Views
             return true;
         }
 
+        /// <summary>
+        /// This method updates the info on the popup.
+        /// </summary>
         private void updatePopUpInfo()
         {
             _infoPopup.IsVisible = true;

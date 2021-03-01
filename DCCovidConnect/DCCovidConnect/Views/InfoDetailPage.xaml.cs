@@ -14,6 +14,9 @@ using Xamarin.Forms;
 namespace DCCovidConnect.Views
 {
     [QueryProperty("ID", "id")]
+    /// <summary>
+    /// This page displays info based on the id that is passed in the query property.
+    /// </summary>
     public partial class InfoDetailPage : ContentPage
     {
         int id;
@@ -51,6 +54,7 @@ namespace DCCovidConnect.Views
         protected async override void OnAppearing()
         {
             base.OnAppearing();
+            // Constructs the page from the JSON object
             InfoDatabase.DataTasks[id]?.Wait();
             string JSON = App.Database.GetInfoItemAsync(id).Result.Content;
             JArray objects = JArray.Parse(JSON);
@@ -71,6 +75,12 @@ namespace DCCovidConnect.Views
                 });
             }
         }
+
+        /// <summary>
+        /// This method parses the nest of objects.
+        /// </summary>
+        /// <param name="token">The node to parse.</param>
+        /// <returns>Returns a view of all the nested elements.</returns>
         private async Task<View> Parse(JObject token)
         {
             Type type = getType(token);
@@ -78,6 +88,7 @@ namespace DCCovidConnect.Views
             string href = token[Property.HREF.ToString()]?.Value<string>();
             string text = token[Property.TEXT.ToString()]?.Value<string>();
             View ret = null;
+            // Creates a layout based on the type
             switch (type)
             {
                 case Type.OL:
@@ -110,10 +121,12 @@ namespace DCCovidConnect.Views
                 case Type.NONE:
                     break;
                 default:
+                    // If its not a layout parse the element
                     ret = ParseView(token);
                     break;
             }
             Layout<View> layout = ret as Layout<View> ?? (ret as Expander)?.Content as Layout<View>;
+            // If its a layout, parse the children elements
             if (layout != null)
                 foreach (JObject obj in children ?? Enumerable.Empty<JToken>())
                 {
@@ -129,6 +142,11 @@ namespace DCCovidConnect.Views
                 }
             return ret;
         }
+        /// <summary>
+        /// Returns a View based on the input type.
+        /// </summary>
+        /// <param name="token">Input element.</param>
+        /// <returns>The outputted view.</returns>
         private View ParseView(JObject token)
         {
             Type type = getType(token);
@@ -158,12 +176,18 @@ namespace DCCovidConnect.Views
                 case Type.FIGURE:
                     break;
                 default:
+                    // If it's a label, parse the individual text properties.
                     ret = parseLabel(token);
                     break;
             }
             return ret;
         }
 
+        /// <summary>
+        /// This method returns a label based on the inputted object.
+        /// </summary>
+        /// <param name="token">Input object.</param>
+        /// <returns>Returns a label.</returns>
         private Label parseLabel(JObject token)
         {
             Type type = getType(token);
@@ -199,6 +223,7 @@ namespace DCCovidConnect.Views
                 default:
                     return null;
             }
+            // Iterates through the individual spans and applies styling based on them.
             foreach (JObject obj in children ?? Enumerable.Empty<JToken>())
             {
                 foreach (Span span in parseText(obj))
@@ -208,6 +233,12 @@ namespace DCCovidConnect.Views
             }
             return ret;
         }
+
+        /// <summary>
+        /// This method returns a list of spans based on the inputted object.
+        /// </summary>
+        /// <param name="token">Input object with children of spans.</param>
+        /// <returns>Returns the outputted list of spans.</returns>
         private List<Span> parseText(JObject token)
         {
             Type type = getType(token);
@@ -233,6 +264,7 @@ namespace DCCovidConnect.Views
                         span.TextColor = (Color)Application.Current.Resources["Secondary"];
                     }
                     break;
+                // Adds a hyperlink
                 case Type.A:
                     foreach (Span span in ret)
                     {
@@ -253,6 +285,11 @@ namespace DCCovidConnect.Views
             return ret;
         }
 
+        /// <summary>
+        /// This method returns the type of the inputted token.
+        /// </summary>
+        /// <param name="token">The inputted token.</param>
+        /// <returns>Returns the type of the token.</returns>
         private Type getType(JToken token)
         {
             return (Type)Enum.Parse(typeof(Type), token[Property.TYPE.ToString()].Value<string>(), true);

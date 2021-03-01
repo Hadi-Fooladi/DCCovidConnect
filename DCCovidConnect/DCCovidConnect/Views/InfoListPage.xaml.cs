@@ -16,6 +16,9 @@ using Xamarin.Forms.Xaml;
 namespace DCCovidConnect.Views
 {
     [QueryProperty("Section", "section")]
+    /// <summary>
+    /// This page displays the sublist of a section.
+    /// </summary>
     public partial class InfoListPage : ContentPage
     {
         InfoItem.InfoType section;

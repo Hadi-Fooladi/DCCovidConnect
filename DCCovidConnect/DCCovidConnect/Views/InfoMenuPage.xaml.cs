@@ -12,17 +12,22 @@ using DCCovidConnect.Models;
 
 namespace DCCovidConnect.Views
 {
+    /// <summary>
+    /// This page is the home menu to navigate to different sections of the info.
+    /// </summary>
     public partial class InfoMenuPage : ContentPage
     {
         public InfoMenuPage()
         {
             InitializeComponent();
+            // Disables buttons when one is pressed
             NavigateCommand = new Command<InfoItem.InfoType>(async (section) =>
             {
                 foreach (Frame elem in _infoMenu.Children.OfType<Frame>())
                 {
                     (elem.Children[0] as Button).IsEnabled = false;
                 }
+                // Navigates to a section
                 await Shell.Current.GoToAsync($"{nameof(InfoListPage)}?section={section}");
                 foreach (Frame elem in _infoMenu.Children.OfType<Frame>())
                 {
@@ -43,6 +48,7 @@ namespace DCCovidConnect.Views
         public ICommand NavigateCommand { get; private set; }
         protected override void OnSizeAllocated(double width, double height)
         {
+            // Makes sure that the buttons are squared while scaling to fit the width.
             base.OnSizeAllocated(width, height);
             if (DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Height <= 0.5625)
             {

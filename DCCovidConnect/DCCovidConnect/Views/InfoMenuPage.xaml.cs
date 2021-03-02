@@ -12,47 +12,61 @@ using DCCovidConnect.Models;
 
 namespace DCCovidConnect.Views
 {
+    /// <summary>
+    /// This page is the home menu to navigate to different sections of the info.
+    /// </summary>
     public partial class InfoMenuPage : ContentPage
     {
         public InfoMenuPage()
         {
             InitializeComponent();
+            // Disables buttons when one is pressed
             NavigateCommand = new Command<InfoItem.InfoType>(async (section) =>
             {
-                foreach (Button elem in infoMenu.Children.OfType<Button>())
+                foreach (Frame elem in _infoMenu.Children.OfType<Frame>())
                 {
-                    elem.IsEnabled = false;
+                    (elem.Children[0] as Button).IsEnabled = false;
                 }
+                // Navigates to a section
                 await Shell.Current.GoToAsync($"{nameof(InfoListPage)}?section={section}");
-                foreach (Button elem in infoMenu.Children.OfType<Button>())
+                foreach (Frame elem in _infoMenu.Children.OfType<Frame>())
                 {
-                    elem.IsEnabled = true;
+                    (elem.Children[0] as Button).IsEnabled = true;
                 }
             });
 
             BindingContext = this;
-            foreach (Button elem in infoMenu.Children.OfType<Button>())
+            foreach (Frame elem in _infoMenu.Children.OfType<Frame>())
             {
-                elem.Command = NavigateCommand;
+                (elem.Children[0] as Button).Command = NavigateCommand;
             }
-#if DEBUG
-            pageLayout.Children.Add(new Label { Text = Constants.DatabasePath });
-#endif
+//#if DEBUG
+//            pageLayout.Children.Add(new Label { Text = Constants.DatabasePath });
+//#endif
         }
 
         public ICommand NavigateCommand { get; private set; }
         protected override void OnSizeAllocated(double width, double height)
         {
+            // Makes sure that the buttons are squared while scaling to fit the width.
             base.OnSizeAllocated(width, height);
             if (DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Height <= 0.5625)
             {
-                thirdRow.Height = new GridLength(1, GridUnitType.Star);
-                pageLayout.WidthRequest = 3.0 / 4 * infoMenu.Height;
+                _thirdRow.Height = new GridLength(1, GridUnitType.Star);
+                _infoMenu.WidthRequest = 3.0 / 4 * _infoMenu.Height;
             }
             else
             {
-                pageLayout.WidthRequest = 3.0 / 5 * infoMenu.Height;
+                _infoMenu.WidthRequest = 3.0 / 5 * _infoMenu.Height;
             }
+            //Thickness margin = _headerBackground.Margin;
+            //margin.Right = _pageLayout.Width - _header.Width;
+            //_headerBackground.Margin = margin;
+
+            Thickness padding = _header.Padding;
+            padding.Left = (_pageLayout.Width - _infoMenu.WidthRequest) / 2;
+            _header.Padding = padding;
+            //_headerBackground.BackgroundColor = _headerBackground.BackgroundColor.WithLuminosity(0.7);
         }
     }
 }

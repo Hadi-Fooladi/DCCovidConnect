@@ -23,18 +23,17 @@
         </ResourceDictionary>
     </Shell.Resources>
 
-
-    <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
+    <TabBar>
         <Tab Title="Home">
             <ShellContent ContentTemplate="{DataTemplate views:HomePage}"/>
-        </Tab>
-        <Tab Title="Map">
-            <ShellContent ContentTemplate="{DataTemplate views:MapPage}"/>
         </Tab>
         <Tab Title="Info">
             <ShellContent ContentTemplate="{DataTemplate views:InfoMenuPage}"/>
         </Tab>
-    </FlyoutItem>
+        <Tab Title="Map">
+            <ShellContent ContentTemplate="{DataTemplate views:MapPage}"/>
+        </Tab>
+    </TabBar>
 
     <MenuItem Text="Settings"
               Command="{Binding GoToSettings}"/>

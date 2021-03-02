@@ -5,12 +5,18 @@ using System.Text;
 
 namespace DCCovidConnect.Services
 {
+    /// <summary>
+    /// This class parses the HTML from a WordPress page into a usuable JSON Object.
+    /// </summary>
     public class Parser
     {
         private StringBuilder output = new StringBuilder();
         private StringBuilder parsedTag = new StringBuilder();
         private StringBuilder parsedTagContents = new StringBuilder();
         private StringBuilder parsedText = new StringBuilder();
+        /// <summary>
+        /// This variable keeps track of the html element nesting
+        /// </summary>
         private Stack<Type> tagStack = new Stack<Type>();
         enum Property
         {
@@ -22,15 +28,25 @@ namespace DCCovidConnect.Services
         }
         private Type[] textTags = new[] { Type.A, Type.P, Type.H1, Type.H2, Type.H3, Type.H4, Type.H5, Type.H6, Type.SPAN, Type.LI, Type.BOLD, Type.COLOR, Type.TITLE };
         private string source = "";
+        /// <summary>
+        /// This variable keeps track of the position of the parser in the HTML document.
+        /// </summary>
         private int index = 0;
         public string Output
         {
             get => output.ToString().Replace("&nbsp;", "");
         }
+        /// <summary>
+        /// This constructor takes in the contents of the HTML document.
+        /// </summary>
+        /// <param name="source"></param>
         public Parser(string source)
         {
             this.source = source;
         }
+        /// <summary>
+        /// This method moves the <c>index</c> to the end of the HTML comment.
+        /// </summary>
         private void ParseComment()
         {
             while (source[index] != '>')
@@ -38,6 +54,10 @@ namespace DCCovidConnect.Services
                 index++;
             }
         }
+        /// <summary>
+        /// This method parses and stores the tag and its contents in the class variables, <c>parsedTag</c> and <c>parsedTagContents</c>
+        /// It also moves the <c>index</c> to the end of the tag.
+        /// </summary>
         private void ParseTag()
         {
             parsedTag.Clear();
@@ -57,6 +77,9 @@ namespace DCCovidConnect.Services
                 index++;
             }
         }
+        /// <summary>
+        /// This method moves the <c>index</c> to the end of the text and stores it into the <c>parsedText</c> variable.
+        /// </summary>
         private void ParseText()
         {
             parsedText.Clear();
@@ -71,6 +94,9 @@ namespace DCCovidConnect.Services
                 index++;
             }
         }
+        /// <summary>
+        /// This method moves the <c>index</c> to the end of the closing tag and closes the JSON object.
+        /// </summary>
         private void ParseClosingTag()
         {
             while (source[index] != '>')
@@ -82,6 +108,9 @@ namespace DCCovidConnect.Services
                 output.Append("]}");
             }
         }
+        /// <summary>
+        /// This method processes the <c>parsedTag</c> and <c>parsedTagContents</c> and appends it to the outputted JSON.
+        /// </summary>
         private void ProcessTag()
         {
             if (output[output.Length - 1] == '}')
@@ -90,6 +119,7 @@ namespace DCCovidConnect.Services
             }
             Type tag = Type.NONE;
             Boolean selfClosing = false;
+            // Checks the tag type
             switch (parsedTag.ToString().ToLower())
             {
                 case "hr":
@@ -119,6 +149,7 @@ namespace DCCovidConnect.Services
                     selfClosing = true;
                     break;
             }
+            // If this element has specific css classes, change the type.
             string contents = parsedTagContents.ToString().ToLower();
             if (parsedTagContents.ToString().ToLower().Contains("title"))
                 tag = Type.TITLE;
@@ -139,6 +170,7 @@ namespace DCCovidConnect.Services
             }
             output.Append($"{{\"{Property.TYPE}\":\"{tag}\"");
 
+            // check the tag for attributes.
             if (contents.Contains("href", StringComparison.InvariantCultureIgnoreCase))
             {
                 AddAttribute(Property.HREF, ref contents);
@@ -159,6 +191,11 @@ namespace DCCovidConnect.Services
             }
         }
 
+        /// <summary>
+        /// This method appends the attribute to the current node in the JSON object.
+        /// </summary>
+        /// <param name="prop">The type of property.</param>
+        /// <param name="contents">The content of the property.</param>
         private void AddAttribute(Property prop, ref string contents)
         {
             output.Append($",\"{prop}\":\"");
@@ -172,6 +209,10 @@ namespace DCCovidConnect.Services
             }
             output.Append('"');
         }
+
+        /// <summary>
+        /// This method processes the text stored in <c>parsedText</c> and appends it to the outputted JSON object.
+        /// </summary>
         private void ProcessText()
         {
             if (output[output.Length - 1] == '}')
@@ -184,11 +225,16 @@ namespace DCCovidConnect.Services
             output.Append(parsedText);
             output.Append("\"}");
         }
+
+        /// <summary>
+        /// This is the main method used to parse the inputted HTML source.
+        /// </summary>
         public void Parse()
         {
             output.Append('[');
             while (!EOF())
             {
+                // Check the type of tag, if it's not a tag, treat it as text
                 if (source[index] == '<')
                 {
                     switch (source[index + 1])
@@ -220,6 +266,10 @@ namespace DCCovidConnect.Services
             output.Append(']');
         }
 
+        /// <summary>
+        /// This method checks if the index exceeds the length of the HTML source.
+        /// </summary>
+        /// <returns>Returns if the length exceeds the source.</returns>
         private bool EOF()
         {
             return index >= source.Length;

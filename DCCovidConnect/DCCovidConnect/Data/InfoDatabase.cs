@@ -15,6 +15,9 @@ using System.Globalization;
 
 namespace DCCovidConnect.Data
 {
+    /// <summary>
+    /// This class handles the database for the application
+    /// </summary>
     public class InfoDatabase
     {
         static readonly Lazy<SQLiteAsyncConnection> lazyInitializer = new Lazy<SQLiteAsyncConnection>(() =>
@@ -31,6 +34,10 @@ namespace DCCovidConnect.Data
             InitializeAsync().SafeFireAndForget(false);
         }
 
+        /// <summary>
+        /// This method initializes the database.
+        /// </summary>
+        /// <returns></returns>
         async Task InitializeAsync()
         {
             if (!initialized)
@@ -58,6 +65,7 @@ namespace DCCovidConnect.Data
                 initialized = true;
             }
         }
+
         public Task<List<InfoItem>> GetInfoItemsAsync()
         {
             return Database.Table<InfoItem>().ToListAsync();
@@ -79,6 +87,12 @@ namespace DCCovidConnect.Data
         }
 
         public Task<InfoItem> GetInfoItemAsync(InfoItem item) => this.GetInfoItemAsync(item.Title);
+
+        /// <summary>
+        /// This method updates the <c>InfoItem</c> in the database or inserts it if its not present.
+        /// </summary>
+        /// <param name="item">The item to put into the database.</param>
+        /// <returns></returns>
         public Task<int> SaveInfoItemAsync(InfoItem item)
         {
 #if DEBUG
@@ -112,9 +126,15 @@ namespace DCCovidConnect.Data
         public Task<StateCasesItem> GetStateCasesItemAsync(String state) => Database.Table<StateCasesItem>().Where(i => i.State == state).FirstOrDefaultAsync();
 
         public Task<List<CountyCasesItem>> GetCountyCasesItemsAsync() => Database.Table<CountyCasesItem>().ToListAsync();
-        public Task<List<CountyCasesItem>> GetCountyCasesItemAsync(String state) => Database.Table<CountyCasesItem>().Where(i => i.State.ToLower() == state.ToLower()).ToListAsync();
-        public Task<List<CountyCasesItem>> GetCountyCasesItemByCountyAsync(String county) => Database.Table<CountyCasesItem>().Where(i => i.County.ToLower() == county.ToLower()).ToListAsync();
+        public Task<List<CountyCasesItem>> GetCountyCasesItemByStateAsync(String state) => Database.Table<CountyCasesItem>().Where(i => i.State.ToLower() == state.ToLower()).ToListAsync();
+        public Task<List<CountyCasesItem>> GetCountyCasesItemAsync(String county) => Database.Table<CountyCasesItem>().Where(i => i.County.ToLower() == county.ToLower()).ToListAsync();
         public Task<VersionInfo> GetVersionItemAsync() => Database.Table<VersionInfo>().FirstOrDefaultAsync();
+        
+        /// <summary>
+        /// This method updates the <c>VersionInfo</c> or inserts it if not present.
+        /// </summary>
+        /// <param name="item">The item to insert.</param>
+        /// <returns></returns>
         public Task<int> SaveVersionItemAsync(VersionInfo item)
         {
             if (Database.Table<VersionInfo>().Where(i => i.ID == 0).FirstOrDefaultAsync().Result != null)
@@ -126,15 +146,47 @@ namespace DCCovidConnect.Data
                 return Database.InsertAsync(item);
             }
         }
+
+        private Task _updateCovidStatsTask;
+        private Task _updateInfoTask;
+        public Task UpdateCovidStatsTask
+        {
+            get => _updateCovidStatsTask;
+        }
+        public Task UpdateInfoTask
+        {
+            get => _updateInfoTask;
+        }
+        /// <summary>
+        /// This method is used to update the database.
+        /// </summary>
+        /// <returns></returns>
         public async Task UpdateDatabase()
+        {
+            _updateCovidStatsTask = UpdateCovidStats();
+            _updateInfoTask = UpdateInfo();
+
+            await _updateCovidStatsTask;
+            await _updateInfoTask;
+            Console.WriteLine("Database Updated!");
+        }
+
+        /// <summary>
+        /// This method updates the covid case data using the GitHub API and updates the version of the database.
+        /// </summary>
+        /// <returns></returns>
+        private async Task UpdateCovidStats()
         {
             JObject us_cases, state_cases, county_cases;
             us_cases = JObject.Parse(await GetCallAPI("https://api.github.com/repos/nytimes/covid-19-data/contents/live/us.csv"));
             state_cases = JObject.Parse(await GetCallAPI("https://api.github.com/repos/nytimes/covid-19-data/contents/live/us-states.csv"));
             county_cases = JObject.Parse(await GetCallAPI("https://api.github.com/repos/nytimes/covid-19-data/contents/live/us-counties.csv"));
-            VersionInfo version = new VersionInfo { ID = 0 };
+            // VersionInfo version = new VersionInfo { ID = 0 };
+            VersionInfo version = await GetVersionItemAsync();
+
             string date_format = "yyyy-MM-dd";
 
+            // This creates a new table and inputs all the data retieved from the API.
             if (!String.Equals(version.US_CASES_SHA, us_cases["sha"].ToString()))
             {
                 version.US_CASES_SHA = us_cases["sha"].ToString();
@@ -208,11 +260,16 @@ namespace DCCovidConnect.Data
                     });
                 }
             }
+            // Save the version
             await SaveVersionItemAsync(version);
-            await UpdateInfo();
         }
 
-        public async Task<string> GetCallAPI(string url)
+        /// <summary>
+        /// This method gets the response json from an API call.
+        /// </summary>
+        /// <param name="url">Url of the API call.</param>
+        /// <returns>Returns a task of the response object.</returns>
+        private async Task<string> GetCallAPI(string url)
         {
             try
             {
@@ -227,7 +284,11 @@ namespace DCCovidConnect.Data
             }
             return null;
         }
-        public async Task UpdateInfo()
+        /// <summary>
+        /// This method updates the COVID19 information from a WordPress database and parses the pages into a usuable JSON object.
+        /// </summary>
+        /// <returns></returns>
+        private async Task UpdateInfo()
         {
             try
             {
@@ -254,6 +315,7 @@ namespace DCCovidConnect.Data
                                 string title = reader.GetString(1);
                                 InfoType type = InfoType.NONE;
 
+                                /// check if the title is accounted for in the <c>InfoMenuPage</c>
                                 foreach (InfoType t in Enum.GetValues(typeof(InfoType)))
                                 {
                                     if (title.Contains(t.ToString().Replace('_', ' '), StringComparison.InvariantCultureIgnoreCase))
@@ -263,6 +325,7 @@ namespace DCCovidConnect.Data
                                     }
                                 }
 
+                                // Inserts item into the database if its a valid type.
                                 if (type != InfoType.NONE)
                                 {
                                     int id = reader.GetInt32(0);
@@ -280,6 +343,7 @@ namespace DCCovidConnect.Data
                                     (saved ??= new InfoItem { ID = id, Title = title }).Date = date;
                                     saved.Type = type;
                                     await SaveInfoItemAsync(saved);
+                                    // Parse the HTML source in the background and check the other objects
                                     DataTasks.Add(id, Task.Run(() =>
                                     {
                                         UpdateItem(saved, content, type);

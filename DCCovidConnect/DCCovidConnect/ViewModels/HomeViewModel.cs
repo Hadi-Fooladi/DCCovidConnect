@@ -59,6 +59,7 @@ namespace DCCovidConnect.ViewModels
         {
             HttpClient client = new HttpClient();
             string response = "";
+            // Calls the instagram api
             Task task = new Task(() =>
             {
                 response = client.GetStringAsync("https://www.instagram.com/dccovidconnect/?__a=1").Result;
@@ -70,6 +71,7 @@ namespace DCCovidConnect.ViewModels
             string ProfilePicture = user["profile_pic_url"].Value<string>();
             string FullName = user["full_name"].Value<string>();
             JArray edges = user["edge_owner_to_timeline_media"]["edges"].Value<JArray>();
+            // add all the posts found on the page.
             foreach (JObject edge in edges)
             {
                 JObject node = edge["node"].Value<JObject>();
@@ -78,6 +80,7 @@ namespace DCCovidConnect.ViewModels
                 JArray textNode = node["edge_media_to_caption"]["edges"].Value<JArray>();
                 string text = textNode.Count != 0 ? textNode[0]["node"]["text"].Value<string>() : "";
                 List<string> images = new List<string>();
+                // checks if there are multiple images in the post.
                 if (node.ContainsKey("edge_sidecar_to_children"))
                 {
                     foreach (JObject imageEdge in node["edge_sidecar_to_children"]["edges"].Value<JArray>())

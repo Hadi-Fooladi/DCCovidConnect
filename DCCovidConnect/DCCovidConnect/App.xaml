@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="DCCovidConnect.App">
     <Application.Resources>
-        <Color x:Key="Primary">#F80E0E</Color>
+        <Color x:Key="Primary">#FA5252</Color>
         <Color x:Key="Secondary">#7C26E9</Color>
         <Color x:Key="White">#FFFFFF</Color>
         <Color x:Key="Black">#000000</Color>

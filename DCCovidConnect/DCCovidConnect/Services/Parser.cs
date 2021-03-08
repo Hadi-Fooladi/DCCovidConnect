@@ -34,7 +34,7 @@ namespace DCCovidConnect.Services
         private int index = 0;
         public string Output
         {
-            get => output.ToString().Replace("&nbsp;", "");
+            get => output.ToString().Replace("&nbsp;", "").Replace("&amp;", "&");
         }
         /// <summary>
         /// This constructor takes in the contents of the HTML document.

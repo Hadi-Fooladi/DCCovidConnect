@@ -18,6 +18,7 @@ namespace DCCovidConnect
             InitializeComponent();
             RegisterRoutes();
             BindingContext = this;
+            this.CurrentItem.CurrentItem = _infoPage;
         }
 
         void RegisterRoutes()

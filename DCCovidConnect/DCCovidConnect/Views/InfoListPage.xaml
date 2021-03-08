@@ -1,4 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
@@ -8,48 +9,47 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style x:Key="Header" TargetType="Label">
-                <Setter Property="FontSize" Value="40"/>
-                <Setter Property="FontAttributes" Value="Bold"/>
-                <Setter Property="TextColor" Value="{StaticResource Black}"/>
-                <Setter Property="Margin" Value="0,10,0,20"/>
+                <Setter Property="FontSize" Value="40" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="TextColor" Value="{StaticResource Black}" />
+                <Setter Property="Margin" Value="0,10,0,20" />
             </Style>
             <Style x:Key="ListItemStyle" TargetType="Frame">
-                <Setter Property="BorderColor" Value="Transparent"/>
-                <Setter Property="Padding" Value="12"/>
+                <Setter Property="BorderColor" Value="Transparent" />
+                <Setter Property="Padding" Value="12" />
                 <!--<Setter Property="Padding" Value="20,15"/>-->
             </Style>
             <Style x:Key="ListItemLabel" TargetType="Label">
-                <Setter Property="TextColor" Value="{StaticResource Black}"/>
-                <Setter Property="FontSize" Value="24"/>
+                <Setter Property="TextColor" Value="{StaticResource Black}" />
+                <Setter Property="FontSize" Value="24" />
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
-            <StackLayout>
-                 <Frame android:VisualElement.Elevation="10" 
-                        BackgroundColor="{StaticResource Primary}"
-                        Padding="0"
-                        Margin="0,0,0,0"
-                        CornerRadius="0"
-                        >
-                        <Label Style="{StaticResource Header}"
-                               Text="{Binding Section}"
-                               VerticalOptions="Start" 
-                               HorizontalOptions="CenterAndExpand" />
-                 </Frame>
+        <StackLayout>
+            <Frame android:VisualElement.Elevation="10"
+                   BackgroundColor="{StaticResource Primary}"
+                   Padding="0"
+                   Margin="0,0,0,0"
+                   CornerRadius="0">
+                <Label Style="{StaticResource Header}"
+                       Text="{Binding Section}"
+                       VerticalOptions="Start"
+                       HorizontalOptions="CenterAndExpand" />
+            </Frame>
             <ScrollView Margin="0,-10,0,0">
-                <StackLayout 
+                <StackLayout
                     x:Name="ItemList"
                     Margin="40,0,40,0"
                     BindableLayout.ItemsSource="{Binding Items}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
                             <StackLayout>
-                                <BoxView Color="LightGray" HeightRequest="2"/>
+                                <BoxView Color="LightGray" HeightRequest="2" />
                                 <Frame Style="{StaticResource ListItemStyle}">
-                                    <Label Style="{StaticResource ListItemLabel}" Text="{Binding Title}"/>
+                                    <Label Style="{StaticResource ListItemLabel}" Text="{Binding Title}" />
                                     <Frame.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="GoToDetailPage" CommandParameter="{Binding ID}"/>
+                                        <TapGestureRecognizer Tapped="GoToDetailPage" CommandParameter="{Binding ID}" />
                                     </Frame.GestureRecognizers>
                                 </Frame>
                             </StackLayout>

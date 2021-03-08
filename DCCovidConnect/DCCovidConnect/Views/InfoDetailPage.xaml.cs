@@ -19,57 +19,98 @@ namespace DCCovidConnect.Views
     /// </summary>
     public partial class InfoDetailPage : ContentPage
     {
-        int id;
+        int _id;
+
         public string ID
         {
-            get => id.ToString();
+            get => _id.ToString();
             set
             {
-                id = Int32.Parse(Uri.UnescapeDataString(value));
+                _id = int.Parse(Uri.UnescapeDataString(value));
                 OnPropertyChanged();
             }
         }
-        enum Property
+
+        private enum Property
         {
-            NONE, TYPE, HREF, TEXT, CHILDREN, SRC
+            NONE,
+            TYPE,
+            HREF,
+            TEXT,
+            CHILDREN,
+            SRC
         }
-        enum Type
+
+        private enum Type
         {
-            NONE, TITLE, ITEM, A, P, BOLD, UL, OL, LI, TEXT, COLOR, IMG, BR, H1, H2, H3, H4, H5, H6, SPAN, FIGURE, S, SUP, TABLE, TBODY, TD, TR, IFRAME
+            NONE,
+            TITLE,
+            ITEM,
+            A,
+            P,
+            BOLD,
+            UL,
+            OL,
+            LI,
+            TEXT,
+            COLOR,
+            IMG,
+            BR,
+            H1,
+            H2,
+            H3,
+            H4,
+            H5,
+            H6,
+            SPAN,
+            FIGURE,
+            S,
+            SUP,
+            TABLE,
+            TBODY,
+            TD,
+            TR,
+            IFRAME
         }
-        StackLayout parentView;
+
+        private readonly StackLayout _parentView;
+
         public InfoDetailPage()
         {
             InitializeComponent();
-            parentView = new StackLayout
+            _parentView = new StackLayout
             {
-                Margin = new Thickness(10, 5)
+                Margin = new Thickness(20, 5)
             };
             Content = new ScrollView
             {
-                Content = parentView
+                Content = _parentView
             };
         }
 
-        protected async override void OnAppearing()
+        private bool _isLoaded = false;
+
+        protected override async void OnAppearing()
         {
+            if (_isLoaded) return;
+            _isLoaded = true;
             base.OnAppearing();
             // Constructs the page from the JSON object
-            InfoDatabase.DataTasks[id]?.Wait();
-            string JSON = App.Database.GetInfoItemAsync(id).Result.Content;
-            JArray objects = JArray.Parse(JSON);
+            InfoDatabase.DataTasks[_id]?.Wait();
+            string json = App.Database.GetInfoItemAsync(_id).Result.Content;
+            JArray objects = JArray.Parse(json);
             foreach (JObject token in objects ?? Enumerable.Empty<JToken>())
             {
                 await Task.Run(() =>
                 {
                     var tcs = new TaskCompletionSource<bool>();
                     MainThread.BeginInvokeOnMainThread(async () =>
-                    {
-                        View parsed = await Parse(token);
-                        if (parsed != null)
-                            parentView.Children.Add(parsed);
-                        tcs.SetResult(false);
-                    }
+                        {
+                            View parsed = await Parse(token);
+                            if (parsed != null)
+                                _parentView.Children.Add(parsed);
+                            tcs.SetResult(false);
+                        }
                     );
                     return tcs.Task;
                 });
@@ -83,7 +124,7 @@ namespace DCCovidConnect.Views
         /// <returns>Returns a view of all the nested elements.</returns>
         private async Task<View> Parse(JObject token)
         {
-            Type type = getType(token);
+            Type type = GetType(token);
             JArray children = token[Property.CHILDREN.ToString()]?.Value<JArray>();
             string href = token[Property.HREF.ToString()]?.Value<string>();
             string text = token[Property.TEXT.ToString()]?.Value<string>();
@@ -94,9 +135,71 @@ namespace DCCovidConnect.Views
                 case Type.OL:
                     break;
                 case Type.UL:
-                    ret = new StackLayout();
+                    ret = new StackLayout
+                    {
+                        Padding = new Thickness(32, 0, 0, 0)
+                    };
                     break;
+                case Type.LI:
+                    if (children?.Where(obj => GetType(obj) == Type.UL).Count() == 0)
+                    {
+                        ret = new StackLayout
+                        {
+                            Orientation = StackOrientation.Horizontal,
+                        };
+                        Label label = new Label
+                        {
+                            Style = (Style) Resources["LIStyle"],
+                            FormattedText = new FormattedString(),
+                        };
+                        foreach (Span span in ParseText(token))
+                        {
+                            span.FontSize = label.FontSize;
+                            label.FormattedText.Spans.Add(span);
+                        }
+                        label.Style = (Style) Resources["LIStyle"];
+                        ((Layout<View>) ret).Children.Add(ToBulleted(label));
+                    }
+                    else
+                    {
+                        ret = new StackLayout
+                        {
+                            Orientation = StackOrientation.Vertical,
+                        };
+                        Label label = null;
+                        foreach (JObject obj in children ?? Enumerable.Empty<JToken>())
+                        {
+                            if (GetType(obj) != Type.UL)
+                            {
+                                if (label == null)
+                                {
+                                    label = new Label
+                                    {
+                                        Style = (Style) Resources["LIStyle"],
+                                        FormattedText = new FormattedString(),
+                                    };
+                                }
 
+                                foreach (Span span in ParseText(obj))
+                                {
+                                    span.FontSize = label.FontSize;
+                                    label.FormattedText.Spans.Add(span);
+                                }
+                            }
+                            else
+                            {
+                                if (label != null)
+                                    ((Layout<View>) ret).Children.Add(ToBulleted(label));
+                                label = null;
+                                ((Layout<View>) ret).Children.Add(await Parse(obj));
+                            }
+                        }
+
+                        if (label != null)
+                            (ret as Layout<View>).Children.Add(label);
+                    }
+
+                    return ret;
                 case Type.TABLE:
                     break;
                 case Type.TBODY:
@@ -106,17 +209,26 @@ namespace DCCovidConnect.Views
                 case Type.TR:
                     break;
                 case Type.ITEM:
-                    ret = new Expander { Content = new StackLayout() };
-                    foreach (JObject obj in children ?? Enumerable.Empty<JToken>()) // finds first Title children, should be first element regardless
+                    ret = new Expander {Content = new StackLayout()};
+                    foreach (JObject obj in children ?? Enumerable.Empty<JToken>()
+                    ) // finds first Title children, should be first element regardless
                     {
-                        if (getType(obj) == Type.TITLE)
+                        if (GetType(obj) == Type.TITLE)
                         {
-                            Label header = parseLabel(obj);
+                            Label label = ParseLabel(obj);
+                            label.Style = (Style) Resources["EXPANDERStyle"];
+                            Frame header = new Frame
+                            {
+                                Content = label,
+                                BorderColor = Color.DarkGray,
+                                CornerRadius = 5
+                            };
                             (ret as Expander).Header = header;
                             obj.Remove();
                             break;
                         }
                     }
+
                     break;
                 case Type.NONE:
                     break;
@@ -125,6 +237,7 @@ namespace DCCovidConnect.Views
                     ret = ParseView(token);
                     break;
             }
+
             Layout<View> layout = ret as Layout<View> ?? (ret as Expander)?.Content as Layout<View>;
             // If its a layout, parse the children elements
             if (layout != null)
@@ -140,8 +253,10 @@ namespace DCCovidConnect.Views
                         return tcs.Task;
                     });
                 }
+
             return ret;
         }
+
         /// <summary>
         /// Returns a View based on the input type.
         /// </summary>
@@ -149,7 +264,7 @@ namespace DCCovidConnect.Views
         /// <returns>The outputted view.</returns>
         private View ParseView(JObject token)
         {
-            Type type = getType(token);
+            Type type = GetType(token);
             JArray children = token[Property.CHILDREN.ToString()]?.Value<JArray>();
             string src = token[Property.SRC.ToString()]?.Value<string>();
             View ret = null;
@@ -177,9 +292,10 @@ namespace DCCovidConnect.Views
                     break;
                 default:
                     // If it's a label, parse the individual text properties.
-                    ret = parseLabel(token);
+                    ret = ParseLabel(token);
                     break;
             }
+
             return ret;
         }
 
@@ -188,20 +304,16 @@ namespace DCCovidConnect.Views
         /// </summary>
         /// <param name="token">Input object.</param>
         /// <returns>Returns a label.</returns>
-        private Label parseLabel(JObject token)
+        private Label ParseLabel(JObject token)
         {
-            Type type = getType(token);
+            Type type = GetType(token);
             JArray children = token[Property.CHILDREN.ToString()]?.Value<JArray>();
             Label ret = new Label();
             ret.FormattedText = new FormattedString();
             switch (type)
             {
                 case Type.P:
-                    ret.Style = (Style)Resources["PStyle"];
-                    break;
-                case Type.LI:
-                    ret.Style = (Style)Resources["LIStyle"];
-                    ret.FormattedText.Spans.Add(new Span { Text = "\u2022 ", TextColor = (Color)Application.Current.Resources["Secondary"] });
+                    ret.Style = (Style) Resources["PStyle"];
                     break;
                 // All in 1 case for the multiple HTML headers
                 case Type header when header.ToString().Contains('H') && header.ToString().Length == 2:
@@ -218,19 +330,20 @@ namespace DCCovidConnect.Views
                 case Type.SPAN:
                     break;
                 case Type.TITLE:
-                    ret.Style = (Style)Resources["TITLEStyle"];
+                    ret.Style = (Style) Resources["TITLEStyle"];
                     break;
-                default:
-                    return null;
             }
+
             // Iterates through the individual spans and applies styling based on them.
             foreach (JObject obj in children ?? Enumerable.Empty<JToken>())
             {
-                foreach (Span span in parseText(obj))
+                foreach (Span span in ParseText(obj))
                 {
+                    span.FontSize = ret.FontSize;
                     ret.FormattedText.Spans.Add(span);
                 }
             }
+
             return ret;
         }
 
@@ -239,49 +352,54 @@ namespace DCCovidConnect.Views
         /// </summary>
         /// <param name="token">Input object with children of spans.</param>
         /// <returns>Returns the outputted list of spans.</returns>
-        private List<Span> parseText(JObject token)
+        private List<Span> ParseText(JObject token)
         {
-            Type type = getType(token);
+            Type type = GetType(token);
             JArray children = token[Property.CHILDREN.ToString()]?.Value<JArray>();
             List<Span> ret = new List<Span>();
             if (type == Type.TEXT)
             {
                 string text = token[Property.TEXT.ToString()]?.Value<string>();
-                return new List<Span> { new Span { Text = text } };
+                return new List<Span> {new Span {Text = text}};
             }
             else // Keep on parsing until text is found
             {
                 foreach (JObject obj in children ?? Enumerable.Empty<JToken>())
                 {
-                    ret.AddRange(parseText(obj));
+                    ret.AddRange(ParseText(obj));
                 }
             }
+
             switch (type)
             {
                 case Type.COLOR:
                     foreach (Span span in ret)
                     {
-                        span.TextColor = (Color)Application.Current.Resources["Secondary"];
+                        span.TextColor = (Color) Application.Current.Resources["Secondary"];
                     }
+
                     break;
                 // Adds a hyperlink
                 case Type.A:
                     foreach (Span span in ret)
                     {
                         string href = token[Property.HREF.ToString()]?.Value<string>();
-                        span.GestureRecognizers.Add(new TapGestureRecognizer { Command = new Command(async () => await Launcher.OpenAsync(href)) });
-                        span.TextColor = (Color)Application.Current.Resources["Secondary"];
+                        span.GestureRecognizers.Add(new TapGestureRecognizer
+                            {Command = new Command(async () => await Launcher.OpenAsync(href))});
+                        span.TextColor = (Color) Application.Current.Resources["Secondary"];
                         span.TextDecorations = TextDecorations.Underline;
                     }
+
                     break;
                 case Type.BOLD:
                     foreach (Span span in ret)
                     {
-                        //span.FontSize = 20;
                         span.FontAttributes = FontAttributes.Bold;
                     }
+
                     break;
             }
+
             return ret;
         }
 
@@ -290,9 +408,27 @@ namespace DCCovidConnect.Views
         /// </summary>
         /// <param name="token">The inputted token.</param>
         /// <returns>Returns the type of the token.</returns>
-        private Type getType(JToken token)
+        private Type GetType(JToken token)
         {
-            return (Type)Enum.Parse(typeof(Type), token[Property.TYPE.ToString()].Value<string>(), true);
+            return (Type) Enum.Parse(typeof(Type), token[Property.TYPE.ToString()].Value<string>(), true);
+        }
+
+        private Layout<View> ToBulleted(Label label)
+        {
+            return new StackLayout
+            {
+                Orientation = StackOrientation.Horizontal,
+                Children =
+                {
+                    new Label
+                    {
+                        Text = "\u2022",
+                        TextColor = (Color) Application.Current.Resources["Secondary"],
+                        FontSize = label.FontSize
+                    },
+                    label
+                }
+            };
         }
     }
 }

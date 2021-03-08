@@ -30,6 +30,8 @@ namespace DCCovidConnect.Views
         private float _x;
         private float _y;
         private float _scale = 4f;
+        private float _minScale = 0.8f;
+        private float _maxScale = 30.0f;
 
         // Used for panning gesture
         private float _xGestureStart;
@@ -165,6 +167,7 @@ namespace DCCovidConnect.Views
                     float pinchY = (float)(e.ScaleOrigin.Y * Height);
 
                     float newScale = _scale * (float)e.Scale;
+                    newScale = Math.Max(Math.Min(newScale, _maxScale), _minScale);
                     float scaleRatio = newScale / _scale;
 
                     float translatedX = pinchX - _canvasTranslateMatrix.TransX;

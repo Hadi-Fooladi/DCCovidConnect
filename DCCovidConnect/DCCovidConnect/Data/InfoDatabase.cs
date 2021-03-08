@@ -182,7 +182,7 @@ namespace DCCovidConnect.Data
             state_cases = JObject.Parse(await GetCallAPI("https://api.github.com/repos/nytimes/covid-19-data/contents/live/us-states.csv"));
             county_cases = JObject.Parse(await GetCallAPI("https://api.github.com/repos/nytimes/covid-19-data/contents/live/us-counties.csv"));
             // VersionInfo version = new VersionInfo { ID = 0 };
-            VersionInfo version = await GetVersionItemAsync();
+            VersionInfo version = await GetVersionItemAsync() ?? new VersionInfo();
 
             string date_format = "yyyy-MM-dd";
 

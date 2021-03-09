@@ -27,7 +27,7 @@
         <Tab Title="Home">
             <ShellContent ContentTemplate="{DataTemplate views:HomePage}"/>
         </Tab>
-        <Tab Title="Info">
+        <Tab Title="Info" x:Name="_infoPage">
             <ShellContent ContentTemplate="{DataTemplate views:InfoMenuPage}"/>
         </Tab>
         <Tab Title="Map">

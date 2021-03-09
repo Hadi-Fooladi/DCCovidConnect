@@ -1,4 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:skia="clr-namespace:SkiaSharp;assembly=SkiaSharp"
@@ -10,42 +11,46 @@
         <StackLayout>
             <!--<ProgressBar x:Name="_progressBar" IsVisible="True" HorizontalOptions="Fill" ProgressColor="{StaticResource Primary}"
                          Progress="{x:Binding app:App+Database.Progress}"/>-->
-            <Grid x:Name="baseLayout" VerticalOptions="FillAndExpand">
+            <Grid x:Name="_baseLayout" VerticalOptions="FillAndExpand">
                 <!--<skiaforms:SKCanvasView x:Name="canvasView"
                                 PaintSurface="OnCanvasViewPaintSurface"/>-->
-                <StackLayout Padding="40,0" >
+                <StackLayout Padding="40,0">
+                    <Label Text="**THIS PAGE IS INCOMPLETE**"
+                           FontAttributes="Bold" 
+                           FontSize="40"
+                           />
                     <StackLayout Padding="0,20">
                         <Label Text="{Binding Region}"
-                   TextColor="{StaticResource Black}" 
-                   TextTransform="Uppercase"
-                   FontAttributes="Bold"
-                   HorizontalTextAlignment="Left"
-                   FontSize="56"/>
+                               TextColor="{StaticResource Black}"
+                               TextTransform="Uppercase"
+                               FontAttributes="Bold"
+                               HorizontalTextAlignment="Start"
+                               FontSize="56" />
                         <Label
-                FontSize="24">
+                            FontSize="24">
                             <Label.FormattedText>
                                 <FormattedString>
                                     <FormattedString.Spans>
                                         <Span Text="{Binding RegionCases, StringFormat='{0:N0}'}"
-                                  TextColor="{StaticResource Secondary}"
-                                  FontAttributes="Bold"
-                                  FontSize="24"/>
-                                        <Span Text=" cases"/>
+                                              TextColor="{StaticResource Secondary}"
+                                              FontAttributes="Bold"
+                                              FontSize="24" />
+                                        <Span Text=" cases" />
                                     </FormattedString.Spans>
                                 </FormattedString>
                             </Label.FormattedText>
                         </Label>
-                        <Label Text="{Binding Local}" TextColor="{StaticResource Primary}" TextTransform="Uppercase"/>
+                        <Label Text="{Binding Local}" TextColor="{StaticResource Primary}" TextTransform="Uppercase" />
                         <Label
-                FontSize="18">
+                            FontSize="18">
                             <Label.FormattedText>
                                 <FormattedString>
                                     <FormattedString.Spans>
-                                        <Span Text="{Binding LocalCases, StringFormat='{0:N0}'}" 
-                                  TextColor="{StaticResource Black}"
-                                  FontAttributes="Bold"
-                                  FontSize="18"/>
-                                        <Span Text=" cases"/>
+                                        <Span Text="{Binding LocalCases, StringFormat='{0:N0}'}"
+                                              TextColor="{StaticResource Black}"
+                                              FontAttributes="Bold"
+                                              FontSize="18" />
+                                        <Span Text=" cases" />
                                     </FormattedString.Spans>
                                 </FormattedString>
                             </Label.FormattedText>
@@ -53,8 +58,10 @@
                     </StackLayout>
 
                     <StackLayout>
-                        <Label Text="Reopening" TextTransform="Uppercase" FontSize="20" FontAttributes="Bold" Margin="0,0,0,-18"/>
-                        <Label Text="{Binding Phase, StringFormat='Phase {0:N0}'}" TextTransform="Uppercase"  FontAttributes="Bold" FontSize="40"/>
+                        <Label Text="Reopening" TextTransform="Uppercase" FontSize="20" FontAttributes="Bold"
+                               Margin="0,0,0,-18" />
+                        <Label Text="{Binding Phase, StringFormat='Phase {0:N0}'}" TextTransform="Uppercase"
+                               FontAttributes="Bold" FontSize="40" />
                     </StackLayout>
                     <!--<StackLayout BindableLayout.ItemsSource="{Binding Posts}">
                     <BindableLayout.ItemTemplate>

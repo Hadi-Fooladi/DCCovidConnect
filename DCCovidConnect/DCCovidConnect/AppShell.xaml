@@ -33,6 +33,9 @@
         <Tab Title="Map">
             <ShellContent ContentTemplate="{DataTemplate views:MapPage}"/>
         </Tab>
+        <Tab Title="Settings">
+            <ShellContent ContentTemplate="{DataTemplate views:SettingsPage}"/>
+        </Tab>
     </TabBar>
 
     <MenuItem Text="Settings"

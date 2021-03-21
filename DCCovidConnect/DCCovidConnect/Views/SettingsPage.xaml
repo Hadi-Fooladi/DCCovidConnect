@@ -1,8 +1,49 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="DCCovidConnect.Views.SettingsPage">
+             x:Class="DCCovidConnect.Views.SettingsPage"
+             xmlns:services="clr-namespace:DCCovidConnect.Services">
     <ContentPage.Content>
-        <Label Text="Settings"/>
+        <StackLayout Margin="20">
+            <Label Text="Settings"
+                   FontSize="40"
+                   TextColor="{StaticResource Black}" />
+            <TableView Intent="Settings">
+                <TableRoot>
+                    <TableSection Title="Appearance"
+                                  TextColor="{StaticResource Primary}">
+                        <ViewCell>
+                            <StackLayout Orientation="Horizontal">
+                                <Label Text="Dark Mode"
+                                       VerticalOptions="Center" />
+                                <Picker x:Name="_darkModePicker"
+                                        HorizontalOptions="EndAndExpand"
+                                        HorizontalTextAlignment="End"
+                                        WidthRequest="70">
+                                    <Picker.Items>
+                                        <x:String>Off</x:String>
+                                        <x:String>On</x:String>
+                                        <x:String>System</x:String>
+                                    </Picker.Items>
+                                </Picker>
+                            </StackLayout>
+                        </ViewCell>
+                    </TableSection>
+                    <TableSection Title="General">
+                        <ViewCell>
+                            <StackLayout Orientation="Horizontal">
+                                <Label Text="Default State"
+                                       VerticalOptions="Center" />
+                                <Picker x:Name="_statePicker"
+                                        HorizontalOptions="EndAndExpand"
+                                        HorizontalTextAlignment="End"
+                                        WidthRequest="150" />
+                            </StackLayout>
+                        </ViewCell>
+                    </TableSection>
+                </TableRoot>
+            </TableView>
+        </StackLayout>
     </ContentPage.Content>
 </ContentPage>

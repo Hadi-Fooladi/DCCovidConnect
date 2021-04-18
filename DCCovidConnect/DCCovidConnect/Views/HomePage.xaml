@@ -6,28 +6,47 @@
              xmlns:skiaforms="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
              xmlns:controls="clr-namespace:DCCovidConnect.Controls"
              xmlns:app="clr-namespace:DCCovidConnect"
+             xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
+             xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
              x:Class="DCCovidConnect.Views.HomePage">
+    <Shell.TitleView>
+        <Frame>
+            <Label Text="DCCOVIDConnect"
+                   FontSize="Small"
+                   FontAttributes="Bold"
+                   CharacterSpacing="0"
+                   TextColor="{StaticResource Black}"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"
+                   Margin="0,-1000" />
+        </Frame>
+    </Shell.TitleView>
     <ScrollView>
         <StackLayout>
             <!--<ProgressBar x:Name="_progressBar" IsVisible="True" HorizontalOptions="Fill" ProgressColor="{StaticResource Primary}"
                          Progress="{x:Binding app:App+Database.Progress}"/>-->
-            <Grid x:Name="_baseLayout" VerticalOptions="FillAndExpand">
-                <!--<skiaforms:SKCanvasView x:Name="canvasView"
-                                PaintSurface="OnCanvasViewPaintSurface"/>-->
-                <StackLayout Padding="40,0">
-                    <Label Text="**THIS PAGE IS INCOMPLETE**"
-                           FontAttributes="Bold" 
-                           FontSize="40"
-                           />
-                    <StackLayout Padding="0,20">
-                        <Label Text="{Binding Region}"
-                               TextColor="{StaticResource Black}"
-                               TextTransform="Uppercase"
-                               FontAttributes="Bold"
-                               HorizontalTextAlignment="Start"
-                               FontSize="56" />
+            <Grid>
+                <skiaforms:SKCanvasView x:Name="_canvasView"
+                                        PaintSurface="OnCanvasViewPaintSurface"
+                                        HeightRequest="120"/>
+                <Label
+                    BindingContext="{Binding Settings}"
+                    Padding="20,0"
+                    Margin="0,0,0,-10"
+                    Text="{Binding DefaultState}"
+                    TextColor="{StaticResource Black}"
+                    TextTransform="Uppercase"
+                    FontAttributes="Bold"
+                    HorizontalTextAlignment="Start"
+                    VerticalTextAlignment="End"
+                    FontSize="54" />
+            </Grid>
+            <Frame android:VisualElement.Elevation="10">
+                <StackLayout Padding="12,0">
+                    <StackLayout Padding="0"
+                                 Margin="0,-15,0,0">
                         <Label
-                            FontSize="24">
+                            FontSize="18">
                             <Label.FormattedText>
                                 <FormattedString>
                                     <FormattedString.Spans>
@@ -35,14 +54,14 @@
                                               TextColor="{StaticResource Secondary}"
                                               FontAttributes="Bold"
                                               FontSize="24" />
-                                        <Span Text=" cases" />
+                                        <Span Text=" CASES" />
                                     </FormattedString.Spans>
                                 </FormattedString>
                             </Label.FormattedText>
                         </Label>
                         <Label Text="{Binding Local}" TextColor="{StaticResource Primary}" TextTransform="Uppercase" />
                         <Label
-                            FontSize="18">
+                            FontSize="14">
                             <Label.FormattedText>
                                 <FormattedString>
                                     <FormattedString.Spans>
@@ -50,7 +69,7 @@
                                               TextColor="{StaticResource Black}"
                                               FontAttributes="Bold"
                                               FontSize="18" />
-                                        <Span Text=" cases" />
+                                        <Span Text=" CASES" />
                                     </FormattedString.Spans>
                                 </FormattedString>
                             </Label.FormattedText>
@@ -71,7 +90,7 @@
                     </BindableLayout.ItemTemplate>
                 </StackLayout>-->
                 </StackLayout>
-            </Grid>
+            </Frame>
         </StackLayout>
     </ScrollView>
 </ContentPage>

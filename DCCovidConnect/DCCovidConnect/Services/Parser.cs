@@ -14,6 +14,7 @@ namespace DCCovidConnect.Services
         private StringBuilder parsedTag = new StringBuilder();
         private StringBuilder parsedTagContents = new StringBuilder();
         private StringBuilder parsedText = new StringBuilder();
+        public List<string> ItemList { get; private set; } = new List<string>();
         /// <summary>
         /// This variable keeps track of the html element nesting
         /// </summary>
@@ -92,6 +93,9 @@ namespace DCCovidConnect.Services
                     parsedText.Append('\\');
                 parsedText.Append(source[index]);
                 index++;
+            }
+            if (parsedTagContents.ToString().ToLower().Contains("title")) {
+                ItemList.Add(parsedText.ToString());
             }
         }
         /// <summary>

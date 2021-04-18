@@ -434,10 +434,13 @@ namespace DCCovidConnect.Data
             Parser parser = new Parser(content);
             parser.Parse();
             saved.Content = parser.Output;
+            string loc = saved.Title.Substring(0, saved.Title.IndexOf('-')).Trim();
+            string name = saved.Title.Substring(saved.Title.IndexOf('-') + 1).Trim();
             await SaveSearchableItemAsync(new SearchableItem()
             {
                 Path = $"{nameof(InfoDetailPage)}?id={saved.ID}",
-                Name = saved.Title,
+                Name = name,
+                BreadCrumbs = loc,
                 Priority = 1,
             });
             foreach (var item in parser.ItemList)
@@ -446,6 +449,7 @@ namespace DCCovidConnect.Data
                 {
                     Path = $"{nameof(InfoDetailPage)}?id={saved.ID}",
                     Name = item,
+                    BreadCrumbs = $"{loc}/{name}",
                     Priority = 0,
                 });
             }

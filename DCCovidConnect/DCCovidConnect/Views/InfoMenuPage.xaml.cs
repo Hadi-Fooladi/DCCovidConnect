@@ -50,6 +50,18 @@ namespace DCCovidConnect.Views
                 await Shell.Current.GoToAsync(item.Path);
             };
             _searchResults.IsEnabled = false;
+
+            TapGestureRecognizer menuTapped = new TapGestureRecognizer();
+            menuTapped.Tapped += (sender, args) =>
+            {
+                if (!_infoMenu.IsEnabled)
+                {
+                    _searchResults.IsVisible = false;
+                    _searchResults.IsEnabled = false;
+                    _infoMenu.IsEnabled = true;
+                }
+            };
+            _menu.GestureRecognizers.Add(menuTapped);
         }
 
         public ICommand NavigateCommand { get; private set; }
@@ -84,11 +96,16 @@ namespace DCCovidConnect.Views
             {
                 _searchResults.ItemsSource = null;
                 _searchResults.IsEnabled = false;
+                _searchResults.IsVisible = false;
+                _infoMenu.IsEnabled = true;
             }
             else
             {
+                await App.Database.UpdateInfoTask;
                 _searchResults.ItemsSource = await App.Database.GetSearchableItemsByNameAsync(searchBar.Text);
                 _searchResults.IsEnabled = true;
+                _searchResults.IsVisible = true;
+                _infoMenu.IsEnabled = false;
             }
         }
     }

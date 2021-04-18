@@ -43,7 +43,8 @@
                        TextChanged="OnTextChanged" />
         </Frame>
         <AbsoluteLayout>
-            <StackLayout AbsoluteLayout.LayoutFlags="All"
+            <StackLayout x:Name="_menu"
+                         AbsoluteLayout.LayoutFlags="All"
                          AbsoluteLayout.LayoutBounds="1,1,1,1">
                 <Frame x:Name="_headerBackground"
                        BackgroundColor="{StaticResource Primary}"
@@ -129,8 +130,8 @@
             </StackLayout>
             <ListView x:Name="_searchResults"
                       AbsoluteLayout.LayoutFlags="All"
-                      AbsoluteLayout.LayoutBounds="1,1,1,1"
-                      Margin="40,0"
+                      AbsoluteLayout.LayoutBounds="1,0,1,0.5"
+                      Margin="25,0"
                       HasUnevenRows="True">
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -138,10 +139,14 @@
                             <Frame
                                 BackgroundColor="{StaticResource White}">
                                 <StackLayout Orientation="Horizontal">
-                                    <Label Text="{Binding Name}" FontSize="18" 
-                                           FontAttributes="Bold" 
+                                    <Label Text="{Binding Name}" FontSize="18"
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource Black}" />
+                                    <Label Text="{Binding BreadCrumbs}"
+                                           FontSize="12"
                                            TextColor="{StaticResource Black}" 
-                                    />
+                                           HorizontalOptions="EndAndExpand"
+                                           HorizontalTextAlignment="End"/>
                                 </StackLayout>
                             </Frame>
                         </ViewCell>

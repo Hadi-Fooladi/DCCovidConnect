@@ -1,19 +1,28 @@
-﻿using Plugin.Settings;
+﻿using DCCovidConnect.ViewModels;
+using Plugin.Settings;
 using Plugin.Settings.Abstractions;
 
 namespace DCCovidConnect.Services
 {
-    public static class Settings
+    public class Settings : BaseViewModel
     {
         private static ISettings AppSettings => CrossSettings.Current;
 
-        public static string DefaultState
+        private static Settings settings;
+        public static Settings Current => settings ??= new Settings();
+        
+        public string DefaultState
         {
             get => AppSettings.GetValueOrDefault(nameof(DefaultState), "District of Columbia");
-            set => AppSettings.AddOrUpdateValue(nameof(DefaultState), value);
+            set
+            {
+                var original = DefaultState;
+                if (AppSettings.AddOrUpdateValue(nameof(DefaultState), value))
+                    SetProperty(ref original, value);
+            }
         }
-        
-        public static string DarkMode
+
+        public string DarkMode
         {
             get => AppSettings.GetValueOrDefault(nameof(DarkMode), "Off");
             set => AppSettings.AddOrUpdateValue(nameof(DarkMode), value);

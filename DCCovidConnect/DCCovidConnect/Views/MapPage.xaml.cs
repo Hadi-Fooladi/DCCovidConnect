@@ -66,7 +66,7 @@ namespace DCCovidConnect.Views
             if (_isLoaded) return;
             _isLoaded = true;
             
-            ZoomState(Settings.DefaultState);
+            ZoomState(Settings.Current.DefaultState);
 
 
             if (!App.Database.UpdateCovidStatsTask.IsCompleted)

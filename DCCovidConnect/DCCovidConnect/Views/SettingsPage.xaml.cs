@@ -16,16 +16,15 @@ namespace DCCovidConnect.Views
         {
             InitializeComponent();
             _statePicker.ItemsSource = MapService.Service.States.Keys.ToList();
-            _statePicker.SelectedItem = Settings.DefaultState;
+            _statePicker.SelectedItem = Settings.Current.DefaultState;
             _statePicker.SelectedIndexChanged += (sender, args) =>
             {
-                Settings.DefaultState = _statePicker.SelectedItem.ToString();
+                Settings.Current.DefaultState = _statePicker.SelectedItem.ToString();
             };
-
-            _darkModePicker.SelectedItem = Settings.DarkMode;
+            _darkModePicker.SelectedItem = Settings.Current.DarkMode;
             _darkModePicker.SelectedIndexChanged += (sender, args) =>
             {
-                Settings.DarkMode = _darkModePicker.SelectedItem.ToString();
+                Settings.Current.DarkMode = _darkModePicker.SelectedItem.ToString();
             };
         }
     }

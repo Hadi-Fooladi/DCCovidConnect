@@ -49,6 +49,7 @@ namespace DCCovidConnect.Views
                 var item = (SearchableItem) args.SelectedItem;
                 await Shell.Current.GoToAsync(item.Path);
             };
+            _searchResults.IsVisible = false;
             _searchResults.IsEnabled = false;
 
             TapGestureRecognizer menuTapped = new TapGestureRecognizer();

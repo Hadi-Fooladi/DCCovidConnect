@@ -10,16 +10,16 @@
         <ResourceDictionary>
             <Style x:Key="InfoStyle" TargetType="Label">
                 <Setter Property="FontSize" Value="Medium"/>
-                <Setter Property="TextColor" Value="{x:StaticResource Black}"/>
+                <Setter Property="TextColor" Value="{x:DynamicResource Black}"/>
             </Style>
             <Style x:Key="HeaderStyle" TargetType="Label">
                 <Setter Property="FontSize" Value="20"/>
                 <Setter Property="FontAttributes" Value="Bold"/>
-                <Setter Property="TextColor" Value="{x:StaticResource Black}"/>
+                <Setter Property="TextColor" Value="{x:DynamicResource Black}"/>
             </Style>
             <Style x:Key="HeaderDetailStyle" TargetType="Label">
                 <Setter Property="FontSize" Value="10"/>
-                <Setter Property="TextColor" Value="{x:StaticResource Primary}"/>
+                <Setter Property="TextColor" Value="{x:DynamicResource Primary}"/>
                 <Setter Property="FontAttributes" Value="Bold"/>
                 <Setter Property="TextTransform" Value="Uppercase"/>
                 <Setter Property="CharacterSpacing" Value="2"/>
@@ -42,7 +42,7 @@
                    VerticalOptions="End" 
                    IsVisible="False" 
                    Padding="15,20"
-                   BackgroundColor="{x:StaticResource White}"
+                   BackgroundColor="{x:DynamicResource White}"
                    android:VisualElement.Elevation="10"
                    ios:VisualElement.IsShadowEnabled="True"
                    Margin="20"
@@ -96,7 +96,7 @@
                 <StackLayout 
                     Spacing="20">
                     <Label 
-                        TextColor="{StaticResource Black}"
+                        TextColor="{DynamicResource Black}"
                         FontSize="Large"
                         HorizontalTextAlignment="Center"
                         Text="Database is&#10;updating..."

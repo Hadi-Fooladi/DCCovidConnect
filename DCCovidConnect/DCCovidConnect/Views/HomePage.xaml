@@ -15,7 +15,7 @@
                    FontSize="Small"
                    FontAttributes="Bold"
                    CharacterSpacing="0"
-                   TextColor="{StaticResource Black}"
+                   TextColor="{DynamicResource Black}"
                    VerticalOptions="Center"
                    HorizontalOptions="Center"
                    Margin="0,-1000" />
@@ -28,21 +28,26 @@
             <Grid>
                 <skiaforms:SKCanvasView x:Name="_canvasView"
                                         PaintSurface="OnCanvasViewPaintSurface"
-                                        HeightRequest="120"/>
+                                        HeightRequest="180"/>
                 <Label
                     BindingContext="{Binding Settings}"
                     Padding="20,0"
-                    Margin="0,0,0,-10"
+                    Margin="0,0,0,0"
                     Text="{Binding DefaultState}"
-                    TextColor="{StaticResource Black}"
-                    TextTransform="Uppercase"
+                    TextColor="{DynamicResource Black}"
+                    TextTransform="Default"
                     FontAttributes="Bold"
                     HorizontalTextAlignment="Start"
                     VerticalTextAlignment="End"
                     FontSize="54" />
             </Grid>
-            <Frame android:VisualElement.Elevation="10">
-                <StackLayout Padding="12,0">
+            <Frame android:VisualElement.Elevation="10"
+                   CornerRadius="20"
+                   Margin="-20,20,40,0"
+                   HasShadow="False"
+                   BackgroundColor="{StaticResource Primary}">
+                <StackLayout Padding="12,0"
+                             Margin="20,0,0,0">
                     <StackLayout Padding="0"
                                  Margin="0,-15,0,0">
                         <Label
@@ -59,7 +64,7 @@
                                 </FormattedString>
                             </Label.FormattedText>
                         </Label>
-                        <Label Text="{Binding Local}" TextColor="{StaticResource Primary}" TextTransform="Uppercase" />
+                        <Label Text="{Binding Local}" TextColor="{DynamicResource White}" TextTransform="Uppercase" />
                         <Label
                             FontSize="14">
                             <Label.FormattedText>

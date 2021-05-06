@@ -11,16 +11,18 @@
             <Style x:Key="Header" TargetType="Label">
                 <Setter Property="FontSize" Value="40" />
                 <Setter Property="FontAttributes" Value="Bold" />
-                <Setter Property="TextColor" Value="{StaticResource Black}" />
+                <Setter Property="TextColor" Value="{DynamicResource Black}" />
                 <Setter Property="Margin" Value="0,10,0,20" />
             </Style>
             <Style x:Key="ListItemStyle" TargetType="Frame">
                 <Setter Property="BorderColor" Value="Transparent" />
                 <Setter Property="Padding" Value="12" />
+                <Setter Property="CornerRadius" Value="0" />
+                <Setter Property="HasShadow" Value="False"/>
                 <!--<Setter Property="Padding" Value="20,15"/>-->
             </Style>
             <Style x:Key="ListItemLabel" TargetType="Label">
-                <Setter Property="TextColor" Value="{StaticResource Black}" />
+                <Setter Property="TextColor" Value="{DynamicResource Black}" />
                 <Setter Property="FontSize" Value="24" />
             </Style>
         </ResourceDictionary>
@@ -45,7 +47,10 @@
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
                             <StackLayout>
-                                <BoxView Color="LightGray" HeightRequest="2" />
+                                <BoxView Color="LightGray"
+                                         HeightRequest="2"
+                                         Margin="0"
+                                         />
                                 <Frame Style="{StaticResource ListItemStyle}">
                                     <Label Style="{StaticResource ListItemLabel}" Text="{Binding Title}" />
                                     <Frame.GestureRecognizers>

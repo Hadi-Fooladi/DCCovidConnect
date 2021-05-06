@@ -6,7 +6,7 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style x:Key="BaseStyle" TargetType="Label">
-                <Setter Property="TextColor" Value="{StaticResource Black}" />
+                <Setter Property="TextColor" Value="{DynamicResource Black}" />
             </Style>
             <Style x:Key="PStyle" TargetType="Label" BasedOn="{StaticResource BaseStyle}">
                 <Setter Property="FontSize" Value="20" />
@@ -19,7 +19,7 @@
                 <Setter Property="FontAttributes" Value="Bold" />
             </Style>
             <Style x:Key="EXPANDERStyle" TargetType="Label">
-                <Setter Property="TextColor" Value="{StaticResource Black}"></Setter>
+                <Setter Property="TextColor" Value="{DynamicResource Black}"></Setter>
                 <Setter Property="FontSize" Value="32" />
                 <Setter Property="FontAttributes" Value="Bold" />
             </Style>

@@ -1,4 +1,5 @@
 ﻿using DCCovidConnect.Data;
+using DCCovidConnect.Services;
 using System;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
@@ -35,6 +36,7 @@ namespace DCCovidConnect
             {
                 await App.Database.UpdateDatabase();
             }));
+            SetDarkMode(Settings.Current.DarkMode.Equals("On"));
         }
 
         protected override void OnSleep()
@@ -43,6 +45,20 @@ namespace DCCovidConnect
 
         protected override void OnResume()
         {
+        }
+
+        public static void SetDarkMode(bool enabled)
+        {
+            if (enabled)
+            {
+                App.Current.Resources["Black"] = Color.FromHex("#FFFFFF");
+                App.Current.Resources["White"] = Color.FromHex("#000000");
+            }
+            else
+            {
+                App.Current.Resources["White"] = Color.FromHex("#FFFFFF");
+                App.Current.Resources["Black"] = Color.FromHex("#000000");
+            }
         }
     }
 }

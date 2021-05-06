@@ -8,7 +8,7 @@
         <StackLayout Margin="20">
             <Label Text="Settings"
                    FontSize="40"
-                   TextColor="{StaticResource Black}" />
+                   TextColor="{DynamicResource Black}" />
             <TableView Intent="Settings">
                 <TableRoot>
                     <TableSection Title="Appearance"

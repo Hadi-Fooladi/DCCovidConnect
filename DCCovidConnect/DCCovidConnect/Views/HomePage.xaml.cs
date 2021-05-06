@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using DCCovidConnect.Services;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using DCCovidConnect.Models;
 
 namespace DCCovidConnect.Views
 {
@@ -38,7 +39,7 @@ namespace DCCovidConnect.Views
         private float _x;
         private float _y;
         private float _scale = 4f;
-        
+
         private SKMatrix _canvasTranslateMatrix;
         void OnCanvasViewPaintSurface(object sender, SKPaintSurfaceEventArgs args)
         {
@@ -56,16 +57,34 @@ namespace DCCovidConnect.Views
             float transformedX = _x / canvas.TotalMatrix.ScaleX + localBounds.MidX;
             float transformedY = _y / canvas.TotalMatrix.ScaleY + localBounds.MidY;
             canvas.Translate(transformedX, transformedY);
-            
+
             SKPaint stateFillPaint = new SKPaint
             {
                 Style = SKPaintStyle.Fill,
-                Color = ((Color) Application.Current.Resources["Primary"]).ToSKColor()
+                Color = ((Color)Application.Current.Resources["Primary"]).ToSKColor()
             };
-            
+
+            SKPaint stateFillPaintOther = new SKPaint
+            {
+                Style = SKPaintStyle.Fill,
+                Color = ((Color)Application.Current.Resources["Primary"]).WithLuminosity(0.8).ToSKColor()
+            };
+
+            SKPaint stateBorderPaint = new SKPaint
+            {
+                Style = SKPaintStyle.Stroke,
+                StrokeWidth = 2,
+                Color = ((Color)Application.Current.Resources["White"]).ToSKColor(),
+            };
+
+            foreach (StateObject state in MapService.Service.States.Values)
+            {
+                canvas.DrawPath(state.Path, stateFillPaintOther);
+                canvas.DrawPath(state.Path, stateBorderPaint);
+            }
             canvas.DrawPath(_mainState, stateFillPaint);
         }
-        
+
         private bool ZoomPath(SKPath path)
         {
             if (path == null || !path.GetBounds(out var targetState))

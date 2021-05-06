@@ -25,6 +25,7 @@ namespace DCCovidConnect.Views
             _darkModePicker.SelectedIndexChanged += (sender, args) =>
             {
                 Settings.Current.DarkMode = _darkModePicker.SelectedItem.ToString();
+                App.SetDarkMode(Settings.Current.DarkMode.Equals("On"));
             };
         }
     }

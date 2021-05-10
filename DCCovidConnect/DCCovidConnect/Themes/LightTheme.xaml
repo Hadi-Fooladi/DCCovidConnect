@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary xmlns="http://xamarin.com/schemas/2014/forms"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    x:Class="DCCovidConnect.Themes.LightTheme">
+        <Color x:Key="BackgroundColor">#F4F4F4</Color>
+        <Color x:Key="ElementBackgroundColor">White</Color>
+        <Color x:Key="PrimaryTextColor">Black</Color>
+        <Color x:Key="AccentTextColor">Red</Color>
+        <Color x:Key="AccentColor">Red</Color>
+</ResourceDictionary>

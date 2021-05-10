@@ -7,13 +7,13 @@
     <Shell.Resources>
         <ResourceDictionary>
             <Style x:Key="BaseStyle" TargetType="Element">
-                <Setter Property="Shell.BackgroundColor" Value="{StaticResource White}" />
+                <Setter Property="Shell.BackgroundColor" Value="{StaticResource BackgroundColor}" />
                 <Setter Property="Shell.NavBarHasShadow" Value="False"/>
                 <Setter Property="Shell.ForegroundColor" Value="Black" />
-                <Setter Property="Shell.TitleColor" Value="White" />
+                <Setter Property="Shell.TitleColor" Value="{DynamicResource BackgroundColor}" />
                 <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
                 <Setter Property="Shell.UnselectedColor" Value="#95FFFFFF" />
-                <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource White}" />
+                <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource BackgroundColor}" />
                 <Setter Property="Shell.TabBarForegroundColor" Value="{StaticResource Secondary}"/>
                 <Setter Property="Shell.TabBarUnselectedColor" Value="{StaticResource Secondary}"/>
                 <Setter Property="Shell.TabBarTitleColor" Value="{StaticResource Secondary}"/>

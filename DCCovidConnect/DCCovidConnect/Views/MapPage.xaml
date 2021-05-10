@@ -10,16 +10,16 @@
         <ResourceDictionary>
             <Style x:Key="InfoStyle" TargetType="Label">
                 <Setter Property="FontSize" Value="Medium"/>
-                <Setter Property="TextColor" Value="{x:DynamicResource Black}"/>
+                <Setter Property="TextColor" Value="{x:DynamicResource PrimaryTextColor}"/>
             </Style>
             <Style x:Key="HeaderStyle" TargetType="Label">
                 <Setter Property="FontSize" Value="20"/>
                 <Setter Property="FontAttributes" Value="Bold"/>
-                <Setter Property="TextColor" Value="{x:DynamicResource Black}"/>
+                <Setter Property="TextColor" Value="{x:DynamicResource PrimaryTextColor}"/>
             </Style>
             <Style x:Key="HeaderDetailStyle" TargetType="Label">
                 <Setter Property="FontSize" Value="10"/>
-                <Setter Property="TextColor" Value="{x:DynamicResource Primary}"/>
+                <Setter Property="TextColor" Value="{x:DynamicResource AccentTextColor}"/>
                 <Setter Property="FontAttributes" Value="Bold"/>
                 <Setter Property="TextTransform" Value="Uppercase"/>
                 <Setter Property="CharacterSpacing" Value="2"/>
@@ -28,7 +28,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <Grid RowDefinitions="*" ColumnDefinitions="*">
+        <Grid RowDefinitions="*" ColumnDefinitions="*" BackgroundColor="{DynamicResource BackgroundColor}">
             <skiaforms:SKCanvasView x:Name="_canvasView"
                                     PaintSurface="OnCanvasViewPaintSurface"
                                     VerticalOptions="FillAndExpand"
@@ -42,7 +42,7 @@
                    VerticalOptions="End" 
                    IsVisible="False" 
                    Padding="15,20"
-                   BackgroundColor="{x:DynamicResource White}"
+                   BackgroundColor="{x:DynamicResource ElementBackgroundColor}"
                    android:VisualElement.Elevation="10"
                    ios:VisualElement.IsShadowEnabled="True"
                    Margin="20"
@@ -82,7 +82,8 @@
                     </Label>
                 </StackLayout>
             </Frame>
-            <Frame x:Name="_loadingIndicator" 
+            <Frame x:Name="_loadingIndicator"
+                   HasShadow="False"
                    Grid.Row="0" 
                    Grid.Column="0" 
                    IsVisible="False" 
@@ -96,14 +97,14 @@
                 <StackLayout 
                     Spacing="20">
                     <Label 
-                        TextColor="{DynamicResource Black}"
+                        TextColor="{DynamicResource ElementBackgroundColor}"
                         FontSize="Large"
                         HorizontalTextAlignment="Center"
                         Text="Database is&#10;updating..."
                         />
                     <ActivityIndicator 
                         IsRunning="True"
-                        Color="{StaticResource Primary}"
+                        Color="{StaticResource AccentTextColor}"
                         />
                 </StackLayout>
             </Frame>

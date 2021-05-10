@@ -16,8 +16,9 @@
             </Style>
             <Style x:Key="ListItemStyle" TargetType="Frame">
                 <Setter Property="BorderColor" Value="Transparent" />
-                <Setter Property="Padding" Value="12" />
-                <Setter Property="CornerRadius" Value="0" />
+                <Setter Property="Padding" Value="20" />
+                <Setter Property="Margin" Value="0,0,10,0"/>
+                <Setter Property="CornerRadius" Value="20" />
                 <Setter Property="HasShadow" Value="False"/>
                 <!--<Setter Property="Padding" Value="20,15"/>-->
             </Style>
@@ -28,7 +29,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <StackLayout>
+        <StackLayout BackgroundColor="{DynamicResource BackgroundColor}">
             <Frame android:VisualElement.Elevation="10"
                    BackgroundColor="{StaticResource Primary}"
                    Padding="0"
@@ -39,18 +40,14 @@
                        VerticalOptions="Start"
                        HorizontalOptions="CenterAndExpand" />
             </Frame>
-            <ScrollView Margin="0,-10,0,0">
+            <ScrollView Margin="0,0,0,0">
                 <StackLayout
                     x:Name="ItemList"
-                    Margin="40,0,40,0"
+                    Margin="25,0"
                     BindableLayout.ItemsSource="{Binding Items}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
                             <StackLayout>
-                                <BoxView Color="LightGray"
-                                         HeightRequest="2"
-                                         Margin="0"
-                                         />
                                 <Frame Style="{StaticResource ListItemStyle}">
                                     <Label Style="{StaticResource ListItemLabel}" Text="{Binding Title}" />
                                     <Frame.GestureRecognizers>

@@ -420,7 +420,7 @@ namespace DCCovidConnect.Views
         /// <returns>Returns the color.</returns>
         private static SKColor GetColorFromValue(int value, int max, float minLum = 0.2f)
         {
-            Color ret = (Color)Application.Current.Resources["Primary"];
+            Color ret = (Color)Application.Current.Resources["AccentColor"];
             ret = ret.WithLuminosity(1 - ((float)value / max * (0.7 - minLum) + minLum));
             return ret.ToSKColor();
         }

@@ -7,5 +7,11 @@
         <Color x:Key="Secondary">#7C26E9</Color>
         <Color x:Key="White">#FFFFFF</Color>
         <Color x:Key="Black">#000000</Color>
+        <!--<ResourceDictionary Source="Themes/LightTheme.xaml"/>-->
+    <Color x:Key="BackgroundColor">Black</Color>
+    <Color x:Key="ElementBackgroundColor">#0A0A0A</Color>
+    <Color x:Key="PrimaryTextColor">White</Color>
+    <Color x:Key="AccentTextColor">Red</Color>
+    <Color x:Key="AccentColor">Red</Color>
     </Application.Resources>
 </Application>

@@ -10,17 +10,26 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style TargetType="Button">
-                <Setter Property="BackgroundColor" Value="#EEEEEE" />
                 <Setter Property="CornerRadius" Value="20" />
-                <Setter Property="TextColor" Value="{StaticResource Primary}"/>
+                <Setter Property="TextColor" Value="{StaticResource AccentTextColor}"/>
             </Style>
             <Style x:Key="ButtonFrame" TargetType="Frame">
                 <Setter Property="Padding" Value="0" />
                 <Setter Property="CornerRadius" Value="20" />
                 <Setter Property="android:VisualElement.Elevation" Value="5" />
                 <Setter Property="HasShadow" Value="False"/>
-                <Setter Property="BorderColor" Value="{DynamicResource White}"/>
-                <Setter Property="BackgroundColor" Value="LightGray"/>
+                <Setter Property="BorderColor" Value="{DynamicResource ElementBackgroundColor}"/>
+                <Setter Property="BackgroundColor" Value="{DynamicResource ElementBackgroundColor}"/>
+                <!--<Setter Property="ios:VisualElement.ShadowOffset">
+                    <Setter.Value>
+                        <Size>
+                            <x:Arguments>
+                                <x:Double>10</x:Double>
+                                <x:Double>10</x:Double>
+                            </x:Arguments>
+                        </Size>
+                    </Setter.Value>
+                </Setter>-->
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
@@ -36,7 +45,7 @@
                    Margin="0,-1000" />
         </Frame>
     </Shell.TitleView>
-    <StackLayout x:Name="_pageLayout">
+    <StackLayout x:Name="_pageLayout" BackgroundColor="{DynamicResource BackgroundColor}">
         <Frame BackgroundColor="{StaticResource White}"
                BorderColor="LightGray"
                Margin="40, 0"

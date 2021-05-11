@@ -331,15 +331,15 @@ namespace DCCovidConnect.Data
             {
                 MySqlConnectionStringBuilder builder = new MySqlConnectionStringBuilder();
 
-                builder.Server = "MYSQL5044.site4now.net";
-                builder.Database = "db_a65a18_covid";
-                builder.UserID = "a65a18_covid";
-                builder.Password = "NLGB6e337kSC2zA";
+                builder.Server = "s81.etcserver.com";
+                builder.Database = "adamrmun_covidco";
+                builder.UserID = "adamrmun_webapp";
+                builder.Password = "covidconnectp4ss";
                 using (MySqlConnection connection = new MySqlConnection(builder.ToString()))
                 {
                     connection.Open();
                     string query = @"SELECT ID, post_title, MAX(post_date_gmt) AS post_date, post_content
-                                        FROM db_a65a18_covid.covidco_wp_posts
+                                        FROM covidco_wp_posts
                                         WHERE NULLIF(post_content, '') IS NOT NULL AND NULLIF(post_title, '') IS NOT NULL AND (post_title LIKE '%-%' OR post_title = 'FAQs')
                                         GROUP BY post_title
                                         ORDER BY post_title ASC";

@@ -7,16 +7,16 @@
     <Shell.Resources>
         <ResourceDictionary>
             <Style x:Key="BaseStyle" TargetType="Element">
-                <Setter Property="Shell.BackgroundColor" Value="{StaticResource BackgroundColor}" />
+                <Setter Property="Shell.BackgroundColor" Value="{DynamicResource BackgroundColor}" />
                 <Setter Property="Shell.NavBarHasShadow" Value="False"/>
-                <Setter Property="Shell.ForegroundColor" Value="Black" />
+                <Setter Property="Shell.ForegroundColor" Value="{DynamicResource PrimaryTextColor}" />
                 <Setter Property="Shell.TitleColor" Value="{DynamicResource BackgroundColor}" />
                 <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
                 <Setter Property="Shell.UnselectedColor" Value="#95FFFFFF" />
-                <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource BackgroundColor}" />
-                <Setter Property="Shell.TabBarForegroundColor" Value="{StaticResource Secondary}"/>
-                <Setter Property="Shell.TabBarUnselectedColor" Value="{StaticResource Secondary}"/>
-                <Setter Property="Shell.TabBarTitleColor" Value="{StaticResource Secondary}"/>
+                <Setter Property="Shell.TabBarBackgroundColor" Value="{DynamicResource BackgroundColor}" />
+                <Setter Property="Shell.TabBarForegroundColor" Value="{DynamicResource AccentColor}"/>
+                <Setter Property="Shell.TabBarUnselectedColor" Value="{DynamicResource AccentColor}"/>
+                <Setter Property="Shell.TabBarTitleColor" Value="{DynamicResource AccentColor}"/>
             </Style>
             <Style TargetType="TabBar" BasedOn="{StaticResource BaseStyle}" />
             <Style TargetType="FlyoutItem" BasedOn="{StaticResource BaseStyle}" />

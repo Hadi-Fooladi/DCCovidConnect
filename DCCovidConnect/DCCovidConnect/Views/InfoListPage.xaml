@@ -5,17 +5,19 @@
              xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
              x:Class="DCCovidConnect.Views.InfoListPage"
-             Shell.BackgroundColor="{StaticResource Primary}">
+             Shell.BackgroundColor="{StaticResource AccentColor}"
+             BackgroundColor="{DynamicResource BackgroundColor}">
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style x:Key="Header" TargetType="Label">
                 <Setter Property="FontSize" Value="40" />
                 <Setter Property="FontAttributes" Value="Bold" />
-                <Setter Property="TextColor" Value="{DynamicResource Black}" />
+                <Setter Property="TextColor" Value="{DynamicResource PrimaryTextColor}" />
                 <Setter Property="Margin" Value="0,10,0,20" />
             </Style>
             <Style x:Key="ListItemStyle" TargetType="Frame">
                 <Setter Property="BorderColor" Value="Transparent" />
+                <Setter Property="BackgroundColor" Value="{DynamicResource ElementBackgroundColor}"/>
                 <Setter Property="Padding" Value="20" />
                 <Setter Property="Margin" Value="0,0,10,0"/>
                 <Setter Property="CornerRadius" Value="20" />
@@ -23,15 +25,15 @@
                 <!--<Setter Property="Padding" Value="20,15"/>-->
             </Style>
             <Style x:Key="ListItemLabel" TargetType="Label">
-                <Setter Property="TextColor" Value="{DynamicResource Black}" />
+                <Setter Property="TextColor" Value="{DynamicResource PrimaryTextColor}" />
                 <Setter Property="FontSize" Value="24" />
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <StackLayout BackgroundColor="{DynamicResource BackgroundColor}">
+        <StackLayout>
             <Frame android:VisualElement.Elevation="10"
-                   BackgroundColor="{StaticResource Primary}"
+                   BackgroundColor="{StaticResource AccentColor}"
                    Padding="0"
                    Margin="0,0,0,0"
                    CornerRadius="0">
@@ -44,6 +46,7 @@
                 <StackLayout
                     x:Name="ItemList"
                     Margin="25,0"
+                    Padding="0,10,0,0"
                     BindableLayout.ItemsSource="{Binding Items}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>

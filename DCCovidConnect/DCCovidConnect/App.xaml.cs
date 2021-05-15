@@ -1,6 +1,8 @@
 ﻿using DCCovidConnect.Data;
 using DCCovidConnect.Services;
+using DCCovidConnect.Themes;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -16,6 +18,7 @@ namespace DCCovidConnect
             InitializeComponent();
 
             MainPage = new AppShell();
+            ToggleTheme();
         }
 
         public static InfoDatabase Database
@@ -36,7 +39,6 @@ namespace DCCovidConnect
             {
                 await App.Database.UpdateDatabase();
             }));
-            SetDarkMode(Settings.Current.DarkMode.Equals("On"));
         }
 
         protected override void OnSleep()
@@ -47,17 +49,23 @@ namespace DCCovidConnect
         {
         }
 
-        public static void SetDarkMode(bool enabled)
+        public static void ToggleTheme()
         {
-            if (enabled)
+            ICollection<ResourceDictionary> mergedDictionaries = Application.Current.Resources.MergedDictionaries;
+            if (mergedDictionaries != null)
             {
-                App.Current.Resources["Black"] = Color.FromHex("#FFFFFF");
-                App.Current.Resources["White"] = Color.FromHex("#000000");
-            }
-            else
-            {
-                App.Current.Resources["White"] = Color.FromHex("#FFFFFF");
-                App.Current.Resources["Black"] = Color.FromHex("#000000");
+                mergedDictionaries.Clear();
+
+                switch (Settings.Current.DarkMode)
+                {
+                    case "On":
+                        mergedDictionaries.Add(new DarkTheme());
+                        break;
+                    case "Off":
+                    default:
+                        mergedDictionaries.Add(new LightTheme());
+                        break;
+                }
             }
         }
     }

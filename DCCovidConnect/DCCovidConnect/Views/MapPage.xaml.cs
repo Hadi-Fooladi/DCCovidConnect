@@ -270,17 +270,18 @@ namespace DCCovidConnect.Views
 
             canvas.Clear();
 
+            App.Current.Resources.TryGetValue("BackgroundColor", out var background);
             SKPaint stateStrokePaint = new SKPaint
             {
                 Style = SKPaintStyle.Stroke,
-                Color = SKColors.White,
+                Color = ((Color)background).ToSKColor(),
                 StrokeWidth = 1,
             };
 
             SKPaint countyStrokePaint = new SKPaint
             {
                 Style = SKPaintStyle.Stroke,
-                Color = SKColors.White,
+                Color = ((Color)background).ToSKColor(),
                 StrokeWidth = 0.25f,
             };
 
@@ -420,8 +421,9 @@ namespace DCCovidConnect.Views
         /// <returns>Returns the color.</returns>
         private static SKColor GetColorFromValue(int value, int max, float minLum = 0.2f)
         {
-            Color ret = (Color)Application.Current.Resources["AccentColor"];
-            ret = ret.WithLuminosity(1 - ((float)value / max * (0.7 - minLum) + minLum));
+            App.Current.Resources.TryGetValue("AccentColor", out var accent);
+            Color ret = (Color)accent;
+            ret = ret.WithLuminosity(1 - ((float)value / max * (0.8 - minLum) + minLum));
             return ret.ToSKColor();
         }
 

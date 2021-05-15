@@ -3,24 +3,45 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="DCCovidConnect.Views.SettingsPage"
-             xmlns:services="clr-namespace:DCCovidConnect.Services">
+             xmlns:services="clr-namespace:DCCovidConnect.Services"
+             BackgroundColor="{DynamicResource BackgroundColor}">
+    <Shell.TitleView>
+        <Frame BackgroundColor="Transparent"
+               HasShadow="False">
+            <Label Text="DCCOVIDConnect"
+                   FontSize="Small"
+                   FontAttributes="Bold"
+                   CharacterSpacing="0"
+                   TextColor="{DynamicResource PrimaryTextColor}"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"
+                   Margin="0,-1000" />
+        </Frame>
+    </Shell.TitleView>
     <ContentPage.Content>
-        <StackLayout Margin="20">
+        <StackLayout Padding="20">
             <Label Text="Settings"
                    FontSize="40"
-                   TextColor="{DynamicResource Black}" />
-            <TableView Intent="Settings">
+                   TextColor="{DynamicResource PrimaryTextColor}" />
+            <TableView Intent="Settings"
+                       BackgroundColor="{DynamicResource BackgroundColor}">
                 <TableRoot>
                     <TableSection Title="Appearance"
-                                  TextColor="{StaticResource Primary}">
+                                  TextColor="{DynamicResource AccentTextColor}">
                         <ViewCell>
-                            <StackLayout Orientation="Horizontal">
+                            <StackLayout Orientation="Horizontal"
+                                         BackgroundColor="{DynamicResource BackgroundColor}">
                                 <Label Text="Dark Mode"
-                                       VerticalOptions="Center" />
+                                       VerticalOptions="Center"
+                                       TextColor="{DynamicResource PrimaryTextColor}"
+                                       />
                                 <Picker x:Name="_darkModePicker"
                                         HorizontalOptions="EndAndExpand"
                                         HorizontalTextAlignment="End"
-                                        WidthRequest="70">
+                                        WidthRequest="70"
+                                        TextColor="{DynamicResource PrimaryTextColor}"
+                                        BackgroundColor="{DynamicResource ElementBackgroundColor}"
+                                        >
                                     <Picker.Items>
                                         <x:String>Off</x:String>
                                         <x:String>On</x:String>
@@ -32,13 +53,19 @@
                     </TableSection>
                     <TableSection Title="General">
                         <ViewCell>
-                            <StackLayout Orientation="Horizontal">
+                            <StackLayout Orientation="Horizontal"
+                                         BackgroundColor="{DynamicResource BackgroundColor}">
                                 <Label Text="Default State"
-                                       VerticalOptions="Center" />
+                                       VerticalOptions="Center"
+                                       TextColor="{DynamicResource PrimaryTextColor}"
+                                       />
                                 <Picker x:Name="_statePicker"
                                         HorizontalOptions="EndAndExpand"
                                         HorizontalTextAlignment="End"
-                                        WidthRequest="150" />
+                                        WidthRequest="150"
+                                        TextColor="{DynamicResource PrimaryTextColor}"
+                                        BackgroundColor="{DynamicResource ElementBackgroundColor}"
+                                        />
                             </StackLayout>
                         </ViewCell>
                     </TableSection>

@@ -8,9 +8,11 @@
              xmlns:app="clr-namespace:DCCovidConnect"
              xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
-             x:Class="DCCovidConnect.Views.HomePage">
+             x:Class="DCCovidConnect.Views.HomePage"
+             BackgroundColor="{DynamicResource BackgroundColor}">
     <Shell.TitleView>
-        <Frame BackgroundColor="Transparent">
+        <Frame BackgroundColor="Transparent"
+               HasShadow="False">
             <Label Text="DCCOVIDConnect"
                    FontSize="Small"
                    FontAttributes="Bold"
@@ -21,7 +23,7 @@
                    Margin="0,-1000" />
         </Frame>
     </Shell.TitleView>
-    <ScrollView BackgroundColor="{DynamicResource BackgroundColor}">
+    <ScrollView>
         <StackLayout>
             <!--<ProgressBar x:Name="_progressBar" IsVisible="True" HorizontalOptions="Fill" ProgressColor="{StaticResource Primary}"
                          Progress="{x:Binding app:App+Database.Progress}"/>-->
@@ -53,7 +55,7 @@
                    CornerRadius="20"
                    Margin="15"
                    HasShadow="False"
-                   BackgroundColor="{StaticResource ElementBackgroundColor}">
+                   BackgroundColor="{DynamicResource ElementBackgroundColor}">
                 <StackLayout Padding="12,0"
                              Margin="0,0,0,0">
                     <StackLayout Padding="0"
@@ -64,10 +66,11 @@
                                 <FormattedString>
                                     <FormattedString.Spans>
                                         <Span Text="{Binding RegionCases, StringFormat='{0:N0}'}"
-                                              TextColor="{StaticResource AccentTextColor}"
+                                              TextColor="{DynamicResource AccentTextColor}"
                                               FontAttributes="Bold"
                                               FontSize="24" />
-                                        <Span Text=" CASES" />
+                                        <Span Text=" CASES"
+                                              TextColor="{DynamicResource PrimaryTextColor}"/>
                                     </FormattedString.Spans>
                                 </FormattedString>
                             </Label.FormattedText>
@@ -79,7 +82,7 @@
                                 <FormattedString>
                                     <FormattedString.Spans>
                                         <Span Text="{Binding LocalCases, StringFormat='{0:N0}'}"
-                                              TextColor="{StaticResource PrimaryTextColor}"
+                                              TextColor="{DynamicResource PrimaryTextColor}"
                                               FontAttributes="Bold"
                                               FontSize="18" />
                                         <Span Text=" CASES" />

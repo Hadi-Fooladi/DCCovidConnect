@@ -57,24 +57,26 @@ namespace DCCovidConnect.Views
             float transformedX = _x / canvas.TotalMatrix.ScaleX + localBounds.MidX;
             float transformedY = _y / canvas.TotalMatrix.ScaleY + localBounds.MidY;
             canvas.Translate(transformedX, transformedY);
+            Application.Current.Resources.TryGetValue("AccentColor", out var accent);
+            Application.Current.Resources.TryGetValue("BackgroundColor", out var backgound);
 
             SKPaint stateFillPaint = new SKPaint
             {
                 Style = SKPaintStyle.Fill,
-                Color = ((Color)Application.Current.Resources["Primary"]).ToSKColor()
+                Color = ((Color)accent).ToSKColor()
             };
 
             SKPaint stateFillPaintOther = new SKPaint
             {
                 Style = SKPaintStyle.Fill,
-                Color = ((Color)Application.Current.Resources["Primary"]).WithLuminosity(0.8).ToSKColor()
+                Color = ((Color)accent).WithLuminosity(0.8).ToSKColor()
             };
 
             SKPaint stateBorderPaint = new SKPaint
             {
                 Style = SKPaintStyle.Stroke,
                 StrokeWidth = 2,
-                Color = ((Color)Application.Current.Resources["White"]).ToSKColor(),
+                Color = ((Color)backgound).ToSKColor()
             };
 
             foreach (StateObject state in MapService.Service.States.Values)
@@ -90,7 +92,7 @@ namespace DCCovidConnect.Views
             if (path == null || !path.GetBounds(out var targetState))
                 return false;
             // finds the scale to fit the state to the screen
-            _scale = (float)_canvasView.Height / Math.Max(targetState.Width, targetState.Height) * _SCALE_MULTIPLIER;
+            _scale = (float)_canvasView.HeightRequest / Math.Max(targetState.Width, targetState.Height) * _SCALE_MULTIPLIER;
             _x = -targetState.Left * _scale;
             _y = -targetState.MidY * _scale;
             _canvasView.InvalidateSurface();

@@ -5,7 +5,8 @@
              xmlns:skiaforms="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
              xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
-             x:Class="DCCovidConnect.Views.MapPage">
+             x:Class="DCCovidConnect.Views.MapPage"
+             BackgroundColor="{DynamicResource BackgroundColor}">
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style x:Key="InfoStyle" TargetType="Label">
@@ -27,8 +28,21 @@
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
+    <Shell.TitleView>
+        <Frame BackgroundColor="Transparent"
+               HasShadow="False">
+            <Label Text="DCCOVIDConnect"
+                   FontSize="Small"
+                   FontAttributes="Bold"
+                   CharacterSpacing="0"
+                   TextColor="{DynamicResource PrimaryTextColor}"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"
+                   Margin="0,-1000" />
+        </Frame>
+    </Shell.TitleView>
     <ContentPage.Content>
-        <Grid RowDefinitions="*" ColumnDefinitions="*" BackgroundColor="{DynamicResource BackgroundColor}">
+        <Grid RowDefinitions="*" ColumnDefinitions="*">
             <skiaforms:SKCanvasView x:Name="_canvasView"
                                     PaintSurface="OnCanvasViewPaintSurface"
                                     VerticalOptions="FillAndExpand"

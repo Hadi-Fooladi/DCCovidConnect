@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DCCovidConnect.Services;
+using DCCovidConnect.Themes;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -25,7 +26,7 @@ namespace DCCovidConnect.Views
             _darkModePicker.SelectedIndexChanged += (sender, args) =>
             {
                 Settings.Current.DarkMode = _darkModePicker.SelectedItem.ToString();
-                App.SetDarkMode(Settings.Current.DarkMode.Equals("On"));
+                App.ToggleTheme();
             };
         }
     }

@@ -221,7 +221,8 @@ namespace DCCovidConnect.Views
                             {
                                 Content = label,
                                 BackgroundColor = (Color)App.Current.Resources["ElementBackgroundColor"],
-                                CornerRadius = 5
+                                CornerRadius = 5,
+                                HasShadow = false,
                             };
                             (ret as Expander).Header = header;
                             obj.Remove();

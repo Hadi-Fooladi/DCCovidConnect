@@ -62,8 +62,17 @@ namespace DCCovidConnect
                         mergedDictionaries.Add(new DarkTheme());
                         break;
                     case "Off":
-                    default:
                         mergedDictionaries.Add(new LightTheme());
+                        break;
+                    default:
+                        OSAppTheme currentTheme = Application.Current.RequestedTheme;
+                        if (currentTheme.ToString().Equals("Dark"))
+                        {
+                            mergedDictionaries.Add(new DarkTheme());
+                        } else
+                        {
+                            mergedDictionaries.Add(new LightTheme());
+                        }
                         break;
                 }
             }

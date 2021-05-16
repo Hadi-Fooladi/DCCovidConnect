@@ -13,6 +13,7 @@
             <Style TargetType="Button">
                 <Setter Property="CornerRadius" Value="20" />
                 <Setter Property="TextColor" Value="{StaticResource AccentTextColor}"/>
+                <Setter Property="BackgroundColor" Value="Transparent"/>
             </Style>
             <Style x:Key="ButtonFrame" TargetType="Frame">
                 <Setter Property="Padding" Value="0" />

@@ -107,11 +107,12 @@
                    CornerRadius="20"
                    android:VisualElement.Elevation="10"
                    ios:VisualElement.IsShadowEnabled="True"
+                   BackgroundColor="{DynamicResource ElementBackgroundColor}"
                    >
                 <StackLayout 
                     Spacing="20">
                     <Label 
-                        TextColor="{DynamicResource ElementBackgroundColor}"
+                        TextColor="{DynamicResource PrimaryTextColor}"
                         FontSize="Large"
                         HorizontalTextAlignment="Center"
                         Text="Database is&#10;updating..."

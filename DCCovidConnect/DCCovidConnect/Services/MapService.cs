@@ -15,7 +15,7 @@ namespace DCCovidConnect.Services
 
         public static MapService Service => _instance ??= new MapService();
 
-        private static string Namespace = "DCCovidConnect";
+        private static string Namespace = "DCCovidConnect.Assets";
         private static string StatesFile = "states.json";
         private static string CountiesFile = "counties.json";
 

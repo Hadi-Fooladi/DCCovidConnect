@@ -12,8 +12,9 @@
         <ResourceDictionary>
             <Style TargetType="Button">
                 <Setter Property="CornerRadius" Value="20" />
-                <Setter Property="TextColor" Value="{StaticResource AccentTextColor}"/>
+                <Setter Property="TextColor" Value="{DynamicResource AccentTextColor}"/>
                 <Setter Property="BackgroundColor" Value="Transparent"/>
+                <Setter Property="ContentLayout" Value="Top, 5" />
             </Style>
             <Style x:Key="ButtonFrame" TargetType="Frame">
                 <Setter Property="Padding" Value="0" />
@@ -96,59 +97,129 @@
                     </Grid.RowDefinitions>
                     <Frame Style="{StaticResource ButtonFrame}">
                         <Button Text="News"
-                                CommandParameter="{x:Static models:InfoItem+InfoType.NEWS}" />
+                                CommandParameter="{x:Static models:InfoItem+InfoType.NEWS}">
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xf1ea;"
+                                                 FontFamily="FontAwesomeSolid"
+                                                 Size="Large"
+                                                 Color="{DynamicResource AccentColor}"/>
+                            </Button.ImageSource>
+                        </Button>
                     </Frame>
                     <Frame Style="{StaticResource ButtonFrame}"
                            Grid.Column="1">
-                        <Button Text="Getting Involved"
-                                CommandParameter="{x:Static models:InfoItem+InfoType.GETTING_INVOLVED}" />
+                        <Button Text="Get Involved"
+                                CommandParameter="{x:Static models:InfoItem+InfoType.GETTING_INVOLVED}">
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xf4be;"
+                                                 FontFamily="FontAwesomeSolid"
+                                                 Size="Large"
+                                                 Color="{DynamicResource AccentColor}"/>
+                            </Button.ImageSource>
+                        </Button>
                     </Frame>
                     <Frame Style="{StaticResource ButtonFrame}"
                            Grid.Column="2">
                         <Button Text="Age Specific"
-                                CommandParameter="{x:Static models:InfoItem+InfoType.AGE_SPECIFIC}" />
+                                CommandParameter="{x:Static models:InfoItem+InfoType.AGE_SPECIFIC}" >
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xf500;"
+                                                 FontFamily="FontAwesomeSolid"
+                                                 Size="Large"
+                                                 Color="{DynamicResource AccentColor}"/>
+                            </Button.ImageSource>
+                        </Button>
                     </Frame>
                     <Frame Style="{StaticResource ButtonFrame}"
                            Grid.Row="1"
                            Grid.ColumnSpan="2">
                         <Button Text="Communities"
-                                CommandParameter="{x:Static models:InfoItem+InfoType.COMMUNITY}" />
+                                CommandParameter="{x:Static models:InfoItem+InfoType.COMMUNITY}" >
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xf64f;"
+                                                 FontFamily="FontAwesomeSolid"
+                                                 Size="Large"
+                                                 Color="{DynamicResource AccentColor}"/>
+                            </Button.ImageSource>
+                        </Button>
                     </Frame>
                     <Frame Style="{StaticResource ButtonFrame}"
                            Grid.Row="1"
                            Grid.Column="2">
                         <Button Text="Research"
-                                CommandParameter="{x:Static models:InfoItem+InfoType.RESEARCH}" />
+                                CommandParameter="{x:Static models:InfoItem+InfoType.RESEARCH}" >
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xf19d;"
+                                                 FontFamily="FontAwesomeSolid"
+                                                 Size="Large"
+                                                 Color="{DynamicResource AccentColor}"/>
+                            </Button.ImageSource>
+                        </Button>
                     </Frame>
                     <Frame Style="{StaticResource ButtonFrame}"
                            Grid.Row="2">
-                        <Button Text="General Information"
-                                CommandParameter="{x:Static models:InfoItem+InfoType.GENERAL_INFORMATION}" />
+                        <Button Text="General"
+                                CommandParameter="{x:Static models:InfoItem+InfoType.GENERAL_INFORMATION}" >
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xf0ac;"
+                                                 FontFamily="FontAwesomeSolid"
+                                                 Size="Large"
+                                                 Color="{DynamicResource AccentColor}"/>
+                            </Button.ImageSource>
+                        </Button>
                     </Frame>
                     <Frame Style="{StaticResource ButtonFrame}"
                            Grid.Row="2"
                            Grid.Column="1"
                            Grid.ColumnSpan="2">
                         <Button Text="Self Care"
-                                CommandParameter="{x:Static models:InfoItem+InfoType.SELF_CARE}" />
+                                CommandParameter="{x:Static models:InfoItem+InfoType.SELF_CARE}" >
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xf462;"
+                                                 FontFamily="FontAwesomeSolid"
+                                                 Size="Large"
+                                                 Color="{DynamicResource AccentColor}"/>
+                            </Button.ImageSource>
+                        </Button>
                     </Frame>
                     <Frame Style="{StaticResource ButtonFrame}"
                            Grid.Column="0"
                            Grid.Row="3">
                         <Button Text="Services"
-                                CommandParameter="{x:Static models:InfoItem+InfoType.SERVICES}" />
+                                CommandParameter="{x:Static models:InfoItem+InfoType.SERVICES}" >
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xf0eb;"
+                                                 FontFamily="FontAwesomeSolid"
+                                                 Size="Large"
+                                                 Color="{DynamicResource AccentColor}"/>
+                            </Button.ImageSource>
+                        </Button>
                     </Frame>
                     <Frame Style="{StaticResource ButtonFrame}"
                            Grid.Row="3"
                            Grid.Column="1">
                         <Button Text="Pregnancy"
-                                CommandParameter="{x:Static models:InfoItem+InfoType.PREGNANCY}" />
+                                CommandParameter="{x:Static models:InfoItem+InfoType.PREGNANCY}" >
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xf77c;"
+                                                 FontFamily="FontAwesomeSolid"
+                                                 Size="Large"
+                                                 Color="{DynamicResource AccentColor}"/>
+                            </Button.ImageSource>
+                        </Button>
                     </Frame>
                     <Frame Style="{StaticResource ButtonFrame}"
                            Grid.Row="3"
                            Grid.Column="2">
                         <Button Text="FAQ"
-                                CommandParameter="{x:Static models:InfoItem+InfoType.FAQ}" />
+                                CommandParameter="{x:Static models:InfoItem+InfoType.FAQ}" >
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xf086;"
+                                                 FontFamily="FontAwesomeSolid"
+                                                 Size="Large"
+                                                 Color="{DynamicResource AccentColor}"/>
+                            </Button.ImageSource>
+                        </Button>
                     </Frame>
                 </Grid>
             </StackLayout>

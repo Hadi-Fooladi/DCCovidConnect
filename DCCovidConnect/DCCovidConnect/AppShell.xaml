@@ -25,15 +25,39 @@
 
     <TabBar>
         <Tab Title="Home">
+            <Tab.Icon>
+                <FontImageSource Glyph="&#xf015;"
+                                 FontFamily="FontAwesomeSolid"
+                                 Size="Large"
+                                 />
+            </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate views:HomePage}"/>
         </Tab>
         <Tab Title="Info" x:Name="_infoPage">
+            <Tab.Icon>
+                <FontImageSource Glyph="&#xf05a;"
+                                 FontFamily="FontAwesomeSolid"
+                                 Size="Large"
+                                 />
+            </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate views:InfoMenuPage}"/>
         </Tab>
         <Tab Title="Map">
+            <Tab.Icon>
+                <FontImageSource Glyph="&#xf3c5;"
+                                 FontFamily="FontAwesomeSolid"
+                                 Size="Large"
+                                 />
+            </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate views:MapPage}"/>
         </Tab>
         <Tab Title="Settings">
+            <Tab.Icon>
+                <FontImageSource Glyph="&#xf013;"
+                                 FontFamily="FontAwesomeSolid"
+                                 Size="Large"
+                                 />
+            </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate views:SettingsPage}"/>
         </Tab>
     </TabBar>

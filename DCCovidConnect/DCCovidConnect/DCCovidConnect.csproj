@@ -50,15 +50,22 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <None Remove="settings.json" />
+    <None Remove="Resources\counties.json" />
+    <None Remove="Resources\states.json" />
+    <None Remove="Resources\Font Awesome 5 Free-Regular-400.otf" />
+    <None Remove="Resources\Font Awesome 5 Free-Solid-900.otf" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Theme" />
     <Folder Include="Themes\" />
+    <Folder Include="Assets\" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="counties.json" />
-    <EmbeddedResource Include="states.json" />
+    <EmbeddedResource Include="Assets\counties.json" />
+    <EmbeddedResource Include="Assets\states.json" />
+    <EmbeddedResource Include="Assets\Font Awesome 5 Free-Regular-400.otf" />
+    <EmbeddedResource Include="Assets\Font Awesome 5 Free-Solid-900.otf" />
   </ItemGroup>
 </Project>

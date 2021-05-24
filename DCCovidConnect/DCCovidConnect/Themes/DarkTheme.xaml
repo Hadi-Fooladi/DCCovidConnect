@@ -5,6 +5,6 @@
     <Color x:Key="BackgroundColor">Black</Color>
     <Color x:Key="ElementBackgroundColor">#0D0D0D</Color>
     <Color x:Key="PrimaryTextColor">White</Color>
-    <Color x:Key="AccentTextColor">Red</Color>
-    <Color x:Key="AccentColor">Red</Color>
+    <Color x:Key="AccentTextColor">#E92F33</Color>
+    <Color x:Key="AccentColor">#E92F33</Color>
 </ResourceDictionary>

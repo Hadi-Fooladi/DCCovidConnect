@@ -62,6 +62,8 @@ namespace DCCovidConnect.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
+            if (!App.Database.UpdateInfoTask.IsCompleted)
+                await App.Database.UpdateInfoTask;
             List<InfoItem> infoItems = await App.Database.GetInfoItemsAsync(_section);
             foreach (InfoItem item in infoItems)
             {

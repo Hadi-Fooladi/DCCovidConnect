@@ -379,7 +379,7 @@ namespace DCCovidConnect.Data
                                     {
                                         string content = reader.GetString(3);
                                         InfoItem saved = await GetInfoItemAsync(id);
-                                        (saved ??= new InfoItem {ID = id, Title = title}).Date = date;
+                                        (saved ??= new InfoItem { ID = id, Title = title }).Date = date;
                                         saved.Type = type;
                                         await SaveInfoItemAsync(saved);
                                         // Parse the HTML source in the background and check the other objects
@@ -425,7 +425,7 @@ namespace DCCovidConnect.Data
 
         public Task<List<SearchableItem>> GetSearchableItemsByPathAsync(string route) => Database
             .Table<SearchableItem>().Where(i => i.Path == route).ToListAsync();
-        
+
         public Task<List<SearchableItem>> GetSearchableItemsByNameAsync(string name) => Database
             .Table<SearchableItem>().Where(i => i.Name.Contains(name)).ToListAsync();
 
@@ -434,8 +434,16 @@ namespace DCCovidConnect.Data
             Parser parser = new Parser(content);
             parser.Parse();
             saved.Content = parser.Output;
-            string loc = saved.Title.Substring(0, saved.Title.IndexOf('-')).Trim();
-            string name = saved.Title.Substring(saved.Title.IndexOf('-') + 1).Trim();
+            string loc = "", name = "";
+            if (saved.Title.Contains('-'))
+            {
+                loc = saved.Title.Substring(0, saved.Title.IndexOf('-')).Trim();
+                name = saved.Title.Substring(saved.Title.IndexOf('-') + 1).Trim();
+            }
+            else
+            {
+                name = saved.Title;
+            }
             await SaveSearchableItemAsync(new SearchableItem()
             {
                 Path = $"{nameof(InfoDetailPage)}?id={saved.ID}",

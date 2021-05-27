@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-
+using DCCovidConnect.Services;
 using Xamarin.Forms;
 
 namespace DCCovidConnect.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
+        public Settings Settings => Settings.Current;
+        
         bool isBusy = false;
         public bool IsBusy
         {

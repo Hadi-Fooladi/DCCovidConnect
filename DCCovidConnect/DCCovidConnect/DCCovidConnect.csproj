@@ -15,8 +15,9 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="SkiaSharp.Views.Forms" Version="2.80.2" />
     <PackageReference Include="sqlite-net-pcl" Version="1.7.335" />
+    <PackageReference Include="Xam.Plugins.Settings" Version="4.1.0-beta" />
     <PackageReference Include="Xamarin.CommunityToolkit" Version="1.0.2" />
-    <PackageReference Include="Xamarin.Forms" Version="5.0.0.1905" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />
     <PackageReference Include="Xamarin.Essentials" Version="1.6.0" />
   </ItemGroup>
 
@@ -48,5 +49,23 @@
     <EmbeddedResource Update="Views\SettingsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+    <None Remove="settings.json" />
+    <None Remove="Resources\counties.json" />
+    <None Remove="Resources\states.json" />
+    <None Remove="Resources\Font Awesome 5 Free-Regular-400.otf" />
+    <None Remove="Resources\Font Awesome 5 Free-Solid-900.otf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Theme" />
+    <Folder Include="Themes\" />
+    <Folder Include="Assets\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\counties.json" />
+    <EmbeddedResource Include="Assets\states.json" />
+    <EmbeddedResource Include="Assets\Font Awesome 5 Free-Regular-400.otf" />
+    <EmbeddedResource Include="Assets\Font Awesome 5 Free-Solid-900.otf" />
   </ItemGroup>
 </Project>

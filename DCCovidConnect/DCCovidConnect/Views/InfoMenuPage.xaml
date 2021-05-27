@@ -6,113 +6,249 @@
              xmlns:models="clr-namespace:DCCovidConnect.Models"
              xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
-             x:Class="DCCovidConnect.Views.InfoMenuPage">
+             x:Class="DCCovidConnect.Views.InfoMenuPage"
+             BackgroundColor="{DynamicResource BackgroundColor}">
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style TargetType="Button">
-                <Setter Property="BackgroundColor" Value="White" />
+                <Setter Property="CornerRadius" Value="20" />
+                <Setter Property="TextColor" Value="{DynamicResource AccentTextColor}"/>
+                <Setter Property="BackgroundColor" Value="Transparent"/>
+                <Setter Property="ContentLayout" Value="Top, 5" />
             </Style>
             <Style x:Key="ButtonFrame" TargetType="Frame">
                 <Setter Property="Padding" Value="0" />
                 <Setter Property="CornerRadius" Value="20" />
                 <Setter Property="android:VisualElement.Elevation" Value="5" />
-                <Setter Property="ios:VisualElement.IsShadowEnabled" Value="True" />
+                <Setter Property="HasShadow" Value="False"/>
+                <Setter Property="BorderColor" Value="{DynamicResource ElementBackgroundColor}"/>
+                <Setter Property="BackgroundColor" Value="{DynamicResource ElementBackgroundColor}"/>
+                <!--<Setter Property="ios:VisualElement.ShadowOffset">
+                    <Setter.Value>
+                        <Size>
+                            <x:Arguments>
+                                <x:Double>10</x:Double>
+                                <x:Double>10</x:Double>
+                            </x:Arguments>
+                        </Size>
+                    </Setter.Value>
+                </Setter>-->
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
     <Shell.TitleView>
-        <Frame>
+        <Frame BackgroundColor="Transparent"
+               HasShadow="False">
             <Label Text="DCCOVIDConnect"
                    FontSize="Small"
                    FontAttributes="Bold"
                    CharacterSpacing="0"
-                   TextColor="{StaticResource Black}"
+                   TextColor="{DynamicResource PrimaryTextColor}"
                    VerticalOptions="Center"
                    HorizontalOptions="Center"
                    Margin="0,-1000" />
         </Frame>
     </Shell.TitleView>
     <StackLayout x:Name="_pageLayout">
-        <Frame x:Name="_headerBackground"
-               BackgroundColor="{StaticResource Primary}"
-               Margin="-20,20,130,20"
-               Padding="0"
+        <Frame BackgroundColor="{DynamicResource ElementBackgroundColor}"
+               Margin="40, 0"
+               Padding="0, 10, 20 ,10"
+               HasShadow="False"
                CornerRadius="20">
-            <Label x:Name="_header"
-                   Text="Info"
-                   FontSize="80"
-                   FontAttributes="Bold"
-                   TextColor="{StaticResource Black}"
-                   Margin="20,0,0,0" />
+            <SearchBar Placeholder="Search..."
+                       HeightRequest="20"
+                       TextChanged="OnTextChanged"
+                       BackgroundColor="Transparent"
+                       TextColor="{DynamicResource PrimaryTextColor}"
+                       />
         </Frame>
-        <Grid x:Name="_infoMenu" HorizontalOptions="Center" VerticalOptions="FillAndExpand" Margin="0,10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="1*" />
-                <RowDefinition Height="1*" />
-                <RowDefinition x:Name="_thirdRow" Height="2*" />
-                <RowDefinition Height="1*" />
-            </Grid.RowDefinitions>
-            <Frame Style="{StaticResource ButtonFrame}">
-                <Button Text="News"
-                        CommandParameter="{x:Static models:InfoItem+InfoType.NEWS}" />
-            </Frame>
-            <Frame Style="{StaticResource ButtonFrame}"
-                   Grid.Column="1">
-                <Button Text="Getting Involved"
-                        CommandParameter="{x:Static models:InfoItem+InfoType.GETTING_INVOLVED}" />
-            </Frame>
-            <Frame Style="{StaticResource ButtonFrame}"
-                   Grid.Column="2">
-                <Button Text="Age Specific"
-                        CommandParameter="{x:Static models:InfoItem+InfoType.AGE_SPECIFIC}" />
-            </Frame>
-            <Frame Style="{StaticResource ButtonFrame}"
-                   Grid.Row="1"
-                   Grid.ColumnSpan="2">
-                <Button Text="Communities"
-                        CommandParameter="{x:Static models:InfoItem+InfoType.COMMUNITY}" />
-            </Frame>
-            <Frame Style="{StaticResource ButtonFrame}"
-                   Grid.Row="1"
-                   Grid.Column="2">
-                <Button Text="Research"
-                        CommandParameter="{x:Static models:InfoItem+InfoType.RESEARCH}" />
-            </Frame>
-            <Frame Style="{StaticResource ButtonFrame}"
-                   Grid.Row="2">
-                <Button Text="General Information"
-                        CommandParameter="{x:Static models:InfoItem+InfoType.GENERAL_INFORMATION}" />
-            </Frame>
-            <Frame Style="{StaticResource ButtonFrame}"
-                   Grid.Row="2"
-                   Grid.Column="1"
-                   Grid.ColumnSpan="2">
-                <Button Text="Self Care"
-                        CommandParameter="{x:Static models:InfoItem+InfoType.SELF_CARE}" />
-            </Frame>
-            <Frame Style="{StaticResource ButtonFrame}"
-                   Grid.Column="0"
-                   Grid.Row="3">
-                <Button Text="Services"
-                        CommandParameter="{x:Static models:InfoItem+InfoType.SERVICES}" />
-            </Frame>
-            <Frame Style="{StaticResource ButtonFrame}"
-                   Grid.Row="3"
-                   Grid.Column="1">
-                <Button Text="Pregnancy"
-                        CommandParameter="{x:Static models:InfoItem+InfoType.PREGNANCY}" />
-            </Frame>
-            <Frame Style="{StaticResource ButtonFrame}"
-                   Grid.Row="3"
-                   Grid.Column="2">
-                <Button Text="FAQ"
-                        CommandParameter="{x:Static models:InfoItem+InfoType.FAQ}" />
-            </Frame>
-        </Grid>
+        <AbsoluteLayout>
+            <StackLayout x:Name="_menu"
+                         AbsoluteLayout.LayoutFlags="All"
+                         AbsoluteLayout.LayoutBounds="1,1,1,1">
+                <Frame x:Name="_headerBackground"
+                       BackgroundColor="{StaticResource AccentColor}"
+                       Margin="-20,5,130,10"
+                       HasShadow="False"
+                       Padding="0"
+                       CornerRadius="20">
+                    <Label x:Name="_header"
+                           Text="Info"
+                           FontSize="80"
+                           FontAttributes="Bold"
+                           TextColor="{DynamicResource Black}"
+                           Margin="20,0,0,0" />
+                </Frame>
+                <Grid x:Name="_infoMenu"
+                      HorizontalOptions="Center"
+                      VerticalOptions="FillAndExpand"
+                      Margin="0,10"
+                      >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition x:Name="_thirdRow" Height="2*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <Frame Style="{StaticResource ButtonFrame}">
+                        <Button Text="News"
+                                CommandParameter="{x:Static models:InfoItem+InfoType.NEWS}">
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xf1ea;"
+                                                 FontFamily="FontAwesomeSolid"
+                                                 Size="Large"
+                                                 Color="{DynamicResource AccentColor}"/>
+                            </Button.ImageSource>
+                        </Button>
+                    </Frame>
+                    <Frame Style="{StaticResource ButtonFrame}"
+                           Grid.Column="1">
+                        <Button Text="Get Involved"
+                                CommandParameter="{x:Static models:InfoItem+InfoType.GETTING_INVOLVED}">
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xf4be;"
+                                                 FontFamily="FontAwesomeSolid"
+                                                 Size="Large"
+                                                 Color="{DynamicResource AccentColor}"/>
+                            </Button.ImageSource>
+                        </Button>
+                    </Frame>
+                    <Frame Style="{StaticResource ButtonFrame}"
+                           Grid.Column="2">
+                        <Button Text="Age Specific"
+                                CommandParameter="{x:Static models:InfoItem+InfoType.AGE_SPECIFIC}" >
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xf500;"
+                                                 FontFamily="FontAwesomeSolid"
+                                                 Size="Large"
+                                                 Color="{DynamicResource AccentColor}"/>
+                            </Button.ImageSource>
+                        </Button>
+                    </Frame>
+                    <Frame Style="{StaticResource ButtonFrame}"
+                           Grid.Row="1"
+                           Grid.ColumnSpan="2">
+                        <Button Text="Communities"
+                                CommandParameter="{x:Static models:InfoItem+InfoType.COMMUNITY}" >
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xf64f;"
+                                                 FontFamily="FontAwesomeSolid"
+                                                 Size="Large"
+                                                 Color="{DynamicResource AccentColor}"/>
+                            </Button.ImageSource>
+                        </Button>
+                    </Frame>
+                    <Frame Style="{StaticResource ButtonFrame}"
+                           Grid.Row="1"
+                           Grid.Column="2">
+                        <Button Text="Research"
+                                CommandParameter="{x:Static models:InfoItem+InfoType.RESEARCH}" >
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xf19d;"
+                                                 FontFamily="FontAwesomeSolid"
+                                                 Size="Large"
+                                                 Color="{DynamicResource AccentColor}"/>
+                            </Button.ImageSource>
+                        </Button>
+                    </Frame>
+                    <Frame Style="{StaticResource ButtonFrame}"
+                           Grid.Row="2">
+                        <Button Text="General"
+                                CommandParameter="{x:Static models:InfoItem+InfoType.GENERAL_INFORMATION}" >
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xf0ac;"
+                                                 FontFamily="FontAwesomeSolid"
+                                                 Size="Large"
+                                                 Color="{DynamicResource AccentColor}"/>
+                            </Button.ImageSource>
+                        </Button>
+                    </Frame>
+                    <Frame Style="{StaticResource ButtonFrame}"
+                           Grid.Row="2"
+                           Grid.Column="1"
+                           Grid.ColumnSpan="2">
+                        <Button Text="Self Care"
+                                CommandParameter="{x:Static models:InfoItem+InfoType.SELF_CARE}" >
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xf462;"
+                                                 FontFamily="FontAwesomeSolid"
+                                                 Size="Large"
+                                                 Color="{DynamicResource AccentColor}"/>
+                            </Button.ImageSource>
+                        </Button>
+                    </Frame>
+                    <Frame Style="{StaticResource ButtonFrame}"
+                           Grid.Column="0"
+                           Grid.Row="3">
+                        <Button Text="Services"
+                                CommandParameter="{x:Static models:InfoItem+InfoType.SERVICES}" >
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xf0eb;"
+                                                 FontFamily="FontAwesomeSolid"
+                                                 Size="Large"
+                                                 Color="{DynamicResource AccentColor}"/>
+                            </Button.ImageSource>
+                        </Button>
+                    </Frame>
+                    <Frame Style="{StaticResource ButtonFrame}"
+                           Grid.Row="3"
+                           Grid.Column="1">
+                        <Button Text="Pregnancy"
+                                CommandParameter="{x:Static models:InfoItem+InfoType.PREGNANCY}" >
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xf77c;"
+                                                 FontFamily="FontAwesomeSolid"
+                                                 Size="Large"
+                                                 Color="{DynamicResource AccentColor}"/>
+                            </Button.ImageSource>
+                        </Button>
+                    </Frame>
+                    <Frame Style="{StaticResource ButtonFrame}"
+                           Grid.Row="3"
+                           Grid.Column="2">
+                        <Button Text="FAQ"
+                                CommandParameter="{x:Static models:InfoItem+InfoType.FAQ}" >
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xf086;"
+                                                 FontFamily="FontAwesomeSolid"
+                                                 Size="Large"
+                                                 Color="{DynamicResource AccentColor}"/>
+                            </Button.ImageSource>
+                        </Button>
+                    </Frame>
+                </Grid>
+            </StackLayout>
+            <ListView x:Name="_searchResults"
+                      AbsoluteLayout.LayoutFlags="All"
+                      AbsoluteLayout.LayoutBounds="1,0,1,0.5"
+                      Margin="25,0"
+                      BackgroundColor="{DynamicResource ElementBackgroundColor}"
+                      HasUnevenRows="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Frame
+                                HasShadow="False">
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="{Binding Name}" FontSize="18"
+                                           FontAttributes="Bold"
+                                           TextColor="{DynamicResource PrimaryTextColor}" />
+                                    <Label Text="{Binding BreadCrumbs}"
+                                           FontSize="12"
+                                           TextColor="{StaticResource PrimaryTextColor}" 
+                                           HorizontalOptions="EndAndExpand"
+                                           HorizontalTextAlignment="End"/>
+                                </StackLayout>
+                            </Frame>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </AbsoluteLayout>
     </StackLayout>
 </ContentPage>

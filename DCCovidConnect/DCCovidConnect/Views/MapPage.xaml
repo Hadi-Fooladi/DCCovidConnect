@@ -5,21 +5,22 @@
              xmlns:skiaforms="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
              xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
-             x:Class="DCCovidConnect.Views.MapPage">
+             x:Class="DCCovidConnect.Views.MapPage"
+             BackgroundColor="{DynamicResource BackgroundColor}">
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style x:Key="InfoStyle" TargetType="Label">
                 <Setter Property="FontSize" Value="Medium"/>
-                <Setter Property="TextColor" Value="{x:StaticResource Black}"/>
+                <Setter Property="TextColor" Value="{x:DynamicResource PrimaryTextColor}"/>
             </Style>
             <Style x:Key="HeaderStyle" TargetType="Label">
                 <Setter Property="FontSize" Value="20"/>
                 <Setter Property="FontAttributes" Value="Bold"/>
-                <Setter Property="TextColor" Value="{x:StaticResource Black}"/>
+                <Setter Property="TextColor" Value="{x:DynamicResource PrimaryTextColor}"/>
             </Style>
             <Style x:Key="HeaderDetailStyle" TargetType="Label">
                 <Setter Property="FontSize" Value="10"/>
-                <Setter Property="TextColor" Value="{x:StaticResource Primary}"/>
+                <Setter Property="TextColor" Value="{x:DynamicResource AccentTextColor}"/>
                 <Setter Property="FontAttributes" Value="Bold"/>
                 <Setter Property="TextTransform" Value="Uppercase"/>
                 <Setter Property="CharacterSpacing" Value="2"/>
@@ -27,6 +28,19 @@
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
+    <Shell.TitleView>
+        <Frame BackgroundColor="Transparent"
+               HasShadow="False">
+            <Label Text="DCCOVIDConnect"
+                   FontSize="Small"
+                   FontAttributes="Bold"
+                   CharacterSpacing="0"
+                   TextColor="{DynamicResource PrimaryTextColor}"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"
+                   Margin="0,-1000" />
+        </Frame>
+    </Shell.TitleView>
     <ContentPage.Content>
         <Grid RowDefinitions="*" ColumnDefinitions="*">
             <skiaforms:SKCanvasView x:Name="_canvasView"
@@ -42,9 +56,8 @@
                    VerticalOptions="End" 
                    IsVisible="False" 
                    Padding="15,20"
-                   BackgroundColor="{x:StaticResource White}"
-                   android:VisualElement.Elevation="10"
-                   ios:VisualElement.IsShadowEnabled="True"
+                   BackgroundColor="{x:DynamicResource ElementBackgroundColor}"
+                   HasShadow="False"
                    Margin="20"
                    CornerRadius="10"
                    Grid.Row="0"
@@ -82,7 +95,8 @@
                     </Label>
                 </StackLayout>
             </Frame>
-            <Frame x:Name="_loadingIndicator" 
+            <Frame x:Name="_loadingIndicator"
+                   HasShadow="False"
                    Grid.Row="0" 
                    Grid.Column="0" 
                    IsVisible="False" 
@@ -92,18 +106,19 @@
                    CornerRadius="20"
                    android:VisualElement.Elevation="10"
                    ios:VisualElement.IsShadowEnabled="True"
+                   BackgroundColor="{DynamicResource ElementBackgroundColor}"
                    >
                 <StackLayout 
                     Spacing="20">
                     <Label 
-                        TextColor="{StaticResource Black}"
+                        TextColor="{DynamicResource PrimaryTextColor}"
                         FontSize="Large"
                         HorizontalTextAlignment="Center"
                         Text="Database is&#10;updating..."
                         />
                     <ActivityIndicator 
                         IsRunning="True"
-                        Color="{StaticResource Primary}"
+                        Color="{StaticResource AccentTextColor}"
                         />
                 </StackLayout>
             </Frame>

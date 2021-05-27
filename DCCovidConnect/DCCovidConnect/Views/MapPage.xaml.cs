@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using DCCovidConnect.Services;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -24,7 +25,6 @@ namespace DCCovidConnect.Views
     {
         private bool _isLoaded = false;
 
-        private Dictionary<string, StateObject> _states = new Dictionary<string, StateObject>();
 
         // Values for the canvas camera
         private float _x;
@@ -65,54 +65,8 @@ namespace DCCovidConnect.Views
             base.OnAppearing();
             if (_isLoaded) return;
             _isLoaded = true;
-
-            // loads in all the data from the path json files
-            using (var stream = FileSystem.OpenAppPackageFileAsync("states.json").Result)
-            {
-                using (var reader = new StreamReader(stream))
-                {
-                    JArray state_array = JArray.Parse(reader.ReadToEnd());
-                    foreach (JObject state in state_array)
-                    {
-                        //switch (state["state"].Value<string>())
-                        //{
-                        //    case "Virginia":
-                        //    case "Maryland":
-                        //        break;
-                        //    default:
-                        //        continue;
-                        //}
-                        _states.Add(state["state"].Value<string>(), new StateObject
-                        {
-                            State = state["state"].Value<string>(),
-                            StateAbbrev = state["state_abbrev"].Value<string>(),
-                            Path = SKPath.ParseSvgPathData(state["path"].Value<string>())
-                        });
-                    }
-                }
-            }
-
-            using (var stream = FileSystem.OpenAppPackageFileAsync("counties.json").Result)
-            {
-                using (var reader = new StreamReader(stream))
-                {
-                    JArray county_array = JArray.Parse(reader.ReadToEnd());
-                    int i = 0;
-                    foreach (JObject county in county_array)
-                    {
-                        int fips = county["fips"].Type == JTokenType.Null ? --i : county["fips"].Value<int>();
-                        _states[county["state"].Value<string>()].Counties.Add(fips, new CountyObject
-                        {
-                            State = county["state"].Value<string>(),
-                            StateAbbrev = county["state_abbrev"].Value<string>(),
-                            County = county["county"].Value<string>(),
-                            FIPS = fips,
-                            Path = SKPath.ParseSvgPathData(county["path"].Value<string>())
-                        });
-                    }
-                }
-            }
-            ZoomState("Virginia");
+            
+            ZoomState(Settings.Current.DefaultState);
 
 
             if (!App.Database.UpdateCovidStatsTask.IsCompleted)
@@ -126,16 +80,16 @@ namespace DCCovidConnect.Views
             // loads in all the data from the database into the dictionary
             foreach (StateCasesItem stateCasesItem in App.Database.GetStateCasesItemsAsync().Result)
             {
-                if (!_states.ContainsKey(stateCasesItem.State)) continue;
-                _states[stateCasesItem.State].CasesItem = stateCasesItem;
+                if (!MapService.Service.States.ContainsKey(stateCasesItem.State)) continue;
+                MapService.Service.States[stateCasesItem.State].CasesItem = stateCasesItem;
                 _minStateCases = Math.Min(_minStateCases, stateCasesItem.Cases);
                 _maxStateCases = Math.Max(_maxStateCases, stateCasesItem.Cases);
                 _canvasView.InvalidateSurface();
             }
             foreach (CountyCasesItem countyCasesItem in App.Database.GetCountyCasesItemsAsync().Result)
             {
-                if (!_states.ContainsKey(countyCasesItem.State)) continue;
-                StateObject state = _states[countyCasesItem.State];
+                if (!MapService.Service.States.ContainsKey(countyCasesItem.State)) continue;
+                StateObject state = MapService.Service.States[countyCasesItem.State];
                 if (!state.Counties.ContainsKey(countyCasesItem.FIPS)) continue;
                 state.Counties[countyCasesItem.FIPS].CasesItem = countyCasesItem;
                 state.MinCountyCases = Math.Min(state.MinCountyCases, countyCasesItem.Cases);
@@ -219,15 +173,14 @@ namespace DCCovidConnect.Views
             switch (e.ActionType)
             {
                 case SKTouchAction.Pressed:
-                    float localX = (e.Location.X - (float)_canvasView.CanvasSize.Width / 2 - _x) / _scale;
-                    float localY = (e.Location.Y - (float)_canvasView.CanvasSize.Height / 2 - _y) / _scale;
+                    float localX = (e.Location.X - (float) _canvasView.CanvasSize.Width / 2 - _x) / _scale;
+                    float localY = (e.Location.Y - (float) _canvasView.CanvasSize.Height / 2 - _y) / _scale;
 
 #if DEBUG
                     Console.WriteLine("X: " + localX);
                     Console.WriteLine("Y: " + localY);
                     _debugTouchX = e.Location.X / _scale + _x;
                     _debugTouchY = e.Location.Y / _scale + _y;
-                    _canvasView.InvalidateSurface();
 #endif
                     // If zoomed, check if touch intercepts any counties in the selected state
                     // else look at the states
@@ -255,7 +208,7 @@ namespace DCCovidConnect.Views
                                 if (county.Path.Contains(localX, localY))
                                 {
                                     _selectedCounty = county;
-                                    updatePopUpInfo();
+                                    UpdatePopUpInfo();
                                     break;
                                 }
                             }
@@ -264,7 +217,7 @@ namespace DCCovidConnect.Views
                     else
                     {
                         StateObject selected = null;
-                        foreach (StateObject state in _states.Values)
+                        foreach (StateObject state in MapService.Service.States.Values)
                         {
                             if (state.Path.Contains(localX, localY))
                             {
@@ -272,6 +225,7 @@ namespace DCCovidConnect.Views
                                 break;
                             }
                         }
+
                         if (selected == null)
                         {
                             _isZoomed = false;
@@ -299,11 +253,14 @@ namespace DCCovidConnect.Views
                             });
                             _selectedState = selected;
                             _highlightedState = selected;
-                            updatePopUpInfo();
+                            UpdatePopUpInfo();
                         }
                     }
+
                     break;
             }
+
+            _canvasView.InvalidateSurface();
         }
         void OnCanvasViewPaintSurface(object sender, SKPaintSurfaceEventArgs args)
         {
@@ -313,17 +270,18 @@ namespace DCCovidConnect.Views
 
             canvas.Clear();
 
+            App.Current.Resources.TryGetValue("BackgroundColor", out var background);
             SKPaint stateStrokePaint = new SKPaint
             {
                 Style = SKPaintStyle.Stroke,
-                Color = SKColors.White,
+                Color = ((Color)background).ToSKColor(),
                 StrokeWidth = 1,
             };
 
             SKPaint countyStrokePaint = new SKPaint
             {
                 Style = SKPaintStyle.Stroke,
-                Color = SKColors.White,
+                Color = ((Color)background).ToSKColor(),
                 StrokeWidth = 0.25f,
             };
 
@@ -353,7 +311,7 @@ namespace DCCovidConnect.Views
                     fillPaint = new SKPaint
                     {
                         Style = SKPaintStyle.Fill,
-                        Color = getColorFromValue(county.CasesItem?.Cases ?? 0, _selectedState.MaxCountyCases),
+                        Color = GetColorFromValue(county.CasesItem?.Cases ?? 0, _selectedState.MaxCountyCases),
                     };
                     canvas.DrawPath(county.Path, fillPaint);
                     canvas.DrawPath(county.Path, countyStrokePaint);
@@ -365,12 +323,12 @@ namespace DCCovidConnect.Views
             }
             else
             {
-                foreach (StateObject state in _states.Values)
+                foreach (StateObject state in MapService.Service.States.Values)
                 {
                     fillPaint = new SKPaint
                     {
                         Style = SKPaintStyle.Fill,
-                        Color = getColorFromValue(state.CasesItem?.Cases ?? 0),
+                        Color = GetColorFromValue(state.CasesItem?.Cases ?? 0),
                     };
                     canvas.DrawPath(state.Path, fillPaint);
                     canvas.DrawPath(state.Path, stateStrokePaint);
@@ -399,7 +357,7 @@ namespace DCCovidConnect.Views
                 SKPaint segPaint = new SKPaint
                 {
                     Style = SKPaintStyle.Fill,
-                    Color = getColorFromValue((int)(maxCases * (1 - (float)i / (segments - 1))), maxCases)
+                    Color = GetColorFromValue((int)(maxCases * (1 - (float)i / (segments - 1))), maxCases)
                 };
                 SKRect seg = new SKRect(x, y + i * (segmentHeight + gap), x + width, y + i * (segmentHeight + gap) + segmentHeight);
                 canvas.DrawRect(seg, segPaint);
@@ -449,9 +407,9 @@ namespace DCCovidConnect.Views
         /// </summary>
         /// <param name="value">Number of cases</param>
         /// <returns>Returns the color.</returns>
-        SKColor getColorFromValue(int value)
+        SKColor GetColorFromValue(int value)
         {
-            return getColorFromValue(value, _maxStateCases);
+            return GetColorFromValue(value, _maxStateCases);
         }
 
         /// <summary>
@@ -461,10 +419,11 @@ namespace DCCovidConnect.Views
         /// <param name="max">Max value</param>
         /// <param name="minLum">Minimum luminosity of the color</param>
         /// <returns>Returns the color.</returns>
-        SKColor getColorFromValue(int value, int max, float minLum = 0.2f)
+        private static SKColor GetColorFromValue(int value, int max, float minLum = 0.2f)
         {
-            Color ret = (Color)Application.Current.Resources["Primary"];
-            ret = ret.WithLuminosity(1 - ((float)value / max * (0.7 - minLum) + minLum));
+            App.Current.Resources.TryGetValue("AccentColor", out var accent);
+            Color ret = (Color)accent;
+            ret = ret.WithLuminosity(1 - ((float)value / max * (0.8 - minLum) + minLum));
             return ret.ToSKColor();
         }
 
@@ -475,9 +434,8 @@ namespace DCCovidConnect.Views
         /// <returns>Returns whenever it is successfully able to fit the state.</returns>
         private bool ZoomState(string state)
         {
-            SKRect targetState;
-            SKPath path = _states?[state].Path;
-            if (path == null || !path.GetBounds(out targetState))
+            SKPath path = MapService.Service.States?[state].Path;
+            if (path == null || !path.GetBounds(out var targetState))
                 return false;
             // finds the scale to fit the state to the screen
             _scale = (float)DeviceDisplay.MainDisplayInfo.Width / (Math.Max(targetState.Width, targetState.Height) * 1.1f);
@@ -492,7 +450,7 @@ namespace DCCovidConnect.Views
         /// <summary>
         /// This method updates the info on the popup.
         /// </summary>
-        private void updatePopUpInfo()
+        private void UpdatePopUpInfo()
         {
             _infoPopup.IsVisible = true;
             if (_selectedCounty != null)

@@ -11,17 +11,11 @@ namespace DCCovidConnect.ViewModels
 {
     class HomeViewModel : BaseViewModel
     {
-        string region = "Virginia";
         string local = "Fairfax County";
         int regionCases = 123668;
         int localCases = 830;
 
         int phase = 3;
-        public string Region
-        {
-            get => region;
-            set => SetProperty(ref region, value);
-        }
         public string Local
         {
             get => local;
@@ -43,7 +37,13 @@ namespace DCCovidConnect.ViewModels
             get => phase;
             set => SetProperty(ref phase, value);
         }
-
+        
+        public async void UpdateVariables()
+        {
+            await App.Database.UpdateCovidStatsTask;
+            StateCasesItem item = await App.Database.GetStateCasesItemAsync(Settings.DefaultState);
+            RegionCases = item.Cases;
+        }
         public List<InstagramItem> Posts
         {
             get; set;

@@ -7,16 +7,16 @@
     <Shell.Resources>
         <ResourceDictionary>
             <Style x:Key="BaseStyle" TargetType="Element">
-                <Setter Property="Shell.BackgroundColor" Value="{StaticResource White}" />
+                <Setter Property="Shell.BackgroundColor" Value="{DynamicResource BackgroundColor}" />
                 <Setter Property="Shell.NavBarHasShadow" Value="False"/>
-                <Setter Property="Shell.ForegroundColor" Value="Black" />
-                <Setter Property="Shell.TitleColor" Value="White" />
+                <Setter Property="Shell.ForegroundColor" Value="{DynamicResource PrimaryTextColor}" />
+                <Setter Property="Shell.TitleColor" Value="{DynamicResource BackgroundColor}" />
                 <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
                 <Setter Property="Shell.UnselectedColor" Value="#95FFFFFF" />
-                <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource White}" />
-                <Setter Property="Shell.TabBarForegroundColor" Value="{StaticResource Secondary}"/>
-                <Setter Property="Shell.TabBarUnselectedColor" Value="{StaticResource Secondary}"/>
-                <Setter Property="Shell.TabBarTitleColor" Value="{StaticResource Secondary}"/>
+                <Setter Property="Shell.TabBarBackgroundColor" Value="{DynamicResource BackgroundColor}" />
+                <Setter Property="Shell.TabBarForegroundColor" Value="{DynamicResource AccentColor}"/>
+                <Setter Property="Shell.TabBarUnselectedColor" Value="{DynamicResource AccentColor}"/>
+                <Setter Property="Shell.TabBarTitleColor" Value="{DynamicResource AccentColor}"/>
             </Style>
             <Style TargetType="TabBar" BasedOn="{StaticResource BaseStyle}" />
             <Style TargetType="FlyoutItem" BasedOn="{StaticResource BaseStyle}" />
@@ -25,13 +25,40 @@
 
     <TabBar>
         <Tab Title="Home">
+            <Tab.Icon>
+                <FontImageSource Glyph="&#xf015;"
+                                 FontFamily="FontAwesomeSolid"
+                                 Size="Large"
+                                 />
+            </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate views:HomePage}"/>
         </Tab>
         <Tab Title="Info" x:Name="_infoPage">
+            <Tab.Icon>
+                <FontImageSource Glyph="&#xf05a;"
+                                 FontFamily="FontAwesomeSolid"
+                                 Size="Large"
+                                 />
+            </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate views:InfoMenuPage}"/>
         </Tab>
         <Tab Title="Map">
+            <Tab.Icon>
+                <FontImageSource Glyph="&#xf3c5;"
+                                 FontFamily="FontAwesomeSolid"
+                                 Size="Large"
+                                 />
+            </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate views:MapPage}"/>
+        </Tab>
+        <Tab Title="Settings">
+            <Tab.Icon>
+                <FontImageSource Glyph="&#xf013;"
+                                 FontFamily="FontAwesomeSolid"
+                                 Size="Large"
+                                 />
+            </Tab.Icon>
+            <ShellContent ContentTemplate="{DataTemplate views:SettingsPage}"/>
         </Tab>
     </TabBar>
 

@@ -12,6 +12,7 @@ using static DCCovidConnect.Models.InfoItem;
 using System.Net.Http;
 using Newtonsoft.Json.Linq;
 using System.Globalization;
+using DCCovidConnect.Views;
 
 namespace DCCovidConnect.Data
 {
@@ -29,6 +30,7 @@ namespace DCCovidConnect.Data
         static bool initialized = false;
 
         public static Dictionary<int, Task> DataTasks = new Dictionary<int, Task>();
+
         public InfoDatabase()
         {
             InitializeAsync().SafeFireAndForget(false);
@@ -46,6 +48,7 @@ namespace DCCovidConnect.Data
                 {
                     await Database.CreateTablesAsync(CreateFlags.None, typeof(InfoItem)).ConfigureAwait(false);
                 }
+
                 //if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(USCasesModel).Name))
                 //{
                 //    await Database.CreateTablesAsync(CreateFlags.None, typeof(USCasesModel)).ConfigureAwait(false);
@@ -62,6 +65,12 @@ namespace DCCovidConnect.Data
                 {
                     await Database.CreateTablesAsync(CreateFlags.None, typeof(VersionInfo)).ConfigureAwait(false);
                 }
+
+                if (!Database.TableMappings.Any(m => m.MappedType.Name == typeof(SearchableItem).Name))
+                {
+                    await Database.CreateTablesAsync(CreateFlags.None, typeof(SearchableItem)).ConfigureAwait(false);
+                }
+
                 initialized = true;
             }
         }
@@ -83,7 +92,8 @@ namespace DCCovidConnect.Data
 
         public Task<InfoItem> GetInfoItemAsync(string title)
         {
-            return Database.Table<InfoItem>().Where(x => x.Title.ToLower().Contains(title.ToLower())).FirstOrDefaultAsync();
+            return Database.Table<InfoItem>().Where(x => x.Title.ToLower().Contains(title.ToLower()))
+                .FirstOrDefaultAsync();
         }
 
         public Task<InfoItem> GetInfoItemAsync(InfoItem item) => this.GetInfoItemAsync(item.Title);
@@ -123,13 +133,20 @@ namespace DCCovidConnect.Data
         public Task<List<USCasesModel>> GetUSCasesItemsAsync() => Database.Table<USCasesModel>().ToListAsync();
         public Task<List<StateCasesItem>> GetStateCasesItemsAsync() => Database.Table<StateCasesItem>().ToListAsync();
 
-        public Task<StateCasesItem> GetStateCasesItemAsync(String state) => Database.Table<StateCasesItem>().Where(i => i.State == state).FirstOrDefaultAsync();
+        public Task<StateCasesItem> GetStateCasesItemAsync(String state) =>
+            Database.Table<StateCasesItem>().Where(i => i.State == state).FirstOrDefaultAsync();
 
-        public Task<List<CountyCasesItem>> GetCountyCasesItemsAsync() => Database.Table<CountyCasesItem>().ToListAsync();
-        public Task<List<CountyCasesItem>> GetCountyCasesItemByStateAsync(String state) => Database.Table<CountyCasesItem>().Where(i => i.State.ToLower() == state.ToLower()).ToListAsync();
-        public Task<List<CountyCasesItem>> GetCountyCasesItemAsync(String county) => Database.Table<CountyCasesItem>().Where(i => i.County.ToLower() == county.ToLower()).ToListAsync();
+        public Task<List<CountyCasesItem>> GetCountyCasesItemsAsync() =>
+            Database.Table<CountyCasesItem>().ToListAsync();
+
+        public Task<List<CountyCasesItem>> GetCountyCasesItemByStateAsync(String state) => Database
+            .Table<CountyCasesItem>().Where(i => i.State.ToLower() == state.ToLower()).ToListAsync();
+
+        public Task<List<CountyCasesItem>> GetCountyCasesItemAsync(String county) => Database.Table<CountyCasesItem>()
+            .Where(i => i.County.ToLower() == county.ToLower()).ToListAsync();
+
         public Task<VersionInfo> GetVersionItemAsync() => Database.Table<VersionInfo>().FirstOrDefaultAsync();
-        
+
         /// <summary>
         /// This method updates the <c>VersionInfo</c> or inserts it if not present.
         /// </summary>
@@ -137,7 +154,7 @@ namespace DCCovidConnect.Data
         /// <returns></returns>
         public Task<int> SaveVersionItemAsync(VersionInfo item)
         {
-            if (Database.Table<VersionInfo>().Where(i => i.ID == 0).FirstOrDefaultAsync().Result != null)
+            if (Database.Table<VersionInfo>().Where(i => i.ID == item.ID).FirstOrDefaultAsync().Result != null)
             {
                 return Database.UpdateAsync(item);
             }
@@ -149,25 +166,35 @@ namespace DCCovidConnect.Data
 
         private Task _updateCovidStatsTask;
         private Task _updateInfoTask;
+
         public Task UpdateCovidStatsTask
         {
-            get => _updateCovidStatsTask;
+            get
+            {
+                if (_updateCovidStatsTask == null)
+                    _updateCovidStatsTask = UpdateCovidStats();
+                return _updateCovidStatsTask;
+            }
         }
+
         public Task UpdateInfoTask
         {
-            get => _updateInfoTask;
+            get
+            {
+                if (_updateInfoTask == null)
+                    _updateInfoTask = UpdateInfo();
+                return _updateInfoTask;
+            }
         }
+
         /// <summary>
         /// This method is used to update the database.
         /// </summary>
         /// <returns></returns>
         public async Task UpdateDatabase()
         {
-            _updateCovidStatsTask = UpdateCovidStats();
-            _updateInfoTask = UpdateInfo();
-
-            await _updateCovidStatsTask;
-            await _updateInfoTask;
+            await (_updateCovidStatsTask ??= UpdateCovidStats());
+            await (_updateInfoTask ??= UpdateInfo());
             Console.WriteLine("Database Updated!");
         }
 
@@ -178,9 +205,15 @@ namespace DCCovidConnect.Data
         private async Task UpdateCovidStats()
         {
             JObject us_cases, state_cases, county_cases;
-            us_cases = JObject.Parse(await GetCallAPI("https://api.github.com/repos/nytimes/covid-19-data/contents/live/us.csv"));
-            state_cases = JObject.Parse(await GetCallAPI("https://api.github.com/repos/nytimes/covid-19-data/contents/live/us-states.csv"));
-            county_cases = JObject.Parse(await GetCallAPI("https://api.github.com/repos/nytimes/covid-19-data/contents/live/us-counties.csv"));
+            us_cases = JObject.Parse(
+                await GetCallAPI("https://api.github.com/repos/nytimes/covid-19-data/contents/live/us.csv"));
+            state_cases =
+                JObject.Parse(
+                    await GetCallAPI("https://api.github.com/repos/nytimes/covid-19-data/contents/live/us-states.csv"));
+            county_cases =
+                JObject.Parse(
+                    await GetCallAPI(
+                        "https://api.github.com/repos/nytimes/covid-19-data/contents/live/us-counties.csv"));
             // VersionInfo version = new VersionInfo { ID = 0 };
             VersionInfo version = await GetVersionItemAsync() ?? new VersionInfo();
 
@@ -260,6 +293,7 @@ namespace DCCovidConnect.Data
                     });
                 }
             }
+
             // Save the version
             await SaveVersionItemAsync(version);
         }
@@ -277,32 +311,35 @@ namespace DCCovidConnect.Data
                 {
                     return await client.GetStringAsync(url);
                 }
-            } 
+            }
             catch (Exception e)
             {
                 Console.Error.WriteLine(e);
             }
+
             return null;
         }
+
         /// <summary>
         /// This method updates the COVID19 information from a WordPress database and parses the pages into a usuable JSON object.
         /// </summary>
         /// <returns></returns>
         private async Task UpdateInfo()
         {
+            bool searchNeedsReindexing = false;
             try
             {
                 MySqlConnectionStringBuilder builder = new MySqlConnectionStringBuilder();
 
-                builder.Server = "MYSQL5044.site4now.net";
-                builder.Database = "db_a65a18_covid";
-                builder.UserID = "a65a18_covid";
-                builder.Password = "NLGB6e337kSC2zA";
+                builder.Server = "s81.etcserver.com";
+                builder.Database = "adamrmun_covidco";
+                builder.UserID = "adamrmun_webapp";
+                builder.Password = "covidconnectp4ss";
                 using (MySqlConnection connection = new MySqlConnection(builder.ToString()))
                 {
                     connection.Open();
                     string query = @"SELECT ID, post_title, MAX(post_date_gmt) AS post_date, post_content
-                                        FROM db_a65a18_covid.covidco_wp_posts
+                                        FROM covidco_wp_posts
                                         WHERE NULLIF(post_content, '') IS NOT NULL AND NULLIF(post_title, '') IS NOT NULL AND (post_title LIKE '%-%' OR post_title = 'FAQs')
                                         GROUP BY post_title
                                         ORDER BY post_title ASC";
@@ -318,7 +355,8 @@ namespace DCCovidConnect.Data
                                 /// check if the title is accounted for in the <c>InfoMenuPage</c>
                                 foreach (InfoType t in Enum.GetValues(typeof(InfoType)))
                                 {
-                                    if (title.Contains(t.ToString().Replace('_', ' '), StringComparison.InvariantCultureIgnoreCase))
+                                    if (title.Contains(t.ToString().Replace('_', ' '),
+                                        StringComparison.InvariantCultureIgnoreCase))
                                     {
                                         type = t;
                                         break;
@@ -336,18 +374,17 @@ namespace DCCovidConnect.Data
                                         Console.WriteLine($"Item ID: {id} already up to date!");
 #endif
                                         DataTasks.Add(id, null);
-                                        continue;
                                     }
-                                    string content = reader.GetString(3);
-                                    InfoItem saved = await GetInfoItemAsync(id);
-                                    (saved ??= new InfoItem { ID = id, Title = title }).Date = date;
-                                    saved.Type = type;
-                                    await SaveInfoItemAsync(saved);
-                                    // Parse the HTML source in the background and check the other objects
-                                    DataTasks.Add(id, Task.Run(() =>
+                                    else
                                     {
-                                        UpdateItem(saved, content, type);
-                                    }));
+                                        string content = reader.GetString(3);
+                                        InfoItem saved = await GetInfoItemAsync(id);
+                                        (saved ??= new InfoItem { ID = id, Title = title }).Date = date;
+                                        saved.Type = type;
+                                        await SaveInfoItemAsync(saved);
+                                        // Parse the HTML source in the background and check the other objects
+                                        DataTasks.Add(id, Task.Run(() => { UpdateItem(saved, content, type); }));
+                                    }
                                 }
                             }
                         }
@@ -358,20 +395,73 @@ namespace DCCovidConnect.Data
             {
                 Console.Error.WriteLine(e.ToString());
             }
+
             // Delete Items that aren't present in the main database anymore.
             foreach (InfoItem item in await this.GetInfoItemsAsync())
             {
                 if (!DataTasks.ContainsKey(item.ID))
                 {
+                    // reindex search tree as items are deleted
+                    searchNeedsReindexing = true;
                     await this.DeleteInfoItemAsync(item);
                 }
             }
         }
+
+        private Task<int> SaveSearchableItemAsync(SearchableItem item)
+        {
+            if (Database.Table<SearchableItem>().Where(i => i.Name == item.Name).FirstOrDefaultAsync().Result != null)
+            {
+                return Database.UpdateAsync(item);
+            }
+            else
+            {
+                return Database.InsertAsync(item);
+            }
+        }
+
+        public Task<List<SearchableItem>> GetSearchableItemsAsync() =>
+            Database.Table<SearchableItem>().ToListAsync();
+
+        public Task<List<SearchableItem>> GetSearchableItemsByPathAsync(string route) => Database
+            .Table<SearchableItem>().Where(i => i.Path == route).ToListAsync();
+
+        public Task<List<SearchableItem>> GetSearchableItemsByNameAsync(string name) => Database
+            .Table<SearchableItem>().Where(i => i.Name.Contains(name)).ToListAsync();
+
         private async void UpdateItem(InfoItem saved, string content, InfoType type)
         {
             Parser parser = new Parser(content);
             parser.Parse();
             saved.Content = parser.Output;
+            string loc = "", name = "";
+            if (saved.Title.Contains('-'))
+            {
+                loc = saved.Title.Substring(0, saved.Title.IndexOf('-')).Trim();
+                name = saved.Title.Substring(saved.Title.IndexOf('-') + 1).Trim();
+            }
+            else
+            {
+                name = saved.Title;
+            }
+            await SaveSearchableItemAsync(new SearchableItem()
+            {
+                Path = $"{nameof(InfoDetailPage)}?id={saved.ID}",
+                Name = name,
+                BreadCrumbs = loc,
+                Priority = 1,
+            });
+            foreach (var item in parser.ItemList)
+            {
+                await SaveSearchableItemAsync(new SearchableItem()
+                {
+                    Path = $"{nameof(InfoDetailPage)}?id={saved.ID}",
+                    Name = item,
+                    BreadCrumbs = $"{loc}/{name}",
+                    Priority = 0,
+                });
+            }
+
             await SaveInfoItemAsync(saved);
         }
     }

@@ -80,7 +80,7 @@ namespace DCCovidConnect.Views
             InitializeComponent();
             _parentView = new StackLayout
             {
-                Margin = new Thickness(20, 5)
+                Margin = new Thickness(20, 5),
             };
             Content = new ScrollView
             {
@@ -149,7 +149,7 @@ namespace DCCovidConnect.Views
                         };
                         Label label = new Label
                         {
-                            Style = (Style) Resources["LIStyle"],
+                            Style = (Style)Resources["LIStyle"],
                             FormattedText = new FormattedString(),
                         };
                         foreach (Span span in ParseText(token))
@@ -157,8 +157,8 @@ namespace DCCovidConnect.Views
                             span.FontSize = label.FontSize;
                             label.FormattedText.Spans.Add(span);
                         }
-                        label.Style = (Style) Resources["LIStyle"];
-                        ((Layout<View>) ret).Children.Add(ToBulleted(label));
+                        label.Style = (Style)Resources["LIStyle"];
+                        ((Layout<View>)ret).Children.Add(ToBulleted(label));
                     }
                     else
                     {
@@ -175,7 +175,7 @@ namespace DCCovidConnect.Views
                                 {
                                     label = new Label
                                     {
-                                        Style = (Style) Resources["LIStyle"],
+                                        Style = (Style)Resources["LIStyle"],
                                         FormattedText = new FormattedString(),
                                     };
                                 }
@@ -189,9 +189,9 @@ namespace DCCovidConnect.Views
                             else
                             {
                                 if (label != null)
-                                    ((Layout<View>) ret).Children.Add(ToBulleted(label));
+                                    ((Layout<View>)ret).Children.Add(ToBulleted(label));
                                 label = null;
-                                ((Layout<View>) ret).Children.Add(await Parse(obj));
+                                ((Layout<View>)ret).Children.Add(await Parse(obj));
                             }
                         }
 
@@ -209,19 +209,20 @@ namespace DCCovidConnect.Views
                 case Type.TR:
                     break;
                 case Type.ITEM:
-                    ret = new Expander {Content = new StackLayout()};
+                    ret = new Expander { Content = new StackLayout() };
                     foreach (JObject obj in children ?? Enumerable.Empty<JToken>()
                     ) // finds first Title children, should be first element regardless
                     {
                         if (GetType(obj) == Type.TITLE)
                         {
                             Label label = ParseLabel(obj);
-                            label.Style = (Style) Resources["EXPANDERStyle"];
+                            label.Style = (Style)Resources["EXPANDERStyle"];
                             Frame header = new Frame
                             {
                                 Content = label,
-                                BorderColor = Color.DarkGray,
-                                CornerRadius = 5
+                                BackgroundColor = (Color)App.Current.Resources["ElementBackgroundColor"],
+                                CornerRadius = 5,
+                                HasShadow = false,
                             };
                             (ret as Expander).Header = header;
                             obj.Remove();
@@ -313,7 +314,7 @@ namespace DCCovidConnect.Views
             switch (type)
             {
                 case Type.P:
-                    ret.Style = (Style) Resources["PStyle"];
+                    ret.Style = (Style)Resources["PStyle"];
                     break;
                 // All in 1 case for the multiple HTML headers
                 case Type header when header.ToString().Contains('H') && header.ToString().Length == 2:
@@ -330,7 +331,7 @@ namespace DCCovidConnect.Views
                 case Type.SPAN:
                     break;
                 case Type.TITLE:
-                    ret.Style = (Style) Resources["TITLEStyle"];
+                    ret.Style = (Style)Resources["TITLEStyle"];
                     break;
             }
 
@@ -360,7 +361,7 @@ namespace DCCovidConnect.Views
             if (type == Type.TEXT)
             {
                 string text = token[Property.TEXT.ToString()]?.Value<string>();
-                return new List<Span> {new Span {Text = text}};
+                return new List<Span> { new Span { Text = text } };
             }
             else // Keep on parsing until text is found
             {
@@ -370,12 +371,13 @@ namespace DCCovidConnect.Views
                 }
             }
 
+            App.Current.Resources.TryGetValue("AccentColor", out var accent);
             switch (type)
             {
                 case Type.COLOR:
                     foreach (Span span in ret)
                     {
-                        span.TextColor = (Color) Application.Current.Resources["Secondary"];
+                        span.TextColor = (Color)accent;
                     }
 
                     break;
@@ -385,8 +387,8 @@ namespace DCCovidConnect.Views
                     {
                         string href = token[Property.HREF.ToString()]?.Value<string>();
                         span.GestureRecognizers.Add(new TapGestureRecognizer
-                            {Command = new Command(async () => await Launcher.OpenAsync(href))});
-                        span.TextColor = (Color) Application.Current.Resources["Secondary"];
+                        { Command = new Command(async () => await Launcher.OpenAsync(href)) });
+                        span.TextColor = (Color)accent;
                         span.TextDecorations = TextDecorations.Underline;
                     }
 
@@ -410,11 +412,12 @@ namespace DCCovidConnect.Views
         /// <returns>Returns the type of the token.</returns>
         private Type GetType(JToken token)
         {
-            return (Type) Enum.Parse(typeof(Type), token[Property.TYPE.ToString()].Value<string>(), true);
+            return (Type)Enum.Parse(typeof(Type), token[Property.TYPE.ToString()].Value<string>(), true);
         }
 
         private Layout<View> ToBulleted(Label label)
         {
+            App.Current.Resources.TryGetValue("AccentColor", out var accent);
             return new StackLayout
             {
                 Orientation = StackOrientation.Horizontal,
@@ -423,7 +426,7 @@ namespace DCCovidConnect.Views
                     new Label
                     {
                         Text = "\u2022",
-                        TextColor = (Color) Application.Current.Resources["Secondary"],
+                        TextColor = (Color) accent,
                         FontSize = label.FontSize
                     },
                     label

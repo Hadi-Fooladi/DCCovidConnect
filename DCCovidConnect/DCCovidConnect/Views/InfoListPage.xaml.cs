@@ -21,35 +21,37 @@ namespace DCCovidConnect.Views
     /// </summary>
     public partial class InfoListPage : ContentPage
     {
-        InfoItem.InfoType section;
-        ObservableCollection<InfoItem> items;
+        InfoItem.InfoType _section;
+        ObservableCollection<InfoItem> _items;
         static TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
         public string Section
         {
-            get => textInfo.ToTitleCase(section.ToString().Replace('_', ' ').ToLower());
+            get => textInfo.ToTitleCase(_section.ToString().Replace('_', ' ').ToLower());
             set
             {
-                section = (InfoItem.InfoType)Enum.Parse(typeof(InfoItem.InfoType), Uri.UnescapeDataString(value), true);
+                _section = (InfoItem.InfoType)Enum.Parse(typeof(InfoItem.InfoType), Uri.UnescapeDataString(value), true);
                 OnPropertyChanged();
             }
         }
+
         public ObservableCollection<InfoItem> Items
         {
-            get => items;
+            get => _items;
             set
             {
-                items = value;
+                _items = value;
                 OnPropertyChanged();
             }
         }
 
         private bool _userTapped;
-        async void GoToDetailPage(object sender, EventArgs args)
+
+        private async void GoToDetailPage(object sender, EventArgs args)
         {
             if (_userTapped) 
                 return;
             _userTapped = true;
-            await Shell.Current.GoToAsync($"{nameof(InfoDetailPage)}?id={(args as TappedEventArgs).Parameter}");
+            await Shell.Current.GoToAsync($"{nameof(InfoDetailPage)}?id={(args as TappedEventArgs)?.Parameter}");
             _userTapped = false;
         }
         public InfoListPage()
@@ -60,7 +62,9 @@ namespace DCCovidConnect.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            List<InfoItem> infoItems = await App.Database.GetInfoItemsAsync(section);
+            if (!App.Database.UpdateInfoTask.IsCompleted)
+                await App.Database.UpdateInfoTask;
+            List<InfoItem> infoItems = await App.Database.GetInfoItemsAsync(_section);
             foreach (InfoItem item in infoItems)
             {
                 item.Title = item.Title.Substring(item.Title.IndexOf('-') + 1).Trim();

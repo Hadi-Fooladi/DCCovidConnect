@@ -31,17 +31,26 @@
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate views:InfoMenuPage}"/>
         </Tab>
+
         <Tab Title="Map">
             <Tab.Icon>
                 <local:DefaultFontImageSource Glyph="&#xf3c5;" />
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate views:MapPage}"/>
         </Tab>
+        
         <Tab Title="Settings">
             <Tab.Icon>
                 <local:DefaultFontImageSource Glyph="&#xf013;" />
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate views:SettingsPage}"/>
+        </Tab>
+        
+        <Tab Title="About">
+            <Tab.Icon>
+                <local:DefaultFontImageSource Glyph="&#xf059;" />
+            </Tab.Icon>
+            <ShellContent ContentTemplate="{DataTemplate views:AboutPage}"/>
         </Tab>
     </TabBar>
 

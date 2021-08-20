@@ -427,7 +427,7 @@ namespace DCCovidConnect.Data
             .Table<SearchableItem>().Where(i => i.Path == route).ToListAsync();
 
         public Task<List<SearchableItem>> GetSearchableItemsByNameAsync(string name) => Database
-            .Table<SearchableItem>().Where(i => i.Name.Contains(name)).ToListAsync();
+            .Table<SearchableItem>().Where(i => i.Name.ToLower().Contains(name.ToLower())).ToListAsync();
 
         private async void UpdateItem(InfoItem saved, string content, InfoType type)
         {

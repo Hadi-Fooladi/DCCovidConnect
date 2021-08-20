@@ -24,15 +24,6 @@
     </Shell.Resources>
 
     <TabBar>
-        <Tab Title="Home">
-            <Tab.Icon>
-                <FontImageSource Glyph="&#xf015;"
-                                 FontFamily="FontAwesomeSolid"
-                                 Size="Large"
-                                 />
-            </Tab.Icon>
-            <ShellContent ContentTemplate="{DataTemplate views:HomePage}"/>
-        </Tab>
         <Tab Title="Info" x:Name="_infoPage">
             <Tab.Icon>
                 <FontImageSource Glyph="&#xf05a;"

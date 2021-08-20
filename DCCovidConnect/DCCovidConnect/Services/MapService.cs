@@ -9,11 +9,10 @@ namespace DCCovidConnect.Services
 {
     public class MapService
     {
-        public Dictionary<string, StateObject> States { get; } = new Dictionary<string, StateObject>();
-
         private static MapService _instance;
-
         public static MapService Service => _instance ??= new MapService();
+
+        public Dictionary<string, StateObject> States { get; } = new Dictionary<string, StateObject>();
 
         private static string Namespace = "DCCovidConnect.Assets";
         private static string StatesFile = "states.json";

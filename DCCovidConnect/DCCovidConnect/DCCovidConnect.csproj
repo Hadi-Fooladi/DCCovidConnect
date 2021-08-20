@@ -22,47 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Views\HomePage.xaml.cs">
-      <DependentUpon>HomePage.xaml</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="AppShell.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Controls\InstagramCardView.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\InfoDetailPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\InfoListPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\InfoMenuPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\MapPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\SettingsPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <None Remove="settings.json" />
-    <None Remove="Resources\counties.json" />
-    <None Remove="Resources\states.json" />
-    <None Remove="Resources\Font Awesome 5 Free-Regular-400.otf" />
-    <None Remove="Resources\Font Awesome 5 Free-Solid-900.otf" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Theme" />
-    <Folder Include="Themes\" />
-    <Folder Include="Assets\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="Assets\counties.json" />
     <EmbeddedResource Include="Assets\states.json" />
     <EmbeddedResource Include="Assets\Font Awesome 5 Free-Regular-400.otf" />

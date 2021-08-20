@@ -2,10 +2,9 @@
 
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:DCCovidConnect.Views"
              xmlns:models="clr-namespace:DCCovidConnect.Models"
              xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
-             xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+             xmlns:local="clr-namespace:DCCovidConnect;assembly=DCCovidConnect"
              x:Class="DCCovidConnect.Views.InfoMenuPage"
              BackgroundColor="{DynamicResource BackgroundColor}">
     <ContentPage.Resources>
@@ -99,10 +98,7 @@
                         <Button Text="News"
                                 CommandParameter="{x:Static models:InfoItem+InfoType.NEWS}">
                             <Button.ImageSource>
-                                <FontImageSource Glyph="&#xf1ea;"
-                                                 FontFamily="FontAwesomeSolid"
-                                                 Size="Large"
-                                                 Color="{DynamicResource AccentColor}"/>
+                                <local:InfoFontImageSource Glyph="&#xf1ea;" />
                             </Button.ImageSource>
                         </Button>
                     </Frame>
@@ -111,10 +107,7 @@
                         <Button Text="Get Involved"
                                 CommandParameter="{x:Static models:InfoItem+InfoType.GETTING_INVOLVED}">
                             <Button.ImageSource>
-                                <FontImageSource Glyph="&#xf4be;"
-                                                 FontFamily="FontAwesomeSolid"
-                                                 Size="Large"
-                                                 Color="{DynamicResource AccentColor}"/>
+                                <local:InfoFontImageSource Glyph="&#xf4be;" />
                             </Button.ImageSource>
                         </Button>
                     </Frame>
@@ -123,10 +116,7 @@
                         <Button Text="Age Specific"
                                 CommandParameter="{x:Static models:InfoItem+InfoType.AGE_SPECIFIC}" >
                             <Button.ImageSource>
-                                <FontImageSource Glyph="&#xf500;"
-                                                 FontFamily="FontAwesomeSolid"
-                                                 Size="Large"
-                                                 Color="{DynamicResource AccentColor}"/>
+                                <local:InfoFontImageSource Glyph="&#xf500;" />
                             </Button.ImageSource>
                         </Button>
                     </Frame>
@@ -136,10 +126,7 @@
                         <Button Text="Communities"
                                 CommandParameter="{x:Static models:InfoItem+InfoType.COMMUNITY}" >
                             <Button.ImageSource>
-                                <FontImageSource Glyph="&#xf64f;"
-                                                 FontFamily="FontAwesomeSolid"
-                                                 Size="Large"
-                                                 Color="{DynamicResource AccentColor}"/>
+                                <local:InfoFontImageSource Glyph="&#xf64f;" />
                             </Button.ImageSource>
                         </Button>
                     </Frame>
@@ -149,10 +136,7 @@
                         <Button Text="Research"
                                 CommandParameter="{x:Static models:InfoItem+InfoType.RESEARCH}" >
                             <Button.ImageSource>
-                                <FontImageSource Glyph="&#xf19d;"
-                                                 FontFamily="FontAwesomeSolid"
-                                                 Size="Large"
-                                                 Color="{DynamicResource AccentColor}"/>
+                                <local:InfoFontImageSource Glyph="&#xf19d;" />
                             </Button.ImageSource>
                         </Button>
                     </Frame>
@@ -161,10 +145,7 @@
                         <Button Text="General"
                                 CommandParameter="{x:Static models:InfoItem+InfoType.GENERAL_INFORMATION}" >
                             <Button.ImageSource>
-                                <FontImageSource Glyph="&#xf0ac;"
-                                                 FontFamily="FontAwesomeSolid"
-                                                 Size="Large"
-                                                 Color="{DynamicResource AccentColor}"/>
+                                <local:InfoFontImageSource Glyph="&#xf0ac;" />
                             </Button.ImageSource>
                         </Button>
                     </Frame>
@@ -175,10 +156,7 @@
                         <Button Text="Self Care"
                                 CommandParameter="{x:Static models:InfoItem+InfoType.SELF_CARE}" >
                             <Button.ImageSource>
-                                <FontImageSource Glyph="&#xf462;"
-                                                 FontFamily="FontAwesomeSolid"
-                                                 Size="Large"
-                                                 Color="{DynamicResource AccentColor}"/>
+                                <local:InfoFontImageSource Glyph="&#xf462;" />
                             </Button.ImageSource>
                         </Button>
                     </Frame>
@@ -188,10 +166,7 @@
                         <Button Text="Services"
                                 CommandParameter="{x:Static models:InfoItem+InfoType.SERVICES}" >
                             <Button.ImageSource>
-                                <FontImageSource Glyph="&#xf0eb;"
-                                                 FontFamily="FontAwesomeSolid"
-                                                 Size="Large"
-                                                 Color="{DynamicResource AccentColor}"/>
+                                <local:InfoFontImageSource Glyph="&#xf0eb;" />
                             </Button.ImageSource>
                         </Button>
                     </Frame>
@@ -201,10 +176,7 @@
                         <Button Text="Pregnancy"
                                 CommandParameter="{x:Static models:InfoItem+InfoType.PREGNANCY}" >
                             <Button.ImageSource>
-                                <FontImageSource Glyph="&#xf77c;"
-                                                 FontFamily="FontAwesomeSolid"
-                                                 Size="Large"
-                                                 Color="{DynamicResource AccentColor}"/>
+                                <local:InfoFontImageSource Glyph="&#xf77c;" />
                             </Button.ImageSource>
                         </Button>
                     </Frame>
@@ -214,10 +186,7 @@
                         <Button Text="FAQ"
                                 CommandParameter="{x:Static models:InfoItem+InfoType.FAQ}" >
                             <Button.ImageSource>
-                                <FontImageSource Glyph="&#xf086;"
-                                                 FontFamily="FontAwesomeSolid"
-                                                 Size="Large"
-                                                 Color="{DynamicResource AccentColor}"/>
+                                <local:InfoFontImageSource Glyph="&#xf086;" />
                             </Button.ImageSource>
                         </Button>
                     </Frame>

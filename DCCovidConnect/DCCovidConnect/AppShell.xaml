@@ -2,6 +2,7 @@
 <Shell xmlns="http://xamarin.com/schemas/2014/forms"
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
        xmlns:views="clr-namespace:DCCovidConnect.Views"
+       xmlns:local="clr-namespace:DCCovidConnect;assembly=DCCovidConnect"
        x:Class="DCCovidConnect.AppShell"
        FlyoutHeaderBehavior="CollapseOnScroll">
     <Shell.Resources>
@@ -26,28 +27,19 @@
     <TabBar>
         <Tab Title="Info" x:Name="_infoPage">
             <Tab.Icon>
-                <FontImageSource Glyph="&#xf05a;"
-                                 FontFamily="FontAwesomeSolid"
-                                 Size="Large"
-                                 />
+                <local:DefaultFontImageSource Glyph="&#xf05a;" />
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate views:InfoMenuPage}"/>
         </Tab>
         <Tab Title="Map">
             <Tab.Icon>
-                <FontImageSource Glyph="&#xf3c5;"
-                                 FontFamily="FontAwesomeSolid"
-                                 Size="Large"
-                                 />
+                <local:DefaultFontImageSource Glyph="&#xf3c5;" />
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate views:MapPage}"/>
         </Tab>
         <Tab Title="Settings">
             <Tab.Icon>
-                <FontImageSource Glyph="&#xf013;"
-                                 FontFamily="FontAwesomeSolid"
-                                 Size="Large"
-                                 />
+                <local:DefaultFontImageSource Glyph="&#xf013;" />
             </Tab.Icon>
             <ShellContent ContentTemplate="{DataTemplate views:SettingsPage}"/>
         </Tab>

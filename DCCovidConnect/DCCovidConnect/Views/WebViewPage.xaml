@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="DCCovidConnect.Views.WebViewPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Shell.TitleView>
+        <Frame BackgroundColor="Transparent"
+               HasShadow="False">
+            
+            <Label Text="DCCOVIDConnect"
+                   FontSize="Small"
+                   FontAttributes="Bold"
+                   CharacterSpacing="0"
+                   TextColor="{DynamicResource PrimaryTextColor}"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"
+                   Margin="0,-1000" />
+        </Frame>
+    </Shell.TitleView>
+
+    <WebView x:Name="WV" />
+</ContentPage>

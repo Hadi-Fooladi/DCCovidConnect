@@ -7,4 +7,5 @@
     <Color x:Key="PrimaryTextColor">Black</Color>
     <Color x:Key="AccentTextColor">#E92F33</Color>
     <Color x:Key="AccentColor">#E92F33</Color>
+    <Color x:Key="UnselectedColor">#8000</Color>
 </ResourceDictionary>

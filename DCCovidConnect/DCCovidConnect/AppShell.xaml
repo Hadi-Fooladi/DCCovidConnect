@@ -11,9 +11,9 @@
                 <Setter Property="Shell.BackgroundColor" Value="{DynamicResource BackgroundColor}" />
                 <Setter Property="Shell.NavBarHasShadow" Value="False"/>
                 <Setter Property="Shell.ForegroundColor" Value="{DynamicResource PrimaryTextColor}" />
-                <Setter Property="Shell.TitleColor" Value="{DynamicResource BackgroundColor}" />
+                <Setter Property="Shell.TitleColor" Value="{DynamicResource PrimaryTextColor}" />
                 <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
-                <Setter Property="Shell.UnselectedColor" Value="#95FFFFFF" />
+                <Setter Property="Shell.UnselectedColor" Value="{DynamicResource UnselectedColor}" />
                 <Setter Property="Shell.TabBarBackgroundColor" Value="{DynamicResource BackgroundColor}" />
                 <Setter Property="Shell.TabBarForegroundColor" Value="{DynamicResource AccentColor}"/>
                 <Setter Property="Shell.TabBarUnselectedColor" Value="{DynamicResource AccentColor}"/>
@@ -50,7 +50,10 @@
             <Tab.Icon>
                 <local:DefaultFontImageSource Glyph="&#xf059;" />
             </Tab.Icon>
-            <ShellContent ContentTemplate="{DataTemplate views:AboutPage}"/>
+
+            <ShellContent Title="About" ContentTemplate="{DataTemplate views:AboutPage}" />
+            <ShellContent Title="Disclaimer" ContentTemplate="{DataTemplate views:DisclaimerPage}"/>
+            <ShellContent Title="Acknowledgments" ContentTemplate="{DataTemplate views:AcknowledgmentsPage}"/>
         </Tab>
     </TabBar>
 

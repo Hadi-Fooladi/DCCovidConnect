@@ -7,7 +7,7 @@
             SetHtmlBody(BODY);
         }
 
-        private const string BODY = @"
+        public const string BODY = @"
 <p>The information contained in this application (“App”) is provided for informational purposes only and is not intended to be a substitute for personal judgement. <b>THIS APP DOES NOT OFFER MEDICAL ADVICE AND NOTHING CONTAINED HERIN IS INTENDED TO CONSTITUTE PROFESSIONAL ADVICE FOR A MEDICAL DIAGNOSIS OR TREATMENT. USING, ACCESSING OR BROWING THIS APP DOES NOT CREATE A REALTIONSHIP BETWEEN YOU AND CHILDREN’S NATIONAL HOSPITAL (OR ANY OF ITS AFFILIATED INSTITUTIONS).</b></p>
 
 <p>Nothing contained in this App is intended to replace the medical advice or services of a licensed, trained physician or healthcare provider or to be a substitute for medical advice of a physician or healthcare professional licensed in your state. You should not rely on anything contained in this App or make any medical related decisions based in whole or in part of anything contained in the Information in this App. <b>INSTEAD YOU SHOULD USE SOUND JUDGEMENT AND CONSULT WITH A HEALTHCARE PROVIDER PROMPTLY REGARDING ANY COURSE OF TREATMENT, MEDICAL CONDITIONS, OR MEDICAL QUESTIONS YOU MAY HAVE.</b></p>

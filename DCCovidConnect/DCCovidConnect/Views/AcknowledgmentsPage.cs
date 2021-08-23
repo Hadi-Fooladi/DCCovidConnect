@@ -17,7 +17,7 @@ namespace DCCovidConnect.Views
             SetHtmlBody(Body);
         }
 
-        private static readonly string Body;
+        public static readonly string Body;
 
         private static readonly Person[] Persons =
         {

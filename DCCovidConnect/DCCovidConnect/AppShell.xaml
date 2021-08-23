@@ -51,9 +51,7 @@
                 <local:DefaultFontImageSource Glyph="&#xf059;" />
             </Tab.Icon>
 
-            <ShellContent Title="About" ContentTemplate="{DataTemplate views:AboutPage}" />
-            <ShellContent Title="Disclaimer" ContentTemplate="{DataTemplate views:DisclaimerPage}"/>
-            <ShellContent Title="Acknowledgments" ContentTemplate="{DataTemplate views:AcknowledgmentsPage}"/>
+            <ShellContent ContentTemplate="{DataTemplate views:AllAboutPage}" />
         </Tab>
     </TabBar>
 

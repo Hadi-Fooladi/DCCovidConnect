@@ -58,7 +58,7 @@
                        HeightRequest="20"
                        TextChanged="OnTextChanged"
                        BackgroundColor="Transparent"
-                       TextColor="{DynamicResource PrimaryTextColor}"
+                       TextColor="Black"
                        />
         </Frame>
         <AbsoluteLayout>

@@ -49,7 +49,7 @@
         </Frame>
     </Shell.TitleView>
     <StackLayout x:Name="_pageLayout">
-        <Frame BackgroundColor="{DynamicResource ElementBackgroundColor}"
+        <Frame BackgroundColor="White"
                Margin="40, 0"
                Padding="0, 10, 20 ,10"
                HasShadow="False"
@@ -195,13 +195,14 @@
             <ListView x:Name="_searchResults"
                       AbsoluteLayout.LayoutFlags="All"
                       AbsoluteLayout.LayoutBounds="1,0,1,0.5"
-                      Margin="25,0"
                       BackgroundColor="{DynamicResource ElementBackgroundColor}"
+                      Margin="25,0"
                       HasUnevenRows="True">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <Frame
+                                BackgroundColor="{DynamicResource ElementBackgroundColor}"
                                 HasShadow="False">
                                 <StackLayout Orientation="Horizontal">
                                     <Label Text="{Binding Name}" FontSize="18"

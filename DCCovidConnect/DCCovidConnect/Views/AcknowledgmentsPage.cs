@@ -43,7 +43,8 @@ namespace DCCovidConnect.Views
                 Email = email;
             }
 
-            public override string ToString() => $"{Name} <{Email}>";
+            //public override string ToString() => $"{Name} <{Email}>";
+            public override string ToString() => Name;
         }
     }
 }
